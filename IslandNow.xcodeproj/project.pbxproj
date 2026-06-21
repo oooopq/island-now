@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		F77F5EA12FE7C12B004AFB42 /* Island Now.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Island Now.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F77F5EA12FE7C12B004AFB42 /* IslandNow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IslandNow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		F77F5EA32FE7C12B004AFB42 /* Island Now */ = {
+		F77F5EA32FE7C12B004AFB42 /* IslandNow */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Island Now";
+			path = IslandNow;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		F77F5E982FE7C12B004AFB42 = {
 			isa = PBXGroup;
 			children = (
-				F77F5EA32FE7C12B004AFB42 /* Island Now */,
+				F77F5EA32FE7C12B004AFB42 /* IslandNow */,
 				F77F5EA22FE7C12B004AFB42 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		F77F5EA22FE7C12B004AFB42 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F77F5EA12FE7C12B004AFB42 /* Island Now.app */,
+				F77F5EA12FE7C12B004AFB42 /* IslandNow.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F77F5EA02FE7C12B004AFB42 /* Island Now */ = {
+		F77F5EA02FE7C12B004AFB42 /* IslandNow */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F77F5EAC2FE7C12C004AFB42 /* Build configuration list for PBXNativeTarget "Island Now" */;
+			buildConfigurationList = F77F5EAC2FE7C12C004AFB42 /* Build configuration list for PBXNativeTarget "IslandNow" */;
 			buildPhases = (
 				F77F5E9D2FE7C12B004AFB42 /* Sources */,
 				F77F5E9E2FE7C12B004AFB42 /* Frameworks */,
@@ -61,13 +61,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				F77F5EA32FE7C12B004AFB42 /* Island Now */,
+				F77F5EA32FE7C12B004AFB42 /* IslandNow */,
 			);
-			name = "Island Now";
+			name = IslandNow;
 			packageProductDependencies = (
 			);
 			productName = "Island Now";
-			productReference = F77F5EA12FE7C12B004AFB42 /* Island Now.app */;
+			productReference = F77F5EA12FE7C12B004AFB42 /* IslandNow.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = F77F5E9C2FE7C12B004AFB42 /* Build configuration list for PBXProject "Island Now" */;
+			buildConfigurationList = F77F5E9C2FE7C12B004AFB42 /* Build configuration list for PBXProject "IslandNow" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F77F5EA02FE7C12B004AFB42 /* Island Now */,
+				F77F5EA02FE7C12B004AFB42 /* IslandNow */,
 			);
 		};
 /* End PBXProject section */
@@ -313,7 +313,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F77F5E9C2FE7C12B004AFB42 /* Build configuration list for PBXProject "Island Now" */ = {
+		F77F5E9C2FE7C12B004AFB42 /* Build configuration list for PBXProject "IslandNow" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F77F5EAA2FE7C12C004AFB42 /* Debug */,
@@ -322,7 +322,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F77F5EAC2FE7C12C004AFB42 /* Build configuration list for PBXNativeTarget "Island Now" */ = {
+		F77F5EAC2FE7C12C004AFB42 /* Build configuration list for PBXNativeTarget "IslandNow" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F77F5EAD2FE7C12C004AFB42 /* Debug */,
