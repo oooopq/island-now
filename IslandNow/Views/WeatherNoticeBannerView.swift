@@ -15,7 +15,7 @@ struct WeatherNoticeBannerView: View {
             Label("今日の注意", systemImage: "exclamationmark.triangle.fill")
                 .font(.subheadline)
                 .fontWeight(.semibold)
-                .foregroundStyle(.orange)
+                .foregroundStyle(DetailCardTheme.warning)
 
             ForEach(Array(notices.enumerated()), id: \.offset) { index, notice in
                 if index > 0 {
@@ -27,7 +27,7 @@ struct WeatherNoticeBannerView: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.orange.opacity(0.10))
+        .background(DetailCardTheme.noticeBackground)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }

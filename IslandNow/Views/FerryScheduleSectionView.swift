@@ -21,7 +21,7 @@ struct FerryScheduleSectionView: View {
             switch state {
             case .loading:
                 ProgressView("ダイヤを取得中…")
-                    .tint(.blue)
+                    .tint(DetailCardTheme.accent)
                     .detailCardSecondaryText()
 
             case .loaded(let schedules, let isFromCache, let validUntilText):
@@ -34,7 +34,7 @@ struct FerryScheduleSectionView: View {
             case .failed(let message, let cachedSchedules):
                 Text(message)
                     .font(.subheadline)
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(DetailCardTheme.warning)
 
                 if let cachedSchedules {
                     scheduleContent(
@@ -149,8 +149,8 @@ struct FerryScheduleSectionView: View {
                 .font(.subheadline)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(isSelected ? Color.blue : Color(red: 0.93, green: 0.93, blue: 0.93))
-                .foregroundStyle(isSelected ? Color.white : Color(red: 0.12, green: 0.12, blue: 0.12))
+                .background(DetailCardTheme.chipBackground(isSelected: isSelected))
+                .foregroundStyle(DetailCardTheme.chipForeground(isSelected: isSelected))
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)
@@ -252,9 +252,9 @@ struct FerryScheduleSectionView: View {
 
 #Preview {
     FerryScheduleSectionView(
-        island: YaeyamaIslands.all[0],
+        island: IslandCatalog.islands[0],
         state: .loaded(
-            IslandSampleData.ferrySchedules(for: "ishigaki"),
+            IslandCatalog.profile(for: "ishigaki")?.sampleFerrySchedules ?? [],
             isFromCache: false,
             validUntilText: "2026/06/19"
         )

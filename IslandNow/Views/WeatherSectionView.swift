@@ -18,7 +18,7 @@ struct WeatherSectionView: View {
             switch state {
             case .loading:
                 ProgressView("天気を取得中…")
-                    .tint(.blue)
+                    .tint(DetailCardTheme.accent)
                     .detailCardSecondaryText()
 
             case .loaded(let weather, let isFromCache):
@@ -33,7 +33,7 @@ struct WeatherSectionView: View {
             case .failed(let message, let cachedWeather):
                 Text(message)
                     .font(.subheadline)
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(DetailCardTheme.warning)
                 if let cachedWeather {
                     currentWeatherContent(cachedWeather)
                     weeklyForecastContent(cachedWeather.weeklyForecast)

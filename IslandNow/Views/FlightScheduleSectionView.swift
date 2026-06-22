@@ -10,6 +10,7 @@ import SwiftUI
 struct FlightScheduleSectionView: View {
     let island: Island
     let schedules: [FlightAirlineSchedule]
+    let scheduleNote: String?
 
     @State private var selectedDestinationID = FlightRouteHelper.allDestinationsID
 
@@ -49,9 +50,11 @@ struct FlightScheduleSectionView: View {
                 }
             }
 
-            Text(YonaguniFlightData.scheduleNote)
-                .font(.caption)
-                .detailCardSecondaryText()
+            if let scheduleNote {
+                Text(scheduleNote)
+                    .font(.caption)
+                    .detailCardSecondaryText()
+            }
 
             Text("予約・最新時刻は JAL 公式サイトでご確認ください")
                 .font(.caption)
@@ -98,8 +101,8 @@ struct FlightScheduleSectionView: View {
                 .font(.subheadline)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(isSelected ? Color.blue : Color(red: 0.93, green: 0.93, blue: 0.93))
-                .foregroundStyle(isSelected ? Color.white : Color(red: 0.12, green: 0.12, blue: 0.12))
+                .background(DetailCardTheme.chipBackground(isSelected: isSelected))
+                .foregroundStyle(DetailCardTheme.chipForeground(isSelected: isSelected))
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)
@@ -158,7 +161,7 @@ struct FlightScheduleSectionView: View {
                 Text(trip.flightNumber)
                     .font(.caption)
                     .fontWeight(.semibold)
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(DetailCardTheme.accent)
 
                 HStack(spacing: 6) {
                     Text(route.departure)
@@ -192,8 +195,9 @@ struct FlightScheduleSectionView: View {
 
 #Preview {
     FlightScheduleSectionView(
-        island: YaeyamaIslands.all.first { $0.id == "yonaguni" } ?? YaeyamaIslands.all[0],
-        schedules: YonaguniFlightData.schedules(for: "yonaguni")
+        island: IslandCatalog.islands.first { $0.id == "yonaguni" } ?? IslandCatalog.islands[0],
+        schedules: IslandCatalog.profile(for: "yonaguni")?.flightSchedules ?? [],
+        scheduleNote: IslandCatalog.profile(for: "yonaguni")?.flightScheduleNote
     )
     .padding()
 }

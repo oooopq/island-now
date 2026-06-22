@@ -11,7 +11,7 @@ struct UsefulInfoSectionView: View {
     let islandID: String
 
     private var items: [UsefulInfo] {
-        IslandUsefulInfo.items(for: islandID)
+        IslandCatalog.profile(for: islandID)?.usefulInfo ?? []
     }
 
     var body: some View {
@@ -39,7 +39,7 @@ struct UsefulInfoSectionView: View {
             Label(category.rawValue, systemImage: category.systemImage)
                 .font(.subheadline)
                 .fontWeight(.semibold)
-                .foregroundStyle(.blue)
+                .foregroundStyle(DetailCardTheme.accent)
 
             ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                 if index > 0 {

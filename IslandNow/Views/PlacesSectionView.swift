@@ -28,7 +28,7 @@ struct PlacesSectionView: View {
             }
             .pickerStyle(.segmented)
 
-            if showsPortDistance, let port = IslandPortLocations.port(for: island.id) {
+            if showsPortDistance, let port = IslandCatalog.port(for: island.id) {
                 Text("港（\(port.name)）からの距離・徒歩時間を表示しています")
                     .font(.caption)
                     .detailCardSecondaryText()
@@ -37,7 +37,7 @@ struct PlacesSectionView: View {
             switch state {
             case .loading:
                 ProgressView("スポットを検索中…")
-                    .tint(.blue)
+                    .tint(DetailCardTheme.accent)
                     .detailCardSecondaryText()
 
             case .loaded(let places, let isFromCache):
@@ -46,7 +46,7 @@ struct PlacesSectionView: View {
                         .font(.subheadline)
                         .detailCardSecondaryText()
                 } else {
-                    let visiblePlaces = Array(places.prefix(IslandPlaceSearch.displayLimit))
+                    let visiblePlaces = Array(places.prefix(IslandCatalog.placeDisplayLimit))
                     ForEach(Array(visiblePlaces.enumerated()), id: \.element.id) { index, place in
                         if index > 0 {
                             Divider()
@@ -54,8 +54,8 @@ struct PlacesSectionView: View {
                         placeRow(place)
                     }
 
-                    if places.count > IslandPlaceSearch.displayLimit {
-                        Text("ほか \(places.count - IslandPlaceSearch.displayLimit) 件")
+                    if places.count > IslandCatalog.placeDisplayLimit {
+                        Text("ほか \(places.count - IslandCatalog.placeDisplayLimit) 件")
                             .font(.caption)
                             .detailCardSecondaryText()
                     }
@@ -74,10 +74,10 @@ struct PlacesSectionView: View {
             case .failed(let message, let cachedPlaces):
                 Text(message)
                     .font(.subheadline)
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(DetailCardTheme.warning)
 
                 if let cachedPlaces, cachedPlaces.isEmpty == false {
-                    ForEach(Array(cachedPlaces.prefix(IslandPlaceSearch.displayLimit))) { place in
+                    ForEach(Array(cachedPlaces.prefix(IslandCatalog.placeDisplayLimit))) { place in
                         placeRow(place)
                     }
                     Text("オフライン用の保存データです")
@@ -104,7 +104,7 @@ struct PlacesSectionView: View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: iconName(for: place.categoryLabel))
                 .frame(width: 24)
-                .foregroundStyle(.orange)
+                .foregroundStyle(DetailCardTheme.iconAccent)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(place.name)
@@ -141,7 +141,7 @@ struct PlacesSectionView: View {
     }
 
     private func portAccessText(for place: PlaceInfo) -> String? {
-        IslandPortLocations.formattedPortAccess(from: place, islandID: island.id)
+        IslandCatalog.formattedPortAccess(from: place, islandID: island.id)
     }
 
     private func iconName(for categoryLabel: String) -> String {
@@ -160,7 +160,7 @@ struct PlacesSectionView: View {
 
 #Preview {
     PlacesSectionView(
-        island: YaeyamaIslands.all[0],
+        island: IslandCatalog.islands[0],
         selectedCategory: .constant(.restaurant),
         state: .loaded(
             [

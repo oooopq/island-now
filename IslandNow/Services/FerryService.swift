@@ -86,14 +86,7 @@ struct FerryService {
     }
 
     private func feeds(for island: Island) -> [FerryGTFSFeed] {
-        switch island.id {
-        case "yonaguni":
-            return [.fukuyama, .anei, .yaeyamaFerry]
-        case "ishigaki":
-            return [.anei, .yaeyamaFerry, .fukuyama]
-        default:
-            return [.anei, .yaeyamaFerry]
-        }
+        IslandCatalog.profile(for: island)?.ferryGTFSFeeds ?? []
     }
 
     private func saveCache(_ result: FerryFetchResult, for islandID: String) {

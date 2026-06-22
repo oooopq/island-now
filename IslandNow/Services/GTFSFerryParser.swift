@@ -44,7 +44,7 @@ struct GTFSFerryParser {
                   activeServiceIDs.contains(serviceID),
                   let route = routesByID[routeID],
                   let routeLongName = route["route_long_name"],
-                  IslandFerryFilter.matches(routeLongName: routeLongName, islandID: islandID),
+                  IslandCatalog.profile(for: islandID)?.matchesRoute(routeLongName) == true,
                   let stopTimeRows = stopTimesByTrip[tripID] else {
                 continue
             }

@@ -18,12 +18,12 @@ struct NextDepartureBannerView: View {
                 Label(title, systemImage: "clock.fill")
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(DetailCardTheme.accent)
 
                 if showsTomorrowNote {
                     Text("本日の出港便は終了しました。翌日の最初の便です。")
                         .font(.caption)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(DetailCardTheme.warning)
                 }
 
                 ForEach(Array(departures.enumerated()), id: \.element.id) { index, departure in
@@ -35,7 +35,7 @@ struct NextDepartureBannerView: View {
             }
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.blue.opacity(0.08))
+            .background(DetailCardTheme.bannerBackground)
             .clipShape(RoundedRectangle(cornerRadius: 10))
         }
     }

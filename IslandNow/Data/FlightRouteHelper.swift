@@ -27,9 +27,11 @@ enum FlightRouteHelper {
     }
 
     static func endpointID(for placeName: String) -> String? {
+        if let islandID = IslandCatalog.islandID(matchingPlaceName: placeName) {
+            return islandID
+        }
         if placeName.contains("那覇") { return "naha" }
-        if placeName.contains("石垣") { return "ishigaki" }
-        if placeName.contains("与那国") { return "yonaguni" }
+        if placeName.contains("新潟") { return "niigata" }
         return nil
     }
 
@@ -66,13 +68,14 @@ enum FlightRouteHelper {
     }
 
     static func displayName(for endpointID: String) -> String {
+        if let islandName = IslandCatalog.profile(for: endpointID)?.island.nameJapanese {
+            return islandName
+        }
         switch endpointID {
         case "naha":
             return "那覇"
-        case "ishigaki":
-            return "石垣島"
-        case "yonaguni":
-            return "与那国島"
+        case "niigata":
+            return "新潟"
         default:
             return endpointID
         }

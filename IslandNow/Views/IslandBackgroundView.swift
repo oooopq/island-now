@@ -11,7 +11,7 @@ struct IslandBackgroundView: View {
     let islandID: String
 
     var body: some View {
-        Image(IslandBackgrounds.assetName(for: islandID))
+        Image(IslandCatalog.profile(for: islandID)?.backgroundAssetName ?? "IslandBgIshigaki")
             .resizable()
             .scaledToFill()
             .ignoresSafeArea()

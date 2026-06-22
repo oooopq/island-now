@@ -19,7 +19,7 @@ final class MapViewModel {
         )
     )
 
-    let islands = YaeyamaIslands.all
+    let islands = IslandCatalog.islands
 
     // タップされた島（詳細画面への遷移用）
     var selectedIsland: Island?

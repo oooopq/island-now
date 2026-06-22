@@ -64,6 +64,9 @@ struct LiveCameraSectionView: View {
 }
 
 #Preview {
-    LiveCameraSectionView(islandID: "ishigaki", cameras: IslandLiveCameras.cameras(for: "ishigaki"))
+    LiveCameraSectionView(
+        islandID: "ishigaki",
+        cameras: IslandCatalog.profile(for: "ishigaki")?.liveCameras ?? []
+    )
         .padding()
 }

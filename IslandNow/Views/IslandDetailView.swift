@@ -19,8 +19,12 @@ struct IslandDetailView: View {
     private let ferryService = FerryService()
     private let placesSearchService = PlacesSearchService()
 
+    private var islandProfile: IslandProfile? {
+        IslandCatalog.profile(for: island)
+    }
+
     private var liveCameras: [LiveCamera] {
-        IslandLiveCameras.cameras(for: island.id)
+        islandProfile?.liveCameras ?? []
     }
 
     private var placeSearchTaskID: String {
@@ -36,10 +40,11 @@ struct IslandDetailView: View {
 
                 FerryScheduleSectionView(island: island, state: ferryState)
 
-                if YonaguniFlightData.supportsFlights(for: island.id) {
+                if let islandProfile, islandProfile.flightSchedules.isEmpty == false {
                     FlightScheduleSectionView(
                         island: island,
-                        schedules: YonaguniFlightData.schedules(for: island.id)
+                        schedules: islandProfile.flightSchedules,
+                        scheduleNote: islandProfile.flightScheduleNote
                     )
                 }
 
@@ -51,7 +56,7 @@ struct IslandDetailView: View {
 
                 LiveCameraSectionView(islandID: island.id, cameras: liveCameras)
 
-                Text(IslandBackgrounds.credit(for: island.id))
+                Text(islandProfile?.backgroundCredit ?? "")
                     .font(.caption2)
                     .foregroundStyle(.white.opacity(0.75))
                     .frame(maxWidth: .infinity, alignment: .trailing)
@@ -70,8 +75,7 @@ struct IslandDetailView: View {
         }
         .task(id: island.id) {
             selectedPlaceCategory = .restaurant
-            weatherState = .loading
-            ferryState = .loading
+            restoreCachedStates(for: island)
 
             async let weatherLoad: Void = loadWeather()
             async let ferryLoad: Void = loadFerrySchedules()
@@ -84,9 +88,16 @@ struct IslandDetailView: View {
 
     @MainActor
     private func refreshAllData() async {
-        weatherState = .loading
-        ferryState = .loading
-        placesState = .loading
+        // キャッシュがある場合は表示を維持したまま裏で更新する
+        if weatherService.cachedWeather(for: island.id) == nil {
+            weatherState = .loading
+        }
+        if ferryService.cachedSchedules(for: island.id) == nil {
+            ferryState = .loading
+        }
+        if placesSearchService.cachedPlaces(for: island.id, category: selectedPlaceCategory) == nil {
+            placesState = .loading
+        }
 
         async let weatherLoad: Void = loadWeather()
         async let ferryLoad: Void = loadFerrySchedules()
@@ -94,9 +105,36 @@ struct IslandDetailView: View {
         _ = await (weatherLoad, ferryLoad, placesLoad)
     }
 
+    // 保存済みデータがあれば先に表示する（LTEが使えない島向け）
+    @MainActor
+    private func restoreCachedStates(for island: Island) {
+        if let cached = weatherService.cachedWeather(for: island.id) {
+            weatherState = .loaded(cached, isFromCache: true)
+        } else {
+            weatherState = .loading
+        }
+
+        if let cached = ferryService.cachedSchedules(for: island.id) {
+            ferryState = .loaded(
+                cached.schedules,
+                isFromCache: true,
+                validUntilText: cached.validUntilText
+            )
+        } else {
+            ferryState = .loading
+        }
+
+        if let cached = placesSearchService.cachedPlaces(for: island.id, category: selectedPlaceCategory) {
+            placesState = .loaded(cached, isFromCache: true)
+        } else {
+            placesState = .loading
+        }
+    }
+
     @MainActor
     private func loadWeather() async {
-        if let cached = weatherService.cachedWeather(for: island.id) {
+        if case .loading = weatherState,
+           let cached = weatherService.cachedWeather(for: island.id) {
             weatherState = .loaded(cached, isFromCache: true)
         }
 
@@ -105,10 +143,7 @@ struct IslandDetailView: View {
             weatherState = .loaded(weather, isFromCache: false)
         } catch {
             if let cached = weatherService.cachedWeather(for: island.id) {
-                weatherState = .failed(
-                    message: "最新の天気を取得できませんでした",
-                    cachedWeather: cached
-                )
+                weatherState = .loaded(cached, isFromCache: true)
                 return
             }
             weatherState = .failed(message: "天気を取得できませんでした", cachedWeather: nil)
@@ -117,8 +152,13 @@ struct IslandDetailView: View {
 
     @MainActor
     private func loadFerrySchedules() async {
-        if let cached = ferryService.cachedSchedules(for: island.id) {
-            ferryState = .loaded(cached.schedules, isFromCache: true, validUntilText: cached.validUntilText)
+        if case .loading = ferryState,
+           let cached = ferryService.cachedSchedules(for: island.id) {
+            ferryState = .loaded(
+                cached.schedules,
+                isFromCache: true,
+                validUntilText: cached.validUntilText
+            )
         }
 
         do {
@@ -126,11 +166,15 @@ struct IslandDetailView: View {
             ferryState = .loaded(result.schedules, isFromCache: false, validUntilText: result.validUntilText)
         } catch {
             if let cached = ferryService.cachedSchedules(for: island.id) {
-                ferryState = .failed(message: "最新のダイヤを取得できませんでした", cachedSchedules: cached.schedules)
+                ferryState = .loaded(
+                    cached.schedules,
+                    isFromCache: true,
+                    validUntilText: cached.validUntilText
+                )
                 return
             }
 
-            let fallback = IslandSampleData.ferrySchedules(for: island.id)
+            let fallback = islandProfile?.sampleFerrySchedules ?? []
             ferryState = .loaded(fallback, isFromCache: true, validUntilText: nil)
         }
     }
@@ -139,10 +183,15 @@ struct IslandDetailView: View {
     private func loadPlaces() async {
         let category = selectedPlaceCategory
 
-        if let cached = placesSearchService.cachedPlaces(for: island.id, category: category) {
-            placesState = .loaded(cached, isFromCache: true)
-        } else {
-            placesState = .loading
+        switch placesState {
+        case .loaded(let places, _) where places.first?.categoryLabel == category.rawValue:
+            break
+        default:
+            if let cached = placesSearchService.cachedPlaces(for: island.id, category: category) {
+                placesState = .loaded(cached, isFromCache: true)
+            } else {
+                placesState = .loading
+            }
         }
 
         do {
@@ -150,7 +199,7 @@ struct IslandDetailView: View {
             placesState = .loaded(places, isFromCache: false)
         } catch {
             if let cached = placesSearchService.cachedPlaces(for: island.id, category: category) {
-                placesState = .failed(message: "最新のスポットを取得できませんでした", cachedPlaces: cached)
+                placesState = .loaded(cached, isFromCache: true)
                 return
             }
             placesState = .failed(message: "スポットを取得できませんでした", cachedPlaces: nil)
@@ -160,6 +209,6 @@ struct IslandDetailView: View {
 
 #Preview {
     NavigationStack {
-        IslandDetailView(island: YaeyamaIslands.all[0])
+        IslandDetailView(island: IslandCatalog.islands[0])
     }
 }

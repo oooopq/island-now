@@ -29,15 +29,7 @@ enum FerryRouteHelper {
 
     // 港名・停留所名から島IDを推定する
     static func islandID(for placeName: String) -> String? {
-        if placeName.contains("石垣") { return "ishigaki" }
-        if placeName.contains("竹富") { return "taketomi" }
-        if placeName.contains("黒島") { return "kuroshima" }
-        if placeName.contains("波照間") { return "hateruma" }
-        if placeName.contains("与那国") { return "yonaguni" }
-        if placeName.contains("西表") || placeName.contains("大原") || placeName.contains("上原") || placeName.contains("由布") {
-            return "iriomote"
-        }
-        return nil
+        IslandCatalog.islandID(matchingPlaceName: placeName)
     }
 
     // 今見ている島以外の相手島IDを返す
@@ -75,7 +67,7 @@ enum FerryRouteHelper {
     }
 
     static func displayName(for islandID: String) -> String {
-        YaeyamaIslands.all.first { $0.id == islandID }?.nameJapanese ?? islandID
+        IslandCatalog.displayName(for: islandID)
     }
 
     // 選択した行き先に合う便だけ残す

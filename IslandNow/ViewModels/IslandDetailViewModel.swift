@@ -22,7 +22,7 @@ final class IslandDetailViewModel {
 
     init(island: Island) {
         self.island = island
-        self.liveCamera = IslandLiveCameras.cameras(for: island.id).first
+        self.liveCamera = IslandCatalog.profile(for: island)?.liveCameras.first
             ?? LiveCamera(title: "ライブカメラ", urlString: "https://www.youtube.com")
     }
 
@@ -70,7 +70,7 @@ final class IslandDetailViewModel {
                 return
             }
 
-            let fallback = IslandSampleData.ferrySchedules(for: island.id)
+            let fallback = IslandCatalog.profile(for: island)?.sampleFerrySchedules ?? []
             ferryState = .loaded(fallback, isFromCache: true, validUntilText: nil)
         }
     }

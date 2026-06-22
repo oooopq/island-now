@@ -2,7 +2,7 @@
 //  Island.swift
 //  Island Now
 //
-//  八重山諸島の1島分のデータ
+//  島1件分の基本データ（座標・名前）
 //
 
 import CoreLocation
