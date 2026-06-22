@@ -12,9 +12,13 @@ struct FerryFetchResult: Codable {
     let validUntilText: String?
 }
 
+private struct ParsedFeedResult: Sendable {
+    let schedule: FerryCompanySchedule?
+    let validUntilText: String?
+}
+
 struct FerryService {
     private let cacheKeyPrefix = "ferry_cache_"
-    private let parser = GTFSFerryParser()
 
     func fetchSchedules(for island: Island) async throws -> FerryFetchResult {
         let feeds = feeds(for: island)
@@ -23,6 +27,8 @@ struct FerryService {
 
         for feed in feeds {
             do {
+                try Task.checkCancellation()
+
                 let url = feed.downloadURL
                 let (data, response) = try await URLSession.shared.data(from: url)
 
@@ -31,22 +37,17 @@ struct FerryService {
                     continue
                 }
 
-                let files = try GTFSZipReader.extractTextFiles(from: data)
-                let trips = parser.parseTrips(from: files, islandID: island.id)
+                let parsed = try await parseFeed(data: data, islandID: island.id, feed: feed)
 
-                if let validUntil = parser.validUntilText(from: files) {
+                if let validUntil = parsed.validUntilText {
                     validUntilTexts.append(validUntil)
                 }
 
-                guard trips.isEmpty == false else { continue }
-
-                schedules.append(
-                    FerryCompanySchedule(
-                        id: "\(island.id)-\(feed.scheduleID)",
-                        company: feed.company,
-                        trips: trips
-                    )
-                )
+                if let schedule = parsed.schedule {
+                    schedules.append(schedule)
+                }
+            } catch is CancellationError {
+                throw CancellationError()
             } catch {
                 // 1社分の取得に失敗しても、他社のダイヤは表示する
                 continue
@@ -87,6 +88,29 @@ struct FerryService {
 
     private func feeds(for island: Island) -> [FerryGTFSFeed] {
         IslandCatalog.profile(for: island)?.ferryGTFSFeeds ?? []
+    }
+
+    // ZIP解凍・CSVパースはメインスレッド外で実行する
+    private func parseFeed(data: Data, islandID: String, feed: FerryGTFSFeed) async throws -> ParsedFeedResult {
+        try await Task.detached(priority: .userInitiated) {
+            let parser = GTFSFerryParser()
+            let files = try GTFSZipReader.extractTextFiles(from: data)
+            let trips = parser.parseTrips(from: files, islandID: islandID)
+            let validUntilText = parser.validUntilText(from: files)
+
+            let schedule: FerryCompanySchedule?
+            if trips.isEmpty {
+                schedule = nil
+            } else {
+                schedule = FerryCompanySchedule(
+                    id: "\(islandID)-\(feed.scheduleID)",
+                    company: feed.company,
+                    trips: trips
+                )
+            }
+
+            return ParsedFeedResult(schedule: schedule, validUntilText: validUntilText)
+        }.value
     }
 
     private func saveCache(_ result: FerryFetchResult, for islandID: String) {
