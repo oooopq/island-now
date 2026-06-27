@@ -17,7 +17,8 @@ enum FlightEndpointCatalog {
     static let all: [FlightEndpoint] = [
         FlightEndpoint(id: "naha", nameJapanese: "那覇", matchKeywords: ["那覇"]),
         FlightEndpoint(id: "niigata", nameJapanese: "新潟", matchKeywords: ["新潟"]),
-        FlightEndpoint(id: "tokyo", nameJapanese: "東京", matchKeywords: ["東京", "羽田", "調布"]),
+        FlightEndpoint(id: "tokyo", nameJapanese: "羽田", matchKeywords: ["羽田", "東京"]),
+        FlightEndpoint(id: "chofu", nameJapanese: "調布", matchKeywords: ["調布"]),
         FlightEndpoint(id: "shizuoka", nameJapanese: "静岡", matchKeywords: ["静岡"]),
     ]
 

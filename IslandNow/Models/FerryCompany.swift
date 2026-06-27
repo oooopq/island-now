@@ -11,6 +11,20 @@ struct FerryCompany: Codable {
     let name: String
     let websiteURL: String
     let phoneNumber: String
+    /// 欠航・遅延の確認ページ（任意）
+    let statusPageURL: String?
+
+    init(
+        name: String,
+        websiteURL: String,
+        phoneNumber: String,
+        statusPageURL: String? = nil
+    ) {
+        self.name = name
+        self.websiteURL = websiteURL
+        self.phoneNumber = phoneNumber
+        self.statusPageURL = statusPageURL
+    }
 
     // 電話アプリを開くためのURL
     var phoneURL: URL? {
@@ -21,5 +35,9 @@ struct FerryCompany: Codable {
 
     var websiteLink: URL? {
         AppURL.from(string: websiteURL)
+    }
+
+    var statusPageLink: URL? {
+        AppURL.from(string: statusPageURL)
     }
 }

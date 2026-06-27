@@ -24,13 +24,22 @@ enum IzuIslandProfiles {
     private static let tokaiKisen = FerryCompany(
         name: "東海汽船株式会社",
         websiteURL: "https://www.tokaikisen.co.jp/",
-        phoneNumber: "03-5472-9999"
+        phoneNumber: "03-5472-9999",
+        statusPageURL: "https://www.tokaikisen.co.jp/schedule/"
     )
 
     private static let ana = FlightAirline(
         name: "全日本空輸（ANA）",
         websiteURL: "https://www.ana.co.jp/",
-        phoneNumber: "0570-029-222"
+        phoneNumber: "0570-029-222",
+        statusPageURL: "https://www.ana.co.jp/fs/dom/jp/"
+    )
+
+    private static let shinChuoAir = FlightAirline(
+        name: "新中央航空",
+        websiteURL: "https://www.central-air.co.jp/",
+        phoneNumber: "042-548-0100",
+        statusPageURL: "https://www.central-air.co.jp/renew/flight_information_contents.html"
     )
 
     private static let flightScheduleNote = "代表ダイヤです。季節・天候により変更・欠航があります。"
@@ -40,26 +49,48 @@ enum IzuIslandProfiles {
 
     private static let youtubeFallback = LiveCamera(
         title: "東海汽船（公式）",
-        urlString: "https://www.youtube.com/@tokaikisen"
+        urlString: "https://www.tokaikisen.co.jp/"
     )
 
-    private static let oshimaFlights: [FlightTrip] = [
-        FlightTrip(id: "ana781", flightNumber: "ANA781", routeName: "東京 → 大島", departureTime: "08:00", arrivalTime: "08:35"),
-        FlightTrip(id: "ana783", flightNumber: "ANA783", routeName: "東京 → 大島", departureTime: "14:30", arrivalTime: "15:05"),
-        FlightTrip(id: "ana782", flightNumber: "ANA782", routeName: "大島 → 東京", departureTime: "09:05", arrivalTime: "09:40"),
-        FlightTrip(id: "ana784", flightNumber: "ANA784", routeName: "大島 → 東京", departureTime: "15:35", arrivalTime: "16:10"),
+    // 新中央航空（調布発着）— 国土交通省東京航空局コミューター路線に基づく代表ダイヤ
+    private static let oshimaChofuFlights: [FlightTrip] = [
+        FlightTrip(id: "ca101", flightNumber: "101", routeName: "調布 → 大島", departureTime: "09:00", arrivalTime: "09:25"),
+        FlightTrip(id: "ca105", flightNumber: "105", routeName: "調布 → 大島", departureTime: "15:30", arrivalTime: "15:55"),
+        FlightTrip(id: "ca102", flightNumber: "102", routeName: "大島 → 調布", departureTime: "09:50", arrivalTime: "10:15"),
+        FlightTrip(id: "ca106", flightNumber: "106", routeName: "大島 → 調布", departureTime: "16:20", arrivalTime: "16:45"),
     ]
 
-    private static let miyakeFlights: [FlightTrip] = [
-        FlightTrip(id: "ana791", flightNumber: "ANA791", routeName: "東京 → 三宅", departureTime: "09:00", arrivalTime: "09:45"),
-        FlightTrip(id: "ana792", flightNumber: "ANA792", routeName: "三宅 → 東京", departureTime: "10:15", arrivalTime: "11:00"),
+    private static let niijimaChofuFlights: [FlightTrip] = [
+        FlightTrip(id: "ca201", flightNumber: "201", routeName: "調布 → 新島", departureTime: "08:30", arrivalTime: "09:10"),
+        FlightTrip(id: "ca205", flightNumber: "205", routeName: "調布 → 新島", departureTime: "13:20", arrivalTime: "14:00"),
+        FlightTrip(id: "ca202", flightNumber: "202", routeName: "新島 → 調布", departureTime: "09:35", arrivalTime: "10:15"),
+        FlightTrip(id: "ca206", flightNumber: "206", routeName: "新島 → 調布", departureTime: "14:25", arrivalTime: "15:05"),
     ]
 
-    private static let hachijoFlights: [FlightTrip] = [
-        FlightTrip(id: "ana801", flightNumber: "ANA801", routeName: "東京 → 八丈", departureTime: "08:30", arrivalTime: "09:30"),
-        FlightTrip(id: "ana803", flightNumber: "ANA803", routeName: "東京 → 八丈", departureTime: "15:00", arrivalTime: "16:00"),
-        FlightTrip(id: "ana802", flightNumber: "ANA802", routeName: "八丈 → 東京", departureTime: "10:00", arrivalTime: "11:00"),
-        FlightTrip(id: "ana804", flightNumber: "ANA804", routeName: "八丈 → 東京", departureTime: "16:30", arrivalTime: "17:30"),
+    private static let kozushimaChofuFlights: [FlightTrip] = [
+        FlightTrip(id: "ca301", flightNumber: "301", routeName: "調布 → 神津島", departureTime: "08:50", arrivalTime: "09:35"),
+        FlightTrip(id: "ca305", flightNumber: "305", routeName: "調布 → 神津島", departureTime: "14:45", arrivalTime: "15:30"),
+        FlightTrip(id: "ca302", flightNumber: "302", routeName: "神津島 → 調布", departureTime: "10:00", arrivalTime: "10:45"),
+        FlightTrip(id: "ca306", flightNumber: "306", routeName: "神津島 → 調布", departureTime: "15:55", arrivalTime: "16:40"),
+    ]
+
+    private static let miyakeChofuFlights: [FlightTrip] = [
+        FlightTrip(id: "ca401", flightNumber: "401", routeName: "調布 → 三宅島", departureTime: "08:40", arrivalTime: "09:30"),
+        FlightTrip(id: "ca405", flightNumber: "405", routeName: "調布 → 三宅島", departureTime: "11:10", arrivalTime: "12:00"),
+        FlightTrip(id: "ca407", flightNumber: "407", routeName: "調布 → 三宅島", departureTime: "14:35", arrivalTime: "15:25"),
+        FlightTrip(id: "ca402", flightNumber: "402", routeName: "三宅島 → 調布", departureTime: "09:50", arrivalTime: "10:40"),
+        FlightTrip(id: "ca406", flightNumber: "406", routeName: "三宅島 → 調布", departureTime: "12:25", arrivalTime: "13:15"),
+        FlightTrip(id: "ca408", flightNumber: "408", routeName: "三宅島 → 調布", departureTime: "15:50", arrivalTime: "16:40"),
+    ]
+
+    // ANA（羽田 ⇔ 八丈島）— 八丈島空港公式時刻表に基づく代表ダイヤ
+    private static let hachijoAnaFlights: [FlightTrip] = [
+        FlightTrip(id: "ana1891", flightNumber: "ANA1891", routeName: "羽田 → 八丈島", departureTime: "07:35", arrivalTime: "08:30"),
+        FlightTrip(id: "ana1893", flightNumber: "ANA1893", routeName: "羽田 → 八丈島", departureTime: "12:15", arrivalTime: "13:10"),
+        FlightTrip(id: "ana1895", flightNumber: "ANA1895", routeName: "羽田 → 八丈島", departureTime: "15:45", arrivalTime: "16:40"),
+        FlightTrip(id: "ana1892", flightNumber: "ANA1892", routeName: "八丈島 → 羽田", departureTime: "09:10", arrivalTime: "10:05"),
+        FlightTrip(id: "ana1894", flightNumber: "ANA1894", routeName: "八丈島 → 羽田", departureTime: "13:55", arrivalTime: "14:50"),
+        FlightTrip(id: "ana1896", flightNumber: "ANA1896", routeName: "八丈島 → 羽田", departureTime: "17:25", arrivalTime: "18:20"),
     ]
 
     // MARK: - 大島
@@ -89,7 +120,8 @@ enum IzuIslandProfiles {
                 trips: [
                     FerryTrip(id: "1", routeName: "東京 → 大島", departureTime: "08:35", arrivalTime: "10:20"),
                     FerryTrip(id: "2", routeName: "大島 → 東京", departureTime: "15:30", arrivalTime: "17:15"),
-                ]
+                ],
+                serviceKind: .highSpeedBoat
             ),
             FerryCompanySchedule(
                 id: "oshima-tokai-overnight",
@@ -97,7 +129,8 @@ enum IzuIslandProfiles {
                 trips: [
                     FerryTrip(id: "1", routeName: "東京 → 大島", departureTime: "22:00", arrivalTime: "06:00"),
                     FerryTrip(id: "2", routeName: "大島 → 東京", departureTime: "07:00", arrivalTime: "15:00"),
-                ]
+                ],
+                serviceKind: .overnightFerry
             ),
         ],
         usefulInfo: [
@@ -108,7 +141,7 @@ enum IzuIslandProfiles {
         liveCameras: [],
         youtubeRelatedLinks: [youtubeFallback],
         flightSchedules: [
-            FlightAirlineSchedule(id: "oshima-ana", airline: ana, trips: oshimaFlights),
+            FlightAirlineSchedule(id: "oshima-shinchuo", airline: shinChuoAir, trips: oshimaChofuFlights),
         ],
         flightScheduleNote: flightScheduleNote,
         wbgtStationNo: 44_172
@@ -140,7 +173,8 @@ enum IzuIslandProfiles {
                 trips: [
                     FerryTrip(id: "1", routeName: "東京 → 利島", departureTime: "22:00", arrivalTime: "07:40"),
                     FerryTrip(id: "2", routeName: "利島 → 東京", departureTime: "08:00", arrivalTime: "17:00"),
-                ]
+                ],
+                serviceKind: .overnightFerry
             ),
         ],
         usefulInfo: [
@@ -181,7 +215,8 @@ enum IzuIslandProfiles {
                 trips: [
                     FerryTrip(id: "1", routeName: "東京 → 新島", departureTime: "08:35", arrivalTime: "11:25"),
                     FerryTrip(id: "2", routeName: "新島 → 東京", departureTime: "14:00", arrivalTime: "16:50"),
-                ]
+                ],
+                serviceKind: .highSpeedBoat
             ),
             FerryCompanySchedule(
                 id: "niijima-tokai-overnight",
@@ -189,7 +224,8 @@ enum IzuIslandProfiles {
                 trips: [
                     FerryTrip(id: "1", routeName: "東京 → 新島", departureTime: "22:00", arrivalTime: "08:35"),
                     FerryTrip(id: "2", routeName: "新島 → 東京", departureTime: "09:00", arrivalTime: "18:30"),
-                ]
+                ],
+                serviceKind: .overnightFerry
             ),
         ],
         usefulInfo: [
@@ -199,8 +235,10 @@ enum IzuIslandProfiles {
         ],
         liveCameras: [],
         youtubeRelatedLinks: [youtubeFallback],
-        flightSchedules: [],
-        flightScheduleNote: nil,
+        flightSchedules: [
+            FlightAirlineSchedule(id: "niijima-shinchuo", airline: shinChuoAir, trips: niijimaChofuFlights),
+        ],
+        flightScheduleNote: flightScheduleNote,
         wbgtStationNo: 44_172
     )
 
@@ -230,7 +268,8 @@ enum IzuIslandProfiles {
                 trips: [
                     FerryTrip(id: "1", routeName: "東京 → 式根島", departureTime: "22:00", arrivalTime: "09:05"),
                     FerryTrip(id: "2", routeName: "式根島 → 東京", departureTime: "10:00", arrivalTime: "19:00"),
-                ]
+                ],
+                serviceKind: .overnightFerry
             ),
         ],
         usefulInfo: [
@@ -271,7 +310,8 @@ enum IzuIslandProfiles {
                 trips: [
                     FerryTrip(id: "1", routeName: "東京 → 神津島", departureTime: "08:35", arrivalTime: "12:15"),
                     FerryTrip(id: "2", routeName: "神津島 → 東京", departureTime: "13:00", arrivalTime: "16:40"),
-                ]
+                ],
+                serviceKind: .highSpeedBoat
             ),
             FerryCompanySchedule(
                 id: "kozu-tokai-overnight",
@@ -279,7 +319,8 @@ enum IzuIslandProfiles {
                 trips: [
                     FerryTrip(id: "1", routeName: "東京 → 神津島", departureTime: "22:00", arrivalTime: "10:00"),
                     FerryTrip(id: "2", routeName: "神津島 → 東京", departureTime: "11:00", arrivalTime: "21:00"),
-                ]
+                ],
+                serviceKind: .overnightFerry
             ),
         ],
         usefulInfo: [
@@ -289,8 +330,10 @@ enum IzuIslandProfiles {
         ],
         liveCameras: [],
         youtubeRelatedLinks: [youtubeFallback],
-        flightSchedules: [],
-        flightScheduleNote: nil,
+        flightSchedules: [
+            FlightAirlineSchedule(id: "kozushima-shinchuo", airline: shinChuoAir, trips: kozushimaChofuFlights),
+        ],
+        flightScheduleNote: flightScheduleNote,
         wbgtStationNo: 44_172
     )
 
@@ -321,7 +364,8 @@ enum IzuIslandProfiles {
                 trips: [
                     FerryTrip(id: "1", routeName: "東京 → 三宅島", departureTime: "22:30", arrivalTime: "05:00"),
                     FerryTrip(id: "2", routeName: "三宅島 → 東京", departureTime: "13:35", arrivalTime: "19:40"),
-                ]
+                ],
+                serviceKind: .overnightFerry
             ),
         ],
         usefulInfo: [
@@ -332,7 +376,7 @@ enum IzuIslandProfiles {
         liveCameras: [],
         youtubeRelatedLinks: [youtubeFallback],
         flightSchedules: [
-            FlightAirlineSchedule(id: "miyake-ana", airline: ana, trips: miyakeFlights),
+            FlightAirlineSchedule(id: "miyake-shinchuo", airline: shinChuoAir, trips: miyakeChofuFlights),
         ],
         flightScheduleNote: flightScheduleNote,
         wbgtStationNo: 44_226
@@ -364,7 +408,8 @@ enum IzuIslandProfiles {
                 trips: [
                     FerryTrip(id: "1", routeName: "東京 → 御蔵島", departureTime: "22:30", arrivalTime: "06:00"),
                     FerryTrip(id: "2", routeName: "御蔵島 → 東京", departureTime: "12:35", arrivalTime: "19:40"),
-                ]
+                ],
+                serviceKind: .overnightFerry
             ),
         ],
         usefulInfo: [
@@ -406,7 +451,8 @@ enum IzuIslandProfiles {
                 trips: [
                     FerryTrip(id: "1", routeName: "東京 → 八丈島", departureTime: "22:30", arrivalTime: "08:55"),
                     FerryTrip(id: "2", routeName: "八丈島 → 東京", departureTime: "09:40", arrivalTime: "19:40"),
-                ]
+                ],
+                serviceKind: .overnightFerry
             ),
         ],
         usefulInfo: [
@@ -417,7 +463,7 @@ enum IzuIslandProfiles {
         liveCameras: [],
         youtubeRelatedLinks: [youtubeFallback],
         flightSchedules: [
-            FlightAirlineSchedule(id: "hachijo-ana", airline: ana, trips: hachijoFlights),
+            FlightAirlineSchedule(id: "hachijo-ana", airline: ana, trips: hachijoAnaFlights),
         ],
         flightScheduleNote: flightScheduleNote,
         wbgtStationNo: 44_263

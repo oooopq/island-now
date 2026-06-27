@@ -16,8 +16,13 @@ struct FerryScheduleSectionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("フェリーダイヤ")
-                .font(.headline)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("船便")
+                    .font(.headline)
+                Text("フェリー・高速船 / Ferry & High-Speed Boat")
+                    .font(.caption)
+                    .detailCardSecondaryText()
+            }
 
             switch state {
             case .loading:
@@ -78,7 +83,7 @@ struct FerryScheduleSectionView: View {
 
         if nextDepartures.isEmpty == false {
             NextDepartureBannerView(
-                title: "次のフェリー",
+                title: "次の船便 / Next Departure",
                 departures: nextDepartures,
                 showsTomorrowNote: NextDepartureHelper.isTodayFinished(nextDepartures)
             )
@@ -89,6 +94,10 @@ struct FerryScheduleSectionView: View {
                 .font(.subheadline)
                 .detailCardSecondaryText()
         } else {
+            if hasMultipleServiceKinds(in: visibleSchedules) {
+                shipTypeLegend
+            }
+
             ForEach(visibleSchedules) { schedule in
                 companyBlock(schedule, allSchedules: visibleSchedules)
             }
@@ -166,27 +175,59 @@ struct FerryScheduleSectionView: View {
                 currentIslandID: island.id
             )
             guard trips.isEmpty == false else { return nil }
-            return FerryCompanySchedule(id: schedule.id, company: schedule.company, trips: trips)
+            return FerryCompanySchedule(
+                id: schedule.id,
+                company: schedule.company,
+                trips: trips,
+                serviceKind: schedule.serviceKind
+            )
         }
+    }
+
+    private var shipTypeLegend: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("この路線には高速船（日中）と大型客船（夜航）があります。")
+                .font(.caption)
+                .detailCardSecondaryText()
+            Text("Two types of service operate on this route.")
+                .font(.caption)
+                .detailCardSecondaryText()
+        }
+    }
+
+    private func hasMultipleServiceKinds(in schedules: [FerryCompanySchedule]) -> Bool {
+        let kinds = Set(schedules.compactMap(\.serviceKind))
+        return kinds.count > 1
     }
 
     @ViewBuilder
     private func companyBlock(_ schedule: FerryCompanySchedule, allSchedules: [FerryCompanySchedule]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
+            if let serviceKind = schedule.serviceKind {
+                FerryServiceKindHeaderView(serviceKind: serviceKind)
+            }
+
             Text(schedule.company.name)
                 .font(.subheadline)
                 .fontWeight(.semibold)
 
+            if let statusURL = schedule.company.statusPageLink {
+                OpenURLButton(url: statusURL) {
+                    Label("運航状況 / Service Status", systemImage: "exclamationmark.triangle.fill")
+                        .font(.subheadline)
+                }
+            }
+
             if let website = schedule.company.websiteLink {
                 OpenURLButton(url: website) {
-                    Label("Webサイト", systemImage: "globe")
+                    Label("時刻表・予約 / Timetable & Booking", systemImage: "globe")
                         .font(.subheadline)
                 }
             }
 
             if let phoneURL = schedule.company.phoneURL {
                 OpenURLButton(url: phoneURL) {
-                    Label("お問い合わせ: \(schedule.company.phoneNumber)", systemImage: "phone.fill")
+                    Label("運航問い合わせ / Call: \(schedule.company.phoneNumber)", systemImage: "phone.fill")
                         .font(.subheadline)
                 }
             }

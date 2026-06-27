@@ -39,6 +39,21 @@ enum NextDepartureHelper {
         return calendar.component(.hour, from: now) * 60 + calendar.component(.minute, from: now)
     }
 
+    static func isNextDayArrival(departureTime: String, arrivalTime: String) -> Bool {
+        guard let departureMinutes = minutesSinceMidnight(for: departureTime),
+              let arrivalMinutes = minutesSinceMidnight(for: arrivalTime) else {
+            return false
+        }
+        return arrivalMinutes < departureMinutes
+    }
+
+    static func ferryScheduleLabel(for schedule: FerryCompanySchedule) -> String {
+        if let serviceKind = schedule.serviceKind {
+            return serviceKind.shortLabel
+        }
+        return schedule.company.name
+    }
+
     // この島を出発するフェリーの次の便（最大2件）
     static func nextFerryDepartures(
         from schedules: [FerryCompanySchedule],
@@ -54,7 +69,7 @@ enum NextDepartureHelper {
             )
             .compactMap { trip -> (FerryTrip, String?)? in
                 guard departsFromCurrentIsland(trip: trip, islandID: islandID) else { return nil }
-                return (trip, schedule.company.name)
+                return (trip, ferryScheduleLabel(for: schedule))
             }
         }
 

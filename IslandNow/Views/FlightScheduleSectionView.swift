@@ -57,9 +57,11 @@ struct FlightScheduleSectionView: View {
                     .detailCardSecondaryText()
             }
 
-            Text("予約・最新時刻は JAL 公式サイトでご確認ください")
-                .font(.caption)
-                .detailCardSecondaryText()
+            if let bookingNote = bookingFootnote(from: visibleSchedules) {
+                Text(bookingNote)
+                    .font(.caption)
+                    .detailCardSecondaryText()
+            }
         }
         .detailSectionCard()
         .onChange(of: island.id) { _, _ in
@@ -121,6 +123,15 @@ struct FlightScheduleSectionView: View {
         }
     }
 
+    private func bookingFootnote(from schedules: [FlightAirlineSchedule]) -> String? {
+        let names = Array(Set(schedules.map(\.airline.name))).sorted()
+        guard names.isEmpty == false else { return nil }
+        if names.count == 1 {
+            return "予約・最新時刻は \(names[0]) 公式サイトでご確認ください"
+        }
+        return "予約・最新時刻は各航空会社の公式サイトでご確認ください"
+    }
+
     @ViewBuilder
     private func airlineBlock(_ schedule: FlightAirlineSchedule, allSchedules: [FlightAirlineSchedule]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -128,16 +139,23 @@ struct FlightScheduleSectionView: View {
                 .font(.subheadline)
                 .fontWeight(.semibold)
 
+            if let statusURL = schedule.airline.statusPageLink {
+                OpenURLButton(url: statusURL) {
+                    Label("運航状況 / Flight Status", systemImage: "exclamationmark.triangle.fill")
+                        .font(.subheadline)
+                }
+            }
+
             if let website = schedule.airline.websiteLink {
                 OpenURLButton(url: website) {
-                    Label("予約・時刻表（JAL）", systemImage: "globe")
+                    Label("時刻表・予約 / Timetable & Booking（\(schedule.airline.name)）", systemImage: "globe")
                         .font(.subheadline)
                 }
             }
 
             if let phoneURL = schedule.airline.phoneURL {
                 OpenURLButton(url: phoneURL) {
-                    Label("予約: \(schedule.airline.phoneNumber)", systemImage: "phone.fill")
+                    Label("運航問い合わせ / Call: \(schedule.airline.phoneNumber)", systemImage: "phone.fill")
                         .font(.subheadline)
                 }
             }

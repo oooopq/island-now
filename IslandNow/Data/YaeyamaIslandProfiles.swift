@@ -23,25 +23,29 @@ enum YaeyamaIslandProfiles {
     private static let yaeyamaFerry = FerryCompany(
         name: "株式会社八重山観光フェリー",
         websiteURL: "https://yaeyama.co.jp/",
-        phoneNumber: "0570-013-007"
+        phoneNumber: "0570-013-007",
+        statusPageURL: "https://yaeyama.co.jp/operation.html"
     )
 
     private static let aneiKanko = FerryCompany(
         name: "安栄観光株式会社",
         websiteURL: "https://aneikankou.co.jp/",
-        phoneNumber: "0980-83-0055"
+        phoneNumber: "0980-83-0055",
+        statusPageURL: "https://aneikankou.co.jp/condition"
     )
 
     private static let irimoteJyosen = FerryCompany(
         name: "西表島交通株式会社",
         websiteURL: "https://iriomote.com/",
-        phoneNumber: "0980-85-5601"
+        phoneNumber: "0980-85-5601",
+        statusPageURL: "https://yubujima.com/"
     )
 
     private static let rac = FlightAirline(
         name: "琉球エアコミューター（JALグループ）",
         websiteURL: "https://www.jal.co.jp/dom/",
-        phoneNumber: "0570-025-031"
+        phoneNumber: "0570-025-031",
+        statusPageURL: "https://www.jal.co.jp/jp/ja/flight-status/dom/"
     )
 
     private static let yonaguniLineFlights: [FlightTrip] = [
@@ -122,7 +126,7 @@ enum YaeyamaIslandProfiles {
         regionID: "yaeyama",
         ports: [IslandPort(name: "竹富港", latitude: 24.335000, longitude: 124.095556)],
         backgroundAssetName: "IslandBgTaketomi",
-        backgroundCredit: "Photo: Unsplash",
+        backgroundCredit: "Photo: Hiroko Yoshii / Unsplash",
         placeSearchRadiusMeters: 6_000,
         routeKeywords: ["竹富"],
         ferryGTFSFeeds: [FerryGTFSFeedCatalog.anei, FerryGTFSFeedCatalog.yaeyamaFerry],
@@ -192,7 +196,7 @@ enum YaeyamaIslandProfiles {
         regionID: "yaeyama",
         ports: [IslandPort(name: "波照間港", latitude: 24.067778, longitude: 123.766111)],
         backgroundAssetName: "IslandBgHateruma",
-        backgroundCredit: "Photo: Unsplash（南国の海）",
+        backgroundCredit: "Photo: Yasuaki Uechi / Unsplash（沖縄・波照間ブルー）",
         placeSearchRadiusMeters: 10_000,
         routeKeywords: ["波照間"],
         ferryGTFSFeeds: [FerryGTFSFeedCatalog.anei, FerryGTFSFeedCatalog.yaeyamaFerry],

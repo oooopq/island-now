@@ -17,13 +17,15 @@ enum SadoIslandProfiles {
     private static let sadoKisen = FerryCompany(
         name: "佐渡汽船株式会社",
         websiteURL: "https://www.sadokisen.co.jp/",
-        phoneNumber: "025-245-6400"
+        phoneNumber: "025-245-6400",
+        statusPageURL: "https://www.sadokisen.co.jp/reservation/service-status/"
     )
 
     private static let ana = FlightAirline(
         name: "全日本空輸（ANA）",
         websiteURL: "https://www.ana.co.jp/",
-        phoneNumber: "0570-029-222"
+        phoneNumber: "0570-029-222",
+        statusPageURL: "https://www.ana.co.jp/fs/dom/jp/"
     )
 
     private static let sadoFlights: [FlightTrip] = [

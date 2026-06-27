@@ -23,6 +23,7 @@ struct WeatherSectionView: View {
                 ProgressView("天気を取得中…")
                     .tint(palette.accent)
                     .detailCardSecondaryText()
+                heatStrokeRiskContent
 
             case .loaded(let weather, let isFromCache):
                 currentWeatherContent(weather)
@@ -47,6 +48,8 @@ struct WeatherSectionView: View {
                     Text("オフライン用の保存データです")
                         .font(.caption)
                         .detailCardSecondaryText()
+                } else {
+                    heatStrokeRiskContent
                 }
             }
         }
@@ -86,15 +89,40 @@ struct WeatherSectionView: View {
         switch heatStrokeState {
         case .unavailable:
             EmptyView()
-        case .loading:
-            ProgressView()
-                .tint(palette.accent)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.vertical, 8)
-        case .loaded(let risk, _):
-            HeatStrokeRiskBannerView(risk: risk)
-        case .failed:
-            EmptyView()
+        case .loading, .loaded, .failed:
+            VStack(alignment: .leading, spacing: 8) {
+                Divider()
+                    .padding(.vertical, 4)
+
+                Text("熱中症リスク（WBGT）")
+                    .font(.subheadline)
+                    .detailCardSecondaryText()
+
+                switch heatStrokeState {
+                case .loading:
+                    ProgressView("WBGTを取得中…")
+                        .tint(palette.accent)
+                        .detailCardSecondaryText()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 4)
+
+                case .loaded(let risk, let isFromCache):
+                    HeatStrokeRiskBannerView(risk: risk)
+                    if isFromCache {
+                        Text("前回取得したWBGTデータを表示中")
+                            .font(.caption)
+                            .detailCardSecondaryText()
+                    }
+
+                case .failed:
+                    Text("WBGT（暑さ指数）を取得できませんでした。表示できない＝安全という意味ではありません。通信環境を確認するか、環境省の熱中症予防情報サイトで最新の暑さ指数をご確認ください。")
+                        .font(.caption)
+                        .foregroundStyle(palette.warning)
+
+                case .unavailable:
+                    EmptyView()
+                }
+            }
         }
     }
 
@@ -229,6 +257,24 @@ struct WeatherSectionView: View {
             HeatStrokeRiskInfo(currentWBGT: 26.0, todayMaxWBGT: 31.0),
             isFromCache: false
         )
+    )
+    .padding()
+}
+
+#Preview("WBGT取得失敗") {
+    WeatherSectionView(
+        state: .loaded(
+            WeatherInfo(
+                temperatureCelsius: 28,
+                condition: "晴れ",
+                humidityPercent: 72,
+                windSpeedKmh: 14,
+                todayThreeHourForecast: [],
+                weeklyForecast: []
+            ),
+            isFromCache: false
+        ),
+        heatStrokeState: .failed
     )
     .padding()
 }

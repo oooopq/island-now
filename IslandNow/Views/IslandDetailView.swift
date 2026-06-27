@@ -28,6 +28,31 @@ struct IslandDetailView: View {
         IslandCatalog.profile(for: island)
     }
 
+    private var scheduleStatusSources: [ScheduleStatusSource]? {
+        var sources: [ScheduleStatusSource] = []
+
+        let ferrySchedules = currentFerrySchedules
+        sources += ScheduleStatusSourceCollector.fromFerrySchedules(ferrySchedules)
+
+        if let flightSchedules = islandProfile?.flightSchedules {
+            sources += ScheduleStatusSourceCollector.fromFlightSchedules(flightSchedules)
+        }
+
+        let unique = ScheduleStatusSourceCollector.unique(sources)
+        return unique.isEmpty ? nil : unique
+    }
+
+    private var currentFerrySchedules: [FerryCompanySchedule] {
+        switch ferryState {
+        case .loaded(let schedules, _, _):
+            return schedules
+        case .failed(_, let cachedSchedules):
+            return cachedSchedules ?? islandProfile?.sampleFerrySchedules ?? []
+        case .loading:
+            return islandProfile?.sampleFerrySchedules ?? []
+        }
+    }
+
     private var placeSearchTaskID: String {
         island.id + "-" + selectedPlaceCategory.rawValue
     }
@@ -108,6 +133,10 @@ struct IslandDetailView: View {
             WeatherSectionView(state: weatherState, heatStrokeState: heatStrokeState)
 
         case .schedule:
+            if let scheduleStatusSources, scheduleStatusSources.isEmpty == false {
+                ScheduleStatusBannerView(sources: scheduleStatusSources)
+            }
+
             FerryScheduleSectionView(island: island, state: ferryState)
 
             if let islandProfile, islandProfile.flightSchedules.isEmpty == false {

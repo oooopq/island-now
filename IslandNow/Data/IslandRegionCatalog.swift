@@ -39,7 +39,7 @@ enum IslandRegionCatalog {
         id: "izu",
         displayNameJapanese: "伊豆諸島",
         coverAssetName: "IslandBgIzu",
-        ferryDataSourceNote: nil,
+        ferryDataSourceNote: "東海汽船の代表ダイヤです。高速船（日中）と大型客船（夜航）を分けて表示しています。",
         ferryValidUntilSuffix: nil
     )
 

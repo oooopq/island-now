@@ -38,10 +38,20 @@ struct ScheduleDepartureArrivalView: View {
                 .monospacedDigit()
                 .foregroundStyle(isUrgent ? .red : palette.text)
 
-            Text(label)
+            Text(label == "発" ? "発 / DEP" : "着 / ARR")
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundStyle(labelColor)
+
+            if label == "着", NextDepartureHelper.isNextDayArrival(
+                departureTime: departureTime,
+                arrivalTime: arrivalTime
+            ) {
+                Text("翌日 / Next day")
+                    .font(.caption2)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(palette.warning)
+            }
         }
     }
 }
