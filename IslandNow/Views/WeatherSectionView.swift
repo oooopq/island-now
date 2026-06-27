@@ -9,7 +9,6 @@ import SwiftUI
 
 struct WeatherSectionView: View {
     let state: WeatherLoadState
-    let heatStrokeState: HeatStrokeRiskLoadState
 
     @Environment(\.detailPalette) private var palette
 
@@ -23,11 +22,9 @@ struct WeatherSectionView: View {
                 ProgressView("天気を取得中…")
                     .tint(palette.accent)
                     .detailCardSecondaryText()
-                heatStrokeRiskContent
 
             case .loaded(let weather, let isFromCache):
                 currentWeatherContent(weather)
-                heatStrokeRiskContent
                 todayHourlyForecastContent(weather.todayHourlyForecast)
                 weeklyForecastContent(weather.weeklyForecast)
                 if isFromCache {
@@ -42,14 +39,11 @@ struct WeatherSectionView: View {
                     .foregroundStyle(palette.warning)
                 if let cachedWeather {
                     currentWeatherContent(cachedWeather)
-                    heatStrokeRiskContent
                     todayHourlyForecastContent(cachedWeather.todayHourlyForecast)
                     weeklyForecastContent(cachedWeather.weeklyForecast)
                     Text("オフライン用の保存データです")
                         .font(.caption)
                         .detailCardSecondaryText()
-                } else {
-                    heatStrokeRiskContent
                 }
             }
 
@@ -78,26 +72,83 @@ struct WeatherSectionView: View {
             .font(.subheadline)
             .detailCardSecondaryText()
 
-        HStack(alignment: .center, spacing: 16) {
-            WeatherIconView(condition: weather.condition, iconSize: 56)
+        HStack(alignment: .top, spacing: 12) {
+            HStack(alignment: .center, spacing: 16) {
+                WeatherIconView(condition: weather.condition, iconSize: 56)
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text("\(weather.temperatureCelsius)°C")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("\(weather.temperatureCelsius)°C")
+                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                        .monospacedDigit()
 
-                Text(weather.condition)
-                    .font(.title3)
+                    Text(weather.condition)
+                        .font(.title3)
 
-                Label("湿度 \(weather.humidityPercent)%", systemImage: "humidity")
-                    .font(.subheadline)
-                    .detailCardSecondaryText()
+                    Label("湿度 \(weather.humidityPercent)%", systemImage: "humidity")
+                        .font(.subheadline)
+                        .detailCardSecondaryText()
+                }
             }
+
+            Spacer(minLength: 8)
+
+            currentWaveHeightPanel(weather)
         }
 
         Label("風速 \(formattedWindSpeedMs(kmh: weather.windSpeedKmh)) m/s", systemImage: "wind")
             .font(.subheadline)
             .detailCardSecondaryText()
+    }
+
+    // 現在の天気の右側に波の高さを表示する
+    @ViewBuilder
+    private func currentWaveHeightPanel(_ weather: WeatherInfo) -> some View {
+        VStack(alignment: .trailing, spacing: 6) {
+            HStack(spacing: 6) {
+                Image(systemName: "water.waves")
+                    .font(.title3)
+                Text("波の高さ")
+                    .font(.subheadline.weight(.semibold))
+            }
+            .foregroundStyle(Color.cyan.opacity(0.9))
+
+            if let current = weather.currentWaveHeightMeters {
+                Text("\(formattedWaveHeight(current)) m")
+                    .font(.system(size: 36, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .foregroundStyle(palette.text)
+
+                if let maxHeight = weather.todayMaxWaveHeightMeters {
+                    Text("最大 \(formattedWaveHeight(maxHeight)) m")
+                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundStyle(palette.secondaryText)
+                }
+
+                Text("有義波高")
+                    .font(.system(size: 11))
+                    .foregroundStyle(palette.secondaryText)
+            } else {
+                Text("—")
+                    .font(.system(size: 32, weight: .semibold, design: .rounded))
+                    .foregroundStyle(palette.secondaryText)
+
+                Text("取得できません")
+                    .font(.system(size: 11))
+                    .foregroundStyle(palette.warning)
+            }
+        }
+        .fixedSize()
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .background {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color.cyan.opacity(0.1))
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(Color.cyan.opacity(0.25), lineWidth: 1)
+        }
     }
 
     // km/h を m/s に変換して表示用に整形する（小数点1桁）
@@ -106,46 +157,8 @@ struct WeatherSectionView: View {
         return String(format: "%.1f", metersPerSecond)
     }
 
-    @ViewBuilder
-    private var heatStrokeRiskContent: some View {
-        switch heatStrokeState {
-        case .unavailable:
-            EmptyView()
-        case .loading, .loaded, .failed:
-            VStack(alignment: .leading, spacing: 8) {
-                Divider()
-                    .padding(.vertical, 4)
-
-                Text("熱中症リスク（WBGT）")
-                    .font(.subheadline)
-                    .detailCardSecondaryText()
-
-                switch heatStrokeState {
-                case .loading:
-                    ProgressView("WBGTを取得中…")
-                        .tint(palette.accent)
-                        .detailCardSecondaryText()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, 4)
-
-                case .loaded(let risk, let isFromCache):
-                    HeatStrokeRiskBannerView(risk: risk)
-                    if isFromCache {
-                        Text("前回取得したWBGTデータを表示中")
-                            .font(.caption)
-                            .detailCardSecondaryText()
-                    }
-
-                case .failed:
-                    Text("WBGT（暑さ指数）を取得できませんでした。表示できない＝安全という意味ではありません。通信環境を確認するか、環境省の熱中症予防情報サイトで最新の暑さ指数をご確認ください。")
-                        .font(.caption)
-                        .foregroundStyle(palette.warning)
-
-                case .unavailable:
-                    EmptyView()
-                }
-            }
-        }
+    private func formattedWaveHeight(_ meters: Double) -> String {
+        String(format: "%.1f", meters)
     }
 
     @ViewBuilder
@@ -158,17 +171,7 @@ struct WeatherSectionView: View {
                 .font(.subheadline)
                 .detailCardSecondaryText()
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(Array(forecast.enumerated()), id: \.element.id) { index, slot in
-                        HourlyForecastSlotView(
-                            slot: slot,
-                            isNow: index == 0
-                        )
-                    }
-                }
-                .padding(.vertical, 2)
-            }
+            HourlyForecastPanelView(forecast: forecast)
         }
     }
 
@@ -192,73 +195,13 @@ struct WeatherSectionView: View {
                     Text("\(day.minTemperatureCelsius)° / \(day.maxTemperatureCelsius)°")
                     Text("湿度 \(day.humidityPercent)%")
                         .font(.caption)
+                    Label("降水 \(day.precipitationProbabilityPercent)%", systemImage: "drop.fill")
+                        .font(.caption)
                 }
                 .detailCardSecondaryText()
             }
             .font(.subheadline)
         }
-    }
-}
-
-private struct HourlyForecastSlotView: View {
-    let slot: HourlyWeatherForecast
-    let isNow: Bool
-
-    @Environment(\.detailPalette) private var palette
-
-    var body: some View {
-        VStack(spacing: 6) {
-            Text(isNow ? "今" : slot.timeLabel)
-                .font(.caption2)
-                .fontWeight(.semibold)
-                .foregroundStyle(isNow ? palette.accent : palette.secondaryText)
-
-            WeatherIconView(condition: slot.condition, iconSize: 24)
-
-            Text("\(slot.temperatureCelsius)°")
-                .font(.title3)
-                .fontWeight(.bold)
-                .foregroundStyle(palette.text)
-
-            VStack(spacing: 4) {
-                hourlyMetricRow(
-                    icon: "humidity.fill",
-                    value: "\(slot.humidityPercent)%",
-                    color: palette.secondaryText
-                )
-                hourlyMetricRow(
-                    icon: "drop.fill",
-                    value: "\(slot.precipitationProbabilityPercent)%",
-                    color: .blue.opacity(0.85)
-                )
-            }
-        }
-        .frame(width: 70)
-        .padding(.vertical, 10)
-        .padding(.horizontal, 4)
-        .background {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(isNow ? palette.accent.opacity(0.14) : palette.hourlySlotBackground)
-        }
-        .overlay {
-            if isNow {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .strokeBorder(palette.accent.opacity(0.85), lineWidth: 1.5)
-            }
-        }
-    }
-
-    // 湿度・降水確率は幅70pxのスロット内で常に同じ横並び（アイコン＋数値）にする
-    private func hourlyMetricRow(icon: String, value: String, color: Color) -> some View {
-        HStack(spacing: 3) {
-            Image(systemName: icon)
-            Text(value)
-                .monospacedDigit()
-        }
-        .font(.caption2)
-        .foregroundStyle(color)
-        .lineLimit(1)
-        .frame(maxWidth: .infinity)
     }
 }
 
@@ -270,6 +213,8 @@ private struct HourlyForecastSlotView: View {
                 condition: "晴れ",
                 humidityPercent: 72,
                 windSpeedKmh: 14,
+                currentWaveHeightMeters: 1.1,
+                todayMaxWaveHeightMeters: 1.4,
                 todayHourlyForecast: [
                     HourlyWeatherForecast(
                         id: "2026-06-21T09:00",
@@ -277,23 +222,9 @@ private struct HourlyForecastSlotView: View {
                         temperatureCelsius: 27,
                         condition: "晴れ",
                         humidityPercent: 72,
-                        precipitationProbabilityPercent: 10
-                    ),
-                    HourlyWeatherForecast(
-                        id: "2026-06-21T10:00",
-                        timeLabel: "10時",
-                        temperatureCelsius: 28,
-                        condition: "晴れ",
-                        humidityPercent: 70,
-                        precipitationProbabilityPercent: 5
-                    ),
-                    HourlyWeatherForecast(
-                        id: "2026-06-21T11:00",
-                        timeLabel: "11時",
-                        temperatureCelsius: 29,
-                        condition: "くもり",
-                        humidityPercent: 68,
-                        precipitationProbabilityPercent: 20
+                        precipitationProbabilityPercent: 10,
+                        precipitationMillimeters: 0,
+                        windSpeedKmh: 14
                     ),
                 ],
                 weeklyForecast: [
@@ -303,34 +234,13 @@ private struct HourlyForecastSlotView: View {
                         minTemperatureCelsius: 24,
                         maxTemperatureCelsius: 29,
                         condition: "晴れ",
-                        humidityPercent: 72
+                        humidityPercent: 72,
+                        precipitationProbabilityPercent: 20
                     ),
                 ]
             ),
             isFromCache: false
-        ),
-        heatStrokeState: .loaded(
-            HeatStrokeRiskInfo(currentWBGT: 26.0, todayMaxWBGT: 31.0),
-            isFromCache: false
         )
-    )
-    .padding()
-}
-
-#Preview("WBGT取得失敗") {
-    WeatherSectionView(
-        state: .loaded(
-            WeatherInfo(
-                temperatureCelsius: 28,
-                condition: "晴れ",
-                humidityPercent: 72,
-                windSpeedKmh: 14,
-                todayHourlyForecast: [],
-                weeklyForecast: []
-            ),
-            isFromCache: false
-        ),
-        heatStrokeState: .failed
     )
     .padding()
 }

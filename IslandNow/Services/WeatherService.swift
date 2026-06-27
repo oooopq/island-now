@@ -2,7 +2,7 @@
 //  WeatherService.swift
 //  Island Now
 //
-//  Open-Meteo（無料・APIキー不要）から天気を取得する
+//  Open-Meteo（無料・APIキー不要）から天気と波の高さを取得する
 //
 
 import Foundation
@@ -10,18 +10,14 @@ import Foundation
 struct WeatherService {
     private let cacheKeyPrefix = "weather_cache_"
 
-    // 島の座標から天気（現在＋1時間おき24件＋1週間）を取得し、キャッシュにも保存する
+    // 島の座標から天気（現在＋1時間おき24件＋1週間）と波の高さを取得し、キャッシュにも保存する
     func fetchWeather(for island: Island) async throws -> WeatherInfo {
-        let url = try makeURL(latitude: island.latitude, longitude: island.longitude)
-        let (data, response) = try await URLSession.shared.data(from: url)
+        async let forecastData = fetchForecast(latitude: island.latitude, longitude: island.longitude)
+        async let waveData = fetchWaveHeight(latitude: island.latitude, longitude: island.longitude)
 
-        guard let httpResponse = response as? HTTPURLResponse,
-              httpResponse.statusCode == 200 else {
-            throw WeatherServiceError.badResponse
-        }
-
-        let decoded = try JSONDecoder().decode(OpenMeteoResponse.self, from: data)
-        let weather = decoded.toWeatherInfo()
+        let decoded = try await forecastData
+        let wave = await waveData
+        let weather = decoded.toWeatherInfo(waveHeight: wave)
         saveCache(weather, for: island.id)
         return weather
     }
@@ -47,15 +43,62 @@ struct WeatherService {
         UserDefaults.standard.set(data, forKey: cacheKeyPrefix + islandID)
     }
 
-    private func makeURL(latitude: Double, longitude: Double) throws -> URL {
+    private func fetchForecast(latitude: Double, longitude: Double) async throws -> OpenMeteoResponse {
+        let url = try makeForecastURL(latitude: latitude, longitude: longitude)
+        let (data, response) = try await URLSession.shared.data(from: url)
+
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw WeatherServiceError.badResponse
+        }
+
+        return try JSONDecoder().decode(OpenMeteoResponse.self, from: data)
+    }
+
+    // 波の高さは marine API から取得する（失敗しても天気表示は続行する）
+    private func fetchWaveHeight(latitude: Double, longitude: Double) async -> WaveHeightData? {
+        do {
+            let url = try makeMarineURL(latitude: latitude, longitude: longitude)
+            let (data, response) = try await URLSession.shared.data(from: url)
+
+            guard let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200 else {
+                return nil
+            }
+
+            let decoded = try JSONDecoder().decode(OpenMeteoMarineResponse.self, from: data)
+            return decoded.toWaveHeightData()
+        } catch {
+            return nil
+        }
+    }
+
+    private func makeForecastURL(latitude: Double, longitude: Double) throws -> URL {
         var components = URLComponents(string: "https://api.open-meteo.com/v1/forecast")
         components?.queryItems = [
             URLQueryItem(name: "latitude", value: String(latitude)),
             URLQueryItem(name: "longitude", value: String(longitude)),
             URLQueryItem(name: "current", value: "temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code"),
-            URLQueryItem(name: "hourly", value: "temperature_2m,weather_code,precipitation_probability,relative_humidity_2m"),
-            URLQueryItem(name: "daily", value: "weather_code,temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean"),
+            URLQueryItem(name: "hourly", value: "temperature_2m,weather_code,precipitation_probability,relative_humidity_2m,wind_speed_10m,precipitation"),
+            URLQueryItem(name: "daily", value: "weather_code,temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean,precipitation_probability_max"),
             URLQueryItem(name: "forecast_days", value: "7"),
+            URLQueryItem(name: "timezone", value: "Asia/Tokyo"),
+        ]
+
+        guard let url = components?.url else {
+            throw WeatherServiceError.invalidURL
+        }
+        return url
+    }
+
+    private func makeMarineURL(latitude: Double, longitude: Double) throws -> URL {
+        var components = URLComponents(string: "https://marine-api.open-meteo.com/v1/marine")
+        components?.queryItems = [
+            URLQueryItem(name: "latitude", value: String(latitude)),
+            URLQueryItem(name: "longitude", value: String(longitude)),
+            URLQueryItem(name: "current", value: "wave_height"),
+            URLQueryItem(name: "hourly", value: "wave_height"),
+            URLQueryItem(name: "forecast_days", value: "1"),
             URLQueryItem(name: "timezone", value: "Asia/Tokyo"),
         ]
 
@@ -71,21 +114,72 @@ enum WeatherServiceError: Error {
     case badResponse
 }
 
+private struct WaveHeightData {
+    let currentMeters: Double?
+    let todayMaxMeters: Double?
+}
+
 // Open-Meteo のレスポンス（必要な部分だけ）
 private struct OpenMeteoResponse: Decodable {
     let current: OpenMeteoCurrent
     let hourly: OpenMeteoHourly
     let daily: OpenMeteoDaily
 
-    func toWeatherInfo() -> WeatherInfo {
+    func toWeatherInfo(waveHeight: WaveHeightData?) -> WeatherInfo {
         WeatherInfo(
             temperatureCelsius: Int(current.temperature2m.rounded()),
             condition: WeatherConditionMapper.japaneseName(for: current.weatherCode),
             humidityPercent: current.relativeHumidity2m,
             windSpeedKmh: Int(current.windSpeed10m.rounded()),
+            currentWaveHeightMeters: waveHeight?.currentMeters,
+            todayMaxWaveHeightMeters: waveHeight?.todayMaxMeters,
             todayHourlyForecast: hourly.toTodayHourlyForecast(),
             weeklyForecast: daily.toWeeklyForecast()
         )
+    }
+}
+
+private struct OpenMeteoMarineResponse: Decodable {
+    let current: OpenMeteoMarineCurrent?
+    let hourly: OpenMeteoMarineHourly?
+
+    func toWaveHeightData() -> WaveHeightData {
+        WaveHeightData(
+            currentMeters: current?.waveHeight,
+            todayMaxMeters: hourly?.todayMaxWaveHeight()
+        )
+    }
+}
+
+private struct OpenMeteoMarineCurrent: Decodable {
+    let waveHeight: Double?
+
+    enum CodingKeys: String, CodingKey {
+        case waveHeight = "wave_height"
+    }
+}
+
+private struct OpenMeteoMarineHourly: Decodable {
+    let time: [String]
+    let waveHeight: [Double?]
+
+    enum CodingKeys: String, CodingKey {
+        case time
+        case waveHeight = "wave_height"
+    }
+
+    func todayMaxWaveHeight() -> Double? {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Tokyo") ?? .current
+        let todayPrefix = WeatherDateFormatter.todayDatePrefix(for: Date(), calendar: calendar)
+        let safeCount = min(time.count, waveHeight.count)
+
+        let values = (0..<safeCount).compactMap { index -> Double? in
+            guard time[index].hasPrefix(todayPrefix) else { return nil }
+            return waveHeight[index]
+        }
+
+        return values.max()
     }
 }
 
@@ -109,6 +203,8 @@ private struct OpenMeteoHourly: Decodable {
     let weatherCode: [Int]
     let precipitationProbability: [Int]
     let relativeHumidity2m: [Int]
+    let windSpeed10m: [Double]
+    let precipitation: [Double]
 
     enum CodingKeys: String, CodingKey {
         case time
@@ -116,6 +212,8 @@ private struct OpenMeteoHourly: Decodable {
         case weatherCode = "weather_code"
         case precipitationProbability = "precipitation_probability"
         case relativeHumidity2m = "relative_humidity_2m"
+        case windSpeed10m = "wind_speed_10m"
+        case precipitation
     }
 
     func toTodayHourlyForecast(maxHours: Int = 24) -> [HourlyWeatherForecast] {
@@ -136,6 +234,8 @@ private struct OpenMeteoHourly: Decodable {
             weatherCode.count,
             precipitationProbability.count,
             relativeHumidity2m.count,
+            windSpeed10m.count,
+            precipitation.count,
         ].min() ?? 0
 
         for index in 0..<safeCount {
@@ -147,7 +247,7 @@ private struct OpenMeteoHourly: Decodable {
                 continue
             }
 
-            let precipitation = precipitationProbability[index]
+            let precipitationProb = precipitationProbability[index]
             let hour = calendar.component(.hour, from: slotDate)
             forecasts.append(
                 HourlyWeatherForecast(
@@ -156,7 +256,9 @@ private struct OpenMeteoHourly: Decodable {
                     temperatureCelsius: Int(temperature2m[index].rounded()),
                     condition: WeatherConditionMapper.japaneseName(for: weatherCode[index]),
                     humidityPercent: relativeHumidity2m[index],
-                    precipitationProbabilityPercent: max(0, precipitation)
+                    precipitationProbabilityPercent: max(0, precipitationProb),
+                    precipitationMillimeters: max(0, precipitation[index]),
+                    windSpeedKmh: Int(windSpeed10m[index].rounded())
                 )
             )
 
@@ -175,6 +277,7 @@ private struct OpenMeteoDaily: Decodable {
     let temperature2mMax: [Double]
     let temperature2mMin: [Double]
     let relativeHumidity2mMean: [Double]
+    let precipitationProbabilityMax: [Int]
 
     enum CodingKeys: String, CodingKey {
         case time
@@ -182,6 +285,7 @@ private struct OpenMeteoDaily: Decodable {
         case temperature2mMax = "temperature_2m_max"
         case temperature2mMin = "temperature_2m_min"
         case relativeHumidity2mMean = "relative_humidity_2m_mean"
+        case precipitationProbabilityMax = "precipitation_probability_max"
     }
 
     func toWeeklyForecast() -> [DailyWeatherForecast] {
@@ -192,6 +296,7 @@ private struct OpenMeteoDaily: Decodable {
             temperature2mMax.count,
             temperature2mMin.count,
             relativeHumidity2mMean.count,
+            precipitationProbabilityMax.count,
         ].min() ?? 0
 
         return (0..<safeCount).map { index in
@@ -201,7 +306,8 @@ private struct OpenMeteoDaily: Decodable {
                 minTemperatureCelsius: Int(temperature2mMin[index].rounded()),
                 maxTemperatureCelsius: Int(temperature2mMax[index].rounded()),
                 condition: WeatherConditionMapper.japaneseName(for: weatherCode[index]),
-                humidityPercent: Int(relativeHumidity2mMean[index].rounded())
+                humidityPercent: Int(relativeHumidity2mMean[index].rounded()),
+                precipitationProbabilityPercent: max(0, precipitationProbabilityMax[index])
             )
         }
     }

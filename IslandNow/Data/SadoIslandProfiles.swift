@@ -121,6 +121,5 @@ enum SadoIslandProfiles {
             FlightAirlineSchedule(id: "sado-ana", airline: ana, trips: sadoFlights),
         ],
         flightScheduleNote: flightScheduleNote,
-        wbgtStationNo: 54_166
     )
 }

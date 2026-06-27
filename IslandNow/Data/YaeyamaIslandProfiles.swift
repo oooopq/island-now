@@ -116,7 +116,6 @@ enum YaeyamaIslandProfiles {
         ],
         flightSchedules: yonaguniLineFlightSchedules,
         flightScheduleNote: flightScheduleNote,
-        wbgtStationNo: 94_081
     )
 
     // MARK: - 竹富島
@@ -151,7 +150,6 @@ enum YaeyamaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 94_001
     )
 
     // MARK: - 黒島
@@ -186,7 +184,6 @@ enum YaeyamaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 94_001
     )
 
     // MARK: - 波照間島
@@ -221,7 +218,6 @@ enum YaeyamaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 94_116
     )
 
     // MARK: - 西表島
@@ -260,7 +256,7 @@ enum YaeyamaIslandProfiles {
             UsefulInfo(id: "iriomote-clinic-west", category: .medical, name: "西表西部診療所（上原）", phoneNumber: "0980-85-9111", address: "沖縄県竹富町上原", websiteURL: nil, note: "大原港方面の診療所"),
             UsefulInfo(id: "iriomote-clinic-east", category: .medical, name: "西表東部診療所（大原）", phoneNumber: "0980-85-9110", address: "沖縄県竹富町大原", websiteURL: nil, note: "上原港方面の診療所"),
             UsefulInfo(id: "iriomote-convenience", category: .convenience, name: "大原・上原の港周辺", phoneNumber: nil, address: "各港の集落", websiteURL: nil, note: "大原港・上原港付近に店舗・ATM"),
-            UsefulInfo(id: "iriomote-tourism", category: .tourism, name: "西表島観光協会", phoneNumber: "0980-85-6185", address: "沖縄県竹富町大原", websiteURL: "https://www.iriomote.com/", note: "カヤック・トレッキング等の案内"),
+            UsefulInfo(id: "iriomote-tourism", category: .tourism, name: "竹富町観光協会（西表島）", phoneNumber: "0980-85-6185", address: "沖縄県竹富町大原", websiteURL: "https://painusima.com/modelcourse_iriomote/", note: "カヤック・トレッキング等の案内"),
         ],
         liveCameras: [
             LiveCamera(title: "西表島ライブカメラ（ヤシガニNET）", urlString: "https://www.youtube.com/@iriomote1956"),
@@ -270,7 +266,6 @@ enum YaeyamaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 94_062
     )
 
     // MARK: - 与那国島
@@ -309,6 +304,5 @@ enum YaeyamaIslandProfiles {
         liveCameraFootnote: "※ 海上保安庁の灯台カメラはスマホで真っ白になることがあります。上のYouTubeリンクをお試しください。",
         flightSchedules: yonaguniLineFlightSchedules,
         flightScheduleNote: flightScheduleNote,
-        wbgtStationNo: 94_017
     )
 }

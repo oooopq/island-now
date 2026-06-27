@@ -37,8 +37,6 @@ struct IslandProfile: Identifiable {
     let liveCameraFootnote: String?
     let flightSchedules: [FlightAirlineSchedule]
     let flightScheduleNote: String?
-    /// 環境省 WBGT API の観測地点番号（夏季のみ使用）
-    let wbgtStationNo: Int?
 
     var id: String { island.id }
 
@@ -66,8 +64,7 @@ struct IslandProfile: Identifiable {
         youtubeRelatedLinks: [LiveCamera] = [],
         liveCameraFootnote: String? = nil,
         flightSchedules: [FlightAirlineSchedule],
-        flightScheduleNote: String?,
-        wbgtStationNo: Int? = nil
+        flightScheduleNote: String?
     ) {
         self.island = island
         self.regionID = regionID
@@ -84,7 +81,6 @@ struct IslandProfile: Identifiable {
         self.liveCameraFootnote = liveCameraFootnote
         self.flightSchedules = flightSchedules
         self.flightScheduleNote = flightScheduleNote
-        self.wbgtStationNo = wbgtStationNo
     }
 
     func matchesRoute(_ routeLongName: String) -> Bool {

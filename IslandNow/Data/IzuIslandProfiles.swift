@@ -133,7 +133,7 @@ enum IzuIslandProfiles {
         usefulInfo: [
             UsefulInfo(id: "oshima-hospital", category: .medical, name: "大島病院", phoneNumber: "04992-2-2111", address: "東京都大島町元町字浜之町", websiteURL: "https://www.oshimahp.or.jp/", note: "伊豆大島の中核病院（救急対応）"),
             UsefulInfo(id: "oshima-convenience", category: .convenience, name: "元町・岡田港周辺", phoneNumber: nil, address: "元町港・岡田港ターミナル付近", websiteURL: nil, note: "セブン-イレブン、ローソン、ゆうちょATMなど"),
-            UsefulInfo(id: "oshima-tourism", category: .tourism, name: "大島町観光協会", phoneNumber: "04992-2-1370", address: "東京都大島町元町", websiteURL: "https://www.oshima-town.org/kanko/", note: "三原山・椿の観光案内"),
+            UsefulInfo(id: "oshima-tourism", category: .tourism, name: "大島町観光協会", phoneNumber: "04992-2-1370", address: "東京都大島町元町", websiteURL: "https://www.izu-oshima.or.jp/", note: "三原山・椿の観光案内"),
         ],
         liveCameras: [],
         youtubeRelatedLinks: [youtubeFallback],
@@ -141,7 +141,6 @@ enum IzuIslandProfiles {
             FlightAirlineSchedule(id: "oshima-shinchuo", airline: shinChuoAir, trips: oshimaChofuFlights),
         ],
         flightScheduleNote: flightScheduleNote,
-        wbgtStationNo: 44_172
     )
 
     // MARK: - 利島
@@ -177,13 +176,12 @@ enum IzuIslandProfiles {
         usefulInfo: [
             UsefulInfo(id: "toshima-clinic", category: .medical, name: "利島診療所", phoneNumber: "04992-9-0011", address: "東京都利島村利島字利島", websiteURL: nil, note: nil),
             UsefulInfo(id: "toshima-convenience", category: .convenience, name: "利島港周辺", phoneNumber: nil, address: "利島港・集落", websiteURL: nil, note: "店舗・ATMは限られます"),
-            UsefulInfo(id: "toshima-tourism", category: .tourism, name: "利島村観光", phoneNumber: "04992-9-0011", address: "東京都利島村", websiteURL: "https://www.toshima.gr.jp/", note: "椿・ダイビングの案内"),
+            UsefulInfo(id: "toshima-tourism", category: .tourism, name: "利島村観光", phoneNumber: "04992-9-0011", address: "東京都利島村", websiteURL: "https://www.toshimamura.org/tourism", note: "椿・ダイビングの案内"),
         ],
         liveCameras: [],
         youtubeRelatedLinks: [youtubeFallback],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 44_172
     )
 
     // MARK: - 新島
@@ -236,7 +234,6 @@ enum IzuIslandProfiles {
             FlightAirlineSchedule(id: "niijima-shinchuo", airline: shinChuoAir, trips: niijimaChofuFlights),
         ],
         flightScheduleNote: flightScheduleNote,
-        wbgtStationNo: 44_172
     )
 
     // MARK: - 式根島
@@ -278,7 +275,6 @@ enum IzuIslandProfiles {
         youtubeRelatedLinks: [youtubeFallback],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 44_172
     )
 
     // MARK: - 神津島
@@ -323,7 +319,7 @@ enum IzuIslandProfiles {
         usefulInfo: [
             UsefulInfo(id: "kozu-clinic", category: .medical, name: "神津島診療所", phoneNumber: "04992-8-0011", address: "東京都神津島村神津島", websiteURL: nil, note: nil),
             UsefulInfo(id: "kozu-convenience", category: .convenience, name: "神津港周辺", phoneNumber: nil, address: "神津港・集落", websiteURL: nil, note: "コンビニ・ATMは少数"),
-            UsefulInfo(id: "kozu-tourism", category: .tourism, name: "神津島村観光協会", phoneNumber: "04992-8-0051", address: "東京都神津島村", websiteURL: "https://www.kouzushima.jp/", note: "ダイビング・星空の案内"),
+            UsefulInfo(id: "kozu-tourism", category: .tourism, name: "神津島村観光協会", phoneNumber: "04992-8-0051", address: "東京都神津島村", websiteURL: "https://kozushima.com/", note: "ダイビング・星空の案内"),
         ],
         liveCameras: [],
         youtubeRelatedLinks: [youtubeFallback],
@@ -331,7 +327,6 @@ enum IzuIslandProfiles {
             FlightAirlineSchedule(id: "kozushima-shinchuo", airline: shinChuoAir, trips: kozushimaChofuFlights),
         ],
         flightScheduleNote: flightScheduleNote,
-        wbgtStationNo: 44_172
     )
 
     // MARK: - 三宅島
@@ -376,7 +371,6 @@ enum IzuIslandProfiles {
             FlightAirlineSchedule(id: "miyake-shinchuo", airline: shinChuoAir, trips: miyakeChofuFlights),
         ],
         flightScheduleNote: flightScheduleNote,
-        wbgtStationNo: 44_226
     )
 
     // MARK: - 御蔵島
@@ -412,13 +406,12 @@ enum IzuIslandProfiles {
         usefulInfo: [
             UsefulInfo(id: "mikura-clinic", category: .medical, name: "御蔵島診療所", phoneNumber: "04994-39-2111", address: "東京都御蔵島村", websiteURL: nil, note: nil),
             UsefulInfo(id: "mikura-convenience", category: .convenience, name: "御蔵島港周辺", phoneNumber: nil, address: "御蔵島港・里浜", websiteURL: nil, note: "店舗は限られます"),
-            UsefulInfo(id: "mikura-tourism", category: .tourism, name: "御蔵島村観光", phoneNumber: "04996-2-0011", address: "東京都御蔵島村", websiteURL: "https://www.mikurasima.jp/", note: "イルカ・ダイビングの案内"),
+            UsefulInfo(id: "mikura-tourism", category: .tourism, name: "御蔵島村観光", phoneNumber: "04996-2-0011", address: "東京都御蔵島村", websiteURL: "https://mikura-isle.com/", note: "イルカ・ダイビングの案内"),
         ],
         liveCameras: [],
         youtubeRelatedLinks: [youtubeFallback],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 44_226
     )
 
     // MARK: - 八丈島
@@ -463,6 +456,5 @@ enum IzuIslandProfiles {
             FlightAirlineSchedule(id: "hachijo-ana", airline: ana, trips: hachijoAnaFlights),
         ],
         flightScheduleNote: flightScheduleNote,
-        wbgtStationNo: 44_263
     )
 }

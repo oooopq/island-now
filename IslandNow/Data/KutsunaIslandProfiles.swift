@@ -108,7 +108,6 @@ enum KutsunaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 73_166
     )
 
     // MARK: - 興居島
@@ -163,7 +162,6 @@ enum KutsunaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 73_166
     )
 
     // MARK: - 睦月島
@@ -215,7 +213,6 @@ enum KutsunaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: ferryScheduleNote,
-        wbgtStationNo: 73_166
     )
 
     // MARK: - 野忽那島
@@ -267,7 +264,6 @@ enum KutsunaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: ferryScheduleNote,
-        wbgtStationNo: 73_166
     )
 
     // MARK: - 怒和島
@@ -320,7 +316,6 @@ enum KutsunaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: ferryScheduleNote,
-        wbgtStationNo: 73_166
     )
 
     // MARK: - 津和地島
@@ -372,7 +367,6 @@ enum KutsunaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: ferryScheduleNote,
-        wbgtStationNo: 73_166
     )
 
     // MARK: - 二神島
@@ -423,7 +417,6 @@ enum KutsunaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: ferryScheduleNote,
-        wbgtStationNo: 73_166
     )
 
     // MARK: - 釣島
@@ -465,7 +458,6 @@ enum KutsunaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: "西線フェリーのみ。1日2便のため日帰りは便の組み合わせ要確認。",
-        wbgtStationNo: 73_166
     )
 
     // MARK: - 安居島
@@ -508,6 +500,5 @@ enum KutsunaIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: aijimaScheduleNote,
-        wbgtStationNo: 73_166
     )
 }

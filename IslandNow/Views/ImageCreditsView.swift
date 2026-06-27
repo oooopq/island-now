@@ -33,7 +33,7 @@ struct ImageCreditsView: View {
 
     private var introSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("このアプリでは、天気・暑さ指数・船便ダイヤなどのデータと、各島の背景画像を、以下の提供元から利用しています。")
+            Text("このアプリでは、天気・波の高さ・船便ダイヤなどのデータと、各島の背景画像を、以下の提供元から利用しています。")
                 .font(.subheadline)
                 .foregroundStyle(palette.text)
 
@@ -44,7 +44,7 @@ struct ImageCreditsView: View {
         .creditCardStyle(palette: palette)
     }
 
-    // 天気・WBGT・フェリーダイヤのデータ提供元（各ライセンス・利用規約に基づく出典表記）
+    // 天気・波の高さ・フェリーダイヤのデータ提供元（各ライセンス・利用規約に基づく出典表記）
     private var dataSourcesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("データの出典")
@@ -52,19 +52,11 @@ struct ImageCreditsView: View {
                 .foregroundStyle(palette.text)
 
             dataSourceCard(
-                title: "天気",
+                title: "天気・波の高さ",
                 credit: "Weather data by Open-Meteo.com",
-                note: "Open-Meteo の天気データ（CC BY 4.0 ライセンス）を利用しています。",
+                note: "Open-Meteo の天気・海洋データ（CC BY 4.0 ライセンス）を利用しています。",
                 linkTitle: "open-meteo.com",
                 urlString: "https://open-meteo.com/"
-            )
-
-            dataSourceCard(
-                title: "暑さ指数（WBGT）",
-                credit: "出典：環境省熱中症予防情報サイト",
-                note: "夏季（4月下旬〜10月中旬）のみ表示しています。表示は参考情報です。",
-                linkTitle: "wbgt.env.go.jp",
-                urlString: "https://www.wbgt.env.go.jp/"
             )
 
             dataSourceCard(

@@ -14,14 +14,12 @@ struct IslandDetailView: View {
     @Environment(LastSelectedIslandStore.self) private var lastSelectedIslandStore
     @State private var selectedSection: IslandDetailSection = .weather
     @State private var weatherState: WeatherLoadState = .loading
-    @State private var heatStrokeState: HeatStrokeRiskLoadState = .unavailable
     @State private var ferryState: FerryLoadState = .loading
     @State private var placesState: PlacesLoadState = .loading
     @State private var selectedPlaceCategory: PlaceCategory = .restaurant
     @State private var locationService = UserLocationService()
 
     private let weatherService = WeatherService()
-    private let wbgtService = WBGTService()
     private let ferryService = FerryService()
     private let placesSearchService = PlacesSearchService()
 
@@ -114,9 +112,8 @@ struct IslandDetailView: View {
             restoreCachedStates(for: island)
 
             async let weatherLoad: Void = loadWeather()
-            async let heatStrokeLoad: Void = loadHeatStrokeRisk()
             async let ferryLoad: Void = loadFerrySchedules()
-            _ = await (weatherLoad, heatStrokeLoad, ferryLoad)
+            _ = await (weatherLoad, ferryLoad)
         }
         .task(id: placeSearchTaskID) {
             guard selectedSection == .places else { return }
@@ -135,7 +132,7 @@ struct IslandDetailView: View {
     private var selectedSectionContent: some View {
         switch selectedSection {
         case .weather:
-            WeatherSectionView(state: weatherState, heatStrokeState: heatStrokeState)
+            WeatherSectionView(state: weatherState)
 
         case .schedule:
             if let scheduleStatusSources, scheduleStatusSources.isEmpty == false {
@@ -176,11 +173,6 @@ struct IslandDetailView: View {
         if weatherService.cachedWeather(for: island.id) == nil {
             weatherState = .loading
         }
-        if islandProfile?.wbgtStationNo != nil,
-           WBGTService.isInSeason,
-           wbgtService.cachedRisk(for: island.id) == nil {
-            heatStrokeState = .loading
-        }
         if ferryService.cachedSchedules(for: island.id) == nil {
             ferryState = .loading
         }
@@ -190,9 +182,8 @@ struct IslandDetailView: View {
         }
 
         async let weatherLoad: Void = loadWeather()
-        async let heatStrokeLoad: Void = loadHeatStrokeRisk()
         async let ferryLoad: Void = loadFerrySchedules()
-        _ = await (weatherLoad, heatStrokeLoad, ferryLoad)
+        _ = await (weatherLoad, ferryLoad)
 
         if selectedSection == .places {
             await loadPlaces()
@@ -207,8 +198,6 @@ struct IslandDetailView: View {
         } else {
             weatherState = .loading
         }
-
-        restoreHeatStrokeState(for: island)
 
         if let cached = ferryService.cachedSchedules(for: island.id) {
             ferryState = .loaded(
@@ -237,47 +226,6 @@ struct IslandDetailView: View {
                 return
             }
             weatherState = .failed(message: "天気を取得できませんでした", cachedWeather: nil)
-        }
-    }
-
-    @MainActor
-    private func restoreHeatStrokeState(for island: Island) {
-        guard islandProfile?.wbgtStationNo != nil, WBGTService.isInSeason else {
-            heatStrokeState = .unavailable
-            return
-        }
-
-        if let cached = wbgtService.cachedRisk(for: island.id) {
-            heatStrokeState = .loaded(cached, isFromCache: true)
-        } else {
-            heatStrokeState = .loading
-        }
-    }
-
-    @MainActor
-    private func loadHeatStrokeRisk() async {
-        guard let stationNo = islandProfile?.wbgtStationNo, WBGTService.isInSeason else {
-            heatStrokeState = .unavailable
-            return
-        }
-
-        if case .loading = heatStrokeState,
-           let cached = wbgtService.cachedRisk(for: island.id) {
-            heatStrokeState = .loaded(cached, isFromCache: true)
-        }
-
-        do {
-            if let risk = try await wbgtService.fetchRisk(stationNo: stationNo, islandID: island.id) {
-                heatStrokeState = .loaded(risk, isFromCache: false)
-            } else {
-                heatStrokeState = .unavailable
-            }
-        } catch {
-            if let cached = wbgtService.cachedRisk(for: island.id) {
-                heatStrokeState = .loaded(cached, isFromCache: true)
-            } else {
-                heatStrokeState = .failed
-            }
         }
     }
 

@@ -132,7 +132,6 @@ enum GotoIslandProfiles {
             FlightAirlineSchedule(id: "fukue-ana", airline: ana, trips: fukueAnaFlights),
         ],
         flightScheduleNote: flightScheduleNote,
-        wbgtStationNo: 84_536
     )
 
     // MARK: - 久賀島
@@ -179,7 +178,7 @@ enum GotoIslandProfiles {
         ],
         usefulInfo: [
             UsefulInfo(id: "hisaka-clinic", category: .medical, name: "五島市国民健康保険 久賀診療所", phoneNumber: "0959-85-2131", address: "長崎県五島市久賀町久賀", websiteURL: nil, note: "島内診療所"),
-            UsefulInfo(id: "hisaka-tourism", category: .tourism, name: "五島の島たび（久賀島）", phoneNumber: "0959-72-3177", address: nil, websiteURL: "https://goto.nagasaki-tabinet.com/feature/hisakajima", note: "教会・集落景観の案内"),
+            UsefulInfo(id: "hisaka-tourism", category: .tourism, name: "五島の島たび（久賀島）", phoneNumber: "0959-72-3177", address: nil, websiteURL: gotoTourismURL, note: "教会・集落景観の案内"),
         ],
         liveCameras: [],
         youtubeRelatedLinks: [
@@ -187,7 +186,6 @@ enum GotoIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 84_536
     )
 
     // MARK: - 奈留島
@@ -233,7 +231,7 @@ enum GotoIslandProfiles {
         ],
         usefulInfo: [
             UsefulInfo(id: "naru-hospital", category: .medical, name: "五島市立総合医療センター（奈留診療所）", phoneNumber: "0959-64-2121", address: "長崎県五島市奈留町", websiteURL: nil, note: "診療時間は要確認"),
-            UsefulInfo(id: "naru-tourism", category: .tourism, name: "五島の島たび（奈留島）", phoneNumber: "0959-72-3177", address: nil, websiteURL: "https://goto.nagasaki-tabinet.com/feature/narushima", note: "観光・教会めぐり"),
+            UsefulInfo(id: "naru-tourism", category: .tourism, name: "五島の島たび（奈留島）", phoneNumber: "0959-72-3177", address: nil, websiteURL: gotoTourismURL, note: "観光・教会めぐり"),
         ],
         liveCameras: [],
         youtubeRelatedLinks: [
@@ -241,7 +239,6 @@ enum GotoIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 84_536
     )
 
     // MARK: - 若松島
@@ -286,7 +283,7 @@ enum GotoIslandProfiles {
             ),
         ],
         usefulInfo: [
-            UsefulInfo(id: "wakamatsu-tourism", category: .tourism, name: "五島の島たび（若松島）", phoneNumber: "0959-72-3177", address: nil, websiteURL: "https://goto.nagasaki-tabinet.com/feature/wakamatsujima", note: "若松大橋・展望台の案内"),
+            UsefulInfo(id: "wakamatsu-tourism", category: .tourism, name: "五島の島たび（若松島）", phoneNumber: "0959-72-3177", address: nil, websiteURL: gotoTourismURL, note: "若松大橋・展望台の案内"),
         ],
         liveCameras: [],
         youtubeRelatedLinks: [
@@ -294,7 +291,6 @@ enum GotoIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 84_536
     )
 
     // MARK: - 中通島
@@ -331,7 +327,7 @@ enum GotoIslandProfiles {
             ),
         ],
         usefulInfo: [
-            UsefulInfo(id: "nakadori-tourism", category: .tourism, name: "新上五島町観光協会", phoneNumber: "0959-42-6111", address: "長崎県南松浦郡新上五島町有川町", websiteURL: "https://kamigoto.jp/", note: "上五島・中通島の観光案内"),
+            UsefulInfo(id: "nakadori-tourism", category: .tourism, name: "新上五島町観光協会", phoneNumber: "0959-42-6111", address: "長崎県南松浦郡新上五島町有川町", websiteURL: "https://shinkamigoto.nagasaki-tabinet.com/", note: "上五島・中通島の観光案内"),
         ],
         liveCameras: [],
         youtubeRelatedLinks: [
@@ -339,6 +335,5 @@ enum GotoIslandProfiles {
         ],
         flightSchedules: [],
         flightScheduleNote: nil,
-        wbgtStationNo: 84_536
     )
 }

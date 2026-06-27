@@ -14,4 +14,6 @@ struct DailyWeatherForecast: Codable, Identifiable {
     let maxTemperatureCelsius: Int
     let condition: String
     let humidityPercent: Int
+    /// 1日の最大降水確率（%）
+    let precipitationProbabilityPercent: Int
 }
