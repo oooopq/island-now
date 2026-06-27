@@ -2,7 +2,7 @@
 //  IslandUserLocationMapView.swift
 //  Island Now
 //
-//  島と現在地をミニマップで表示する
+//  島と現在地をミニマップで表示する（タップで全画面マップへ）
 //
 
 import CoreLocation
@@ -18,71 +18,33 @@ struct IslandUserLocationMapView: View {
     @Environment(\.detailPalette) private var palette
     @State private var cameraPosition: MapCameraPosition = .automatic
 
+    private let miniMapHeight: CGFloat = 96
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 8) {
             Label("あなたの現在地", systemImage: "location.fill")
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundStyle(palette.accent)
 
-            Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
-                Annotation(island.nameJapanese, coordinate: island.coordinate) {
-                    Image(systemName: "mountain.2.fill")
-                        .font(.caption)
-                        .padding(6)
-                        .background(Circle().fill(palette.iconAccent.opacity(0.9)))
-                        .foregroundStyle(.white)
-                }
-
-                if let port = islandProfile?.port {
-                    Annotation(port.name, coordinate: port.coordinate) {
-                        Image(systemName: "ferry.fill")
-                            .font(.caption2)
-                            .padding(5)
-                            .background(Circle().fill(palette.accent.opacity(0.85)))
-                            .foregroundStyle(.white)
-                    }
-                }
-
-                if let userCoordinate {
-                    Annotation("現在地", coordinate: userCoordinate) {
-                        ZStack {
-                            Circle()
-                                .fill(Color.blue.opacity(0.25))
-                                .frame(width: 28, height: 28)
-                            Circle()
-                                .fill(Color.blue)
-                                .frame(width: 12, height: 12)
-                                .overlay {
-                                    Circle()
-                                        .strokeBorder(.white, lineWidth: 2)
-                                }
-                        }
-                    }
-                }
+            NavigationLink {
+                IslandUserLocationFullMapView(
+                    island: island,
+                    islandProfile: islandProfile,
+                    userCoordinate: userCoordinate,
+                    authorizationStatus: authorizationStatus
+                )
+            } label: {
+                miniMapPreview
             }
-            .mapStyle(.standard(elevation: .flat))
-            .frame(height: 160)
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .strokeBorder(palette.cardBorder, lineWidth: 1)
-            }
-            .onAppear {
-                updateCamera()
-            }
-            .onChange(of: userCoordinate?.latitude) { _, _ in
-                updateCamera()
-            }
-            .onChange(of: userCoordinate?.longitude) { _, _ in
-                updateCamera()
-            }
+            .buttonStyle(.plain)
+            .accessibilityHint("タップすると地図を開いて現在地を表示します")
 
             Text(statusText)
                 .font(.caption)
                 .foregroundStyle(palette.secondaryText)
         }
-        .padding(14)
+        .padding(10)
         .background {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(palette.cardBackground.opacity(0.95))
@@ -90,6 +52,44 @@ struct IslandUserLocationMapView: View {
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
                         .strokeBorder(palette.cardBorder, lineWidth: 1)
                 }
+        }
+    }
+
+    private var miniMapPreview: some View {
+        Map(position: $cameraPosition, interactionModes: []) {
+            IslandUserLocationMapSupport.annotations(
+                island: island,
+                islandProfile: islandProfile,
+                userCoordinate: userCoordinate,
+                palette: palette,
+                showsUserLocationAnnotation: true
+            )
+        }
+        .mapStyle(.standard(elevation: .flat))
+        .frame(height: miniMapHeight)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(palette.cardBorder, lineWidth: 1)
+        }
+        .overlay(alignment: .bottomTrailing) {
+            Label("地図で見る", systemImage: "arrow.up.left.and.arrow.down.right")
+                .font(.caption2)
+                .fontWeight(.medium)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .foregroundStyle(.white)
+                .background(.black.opacity(0.45), in: Capsule())
+                .padding(8)
+        }
+        .onAppear {
+            updateCamera()
+        }
+        .onChange(of: userCoordinate?.latitude) { _, _ in
+            updateCamera()
+        }
+        .onChange(of: userCoordinate?.longitude) { _, _ in
+            updateCamera()
         }
     }
 
@@ -126,51 +126,25 @@ struct IslandUserLocationMapView: View {
     }
 
     private func updateCamera() {
-        cameraPosition = .region(mapRegion())
-    }
-
-    private func mapRegion() -> MKCoordinateRegion {
-        var coordinates = [island.coordinate]
-        if let port = islandProfile?.port {
-            coordinates.append(port.coordinate)
-        }
-        if let userCoordinate {
-            coordinates.append(userCoordinate)
-        }
-
-        let latitudes = coordinates.map(\.latitude)
-        let longitudes = coordinates.map(\.longitude)
-        let minLat = latitudes.min() ?? island.latitude
-        let maxLat = latitudes.max() ?? island.latitude
-        let minLon = longitudes.min() ?? island.longitude
-        let maxLon = longitudes.max() ?? island.longitude
-
-        let center = CLLocationCoordinate2D(
-            latitude: (minLat + maxLat) / 2,
-            longitude: (minLon + maxLon) / 2
-        )
-
-        let radius = islandProfile?.placeSearchRadiusMeters ?? 12_000
-        let minLatDelta = radius / 111_000
-        let minLonDelta = radius / (111_000 * cos(center.latitude * .pi / 180))
-
-        let latDelta = max(minLatDelta * 1.4, (maxLat - minLat) * 1.6 + minLatDelta * 0.3)
-        let lonDelta = max(minLonDelta * 1.4, (maxLon - minLon) * 1.6 + minLonDelta * 0.3)
-
-        return MKCoordinateRegion(
-            center: center,
-            span: MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lonDelta)
+        cameraPosition = .region(
+            IslandUserLocationMapSupport.mapRegion(
+                island: island,
+                islandProfile: islandProfile,
+                userCoordinate: userCoordinate
+            )
         )
     }
 }
 
 #Preview {
-    IslandUserLocationMapView(
-        island: IslandCatalog.islands[0],
-        islandProfile: IslandCatalog.profile(for: "ishigaki"),
-        userCoordinate: nil,
-        authorizationStatus: .authorizedWhenInUse
-    )
-    .padding()
-    .background(Color.black)
+    NavigationStack {
+        IslandUserLocationMapView(
+            island: IslandCatalog.islands[0],
+            islandProfile: IslandCatalog.profile(for: "ishigaki"),
+            userCoordinate: nil,
+            authorizationStatus: .authorizedWhenInUse
+        )
+        .padding()
+        .background(Color.black)
+    }
 }
