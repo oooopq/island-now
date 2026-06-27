@@ -16,6 +16,14 @@ struct IslandRegion: Identifiable, Hashable {
     let ferryDataSourceNote: String?
     /// 有効期限表示の接尾辞（例: OTTOP）
     let ferryValidUntilSuffix: String?
+
+    static func == (lhs: IslandRegion, rhs: IslandRegion) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 enum IslandRegionCatalog {
@@ -43,7 +51,23 @@ enum IslandRegionCatalog {
         ferryValidUntilSuffix: nil
     )
 
-    static let all: [IslandRegion] = [yaeyama, sado, izu]
+    static let goto = IslandRegion(
+        id: "goto",
+        displayNameJapanese: "五島列島",
+        coverAssetName: "IslandBgGoto",
+        ferryDataSourceNote: "五島旅客船・木口汽船・九州商船等の代表ダイヤです。カーフェリー（OCEAN）と高速船（TAIYO・シーガル）を分けて表示しています。",
+        ferryValidUntilSuffix: nil
+    )
+
+    static let kutsuna = IslandRegion(
+        id: "kutsuna",
+        displayNameJapanese: "忽那諸島",
+        coverAssetName: "IslandBgKutsuna",
+        ferryDataSourceNote: "中島汽船・ごごしま等の代表ダイヤです。フェリーと高速船を分けて表示。東線・西線で寄港が異なります。",
+        ferryValidUntilSuffix: nil
+    )
+
+    static let all: [IslandRegion] = [yaeyama, sado, izu, goto, kutsuna]
 
     static func region(for regionID: String) -> IslandRegion? {
         all.first { $0.id == regionID }

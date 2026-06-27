@@ -20,6 +20,11 @@ enum FlightEndpointCatalog {
         FlightEndpoint(id: "tokyo", nameJapanese: "羽田", matchKeywords: ["羽田", "東京"]),
         FlightEndpoint(id: "chofu", nameJapanese: "調布", matchKeywords: ["調布"]),
         FlightEndpoint(id: "shizuoka", nameJapanese: "静岡", matchKeywords: ["静岡"]),
+        FlightEndpoint(id: "nagasaki", nameJapanese: "長崎", matchKeywords: ["長崎"]),
+        FlightEndpoint(id: "fukuoka", nameJapanese: "福岡", matchKeywords: ["福岡", "博多"]),
+        FlightEndpoint(id: "hojo", nameJapanese: "北条", matchKeywords: ["北条"]),
+        FlightEndpoint(id: "takahama", nameJapanese: "高浜", matchKeywords: ["高浜"]),
+        FlightEndpoint(id: "mitsuhama", nameJapanese: "三津浜", matchKeywords: ["三津浜"]),
     ]
 
     static func endpointID(matchingPlaceName placeName: String) -> String? {

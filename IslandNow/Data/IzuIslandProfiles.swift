@@ -44,9 +44,6 @@ enum IzuIslandProfiles {
 
     private static let flightScheduleNote = "代表ダイヤです。季節・天候により変更・欠航があります。"
 
-    private static let backgroundAssetName = "IslandBgIzu"
-    private static let backgroundCredit = "Photo: Unsplash（伊豆諸島・海）"
-
     private static let youtubeFallback = LiveCamera(
         title: "東海汽船（公式）",
         urlString: "https://www.tokaikisen.co.jp/"
@@ -108,8 +105,8 @@ enum IzuIslandProfiles {
             IslandPort(name: "岡田港", latitude: 34.789980, longitude: 139.389670),
             IslandPort(name: "元町港", latitude: 34.751139, longitude: 139.351472),
         ],
-        backgroundAssetName: backgroundAssetName,
-        backgroundCredit: backgroundCredit,
+        backgroundAssetName: "IslandBgOshima",
+        backgroundCredit: "Photo: Huang Lin / Unsplash",
         placeSearchRadiusMeters: 18_000,
         routeKeywords: ["伊豆大島", "大島", "岡田", "元町", "三原山"],
         ferryGTFSFeeds: [],
@@ -161,8 +158,8 @@ enum IzuIslandProfiles {
         ports: [
             IslandPort(name: "利島港", latitude: 34.532398, longitude: 139.281009),
         ],
-        backgroundAssetName: backgroundAssetName,
-        backgroundCredit: backgroundCredit,
+        backgroundAssetName: "IslandBgToshima",
+        backgroundCredit: "Photo: Matthieu Bühler / Unsplash",
         placeSearchRadiusMeters: 4_000,
         routeKeywords: ["利島"],
         ferryGTFSFeeds: [],
@@ -203,8 +200,8 @@ enum IzuIslandProfiles {
         ports: [
             IslandPort(name: "前浜港", latitude: 34.371954, longitude: 139.240214),
         ],
-        backgroundAssetName: backgroundAssetName,
-        backgroundCredit: backgroundCredit,
+        backgroundAssetName: "IslandBgNiijima",
+        backgroundCredit: "Photo: Fumiaki Hayashi / Unsplash",
         placeSearchRadiusMeters: 10_000,
         routeKeywords: ["新島", "前浜", "若郷"],
         ferryGTFSFeeds: [],
@@ -256,8 +253,8 @@ enum IzuIslandProfiles {
         ports: [
             IslandPort(name: "野伏港", latitude: 34.334440, longitude: 139.215280),
         ],
-        backgroundAssetName: backgroundAssetName,
-        backgroundCredit: backgroundCredit,
+        backgroundAssetName: "IslandBgShikinejima",
+        backgroundCredit: "Photo: あま あわれ / Unsplash",
         placeSearchRadiusMeters: 6_000,
         routeKeywords: ["式根", "式根島", "野伏"],
         ferryGTFSFeeds: [],
@@ -298,8 +295,8 @@ enum IzuIslandProfiles {
         ports: [
             IslandPort(name: "神津港", latitude: 34.207978, longitude: 139.131511),
         ],
-        backgroundAssetName: backgroundAssetName,
-        backgroundCredit: backgroundCredit,
+        backgroundAssetName: "IslandBgKozushima",
+        backgroundCredit: "Photo: Ashar Mirza / Unsplash",
         placeSearchRadiusMeters: 8_000,
         routeKeywords: ["神津", "神津島"],
         ferryGTFSFeeds: [],
@@ -352,8 +349,8 @@ enum IzuIslandProfiles {
             IslandPort(name: "三池港", latitude: 34.079750, longitude: 139.563624),
             IslandPort(name: "阿古港", latitude: 34.068218, longitude: 139.478162),
         ],
-        backgroundAssetName: backgroundAssetName,
-        backgroundCredit: backgroundCredit,
+        backgroundAssetName: "IslandBgMiyakejima",
+        backgroundCredit: "Photo: Marek Okon / Unsplash",
         placeSearchRadiusMeters: 12_000,
         routeKeywords: ["三宅", "三宅島", "三池", "阿古", "錆ヶ浜"],
         ferryGTFSFeeds: [],
@@ -396,8 +393,8 @@ enum IzuIslandProfiles {
         ports: [
             IslandPort(name: "御蔵島港", latitude: 33.897179, longitude: 139.589865),
         ],
-        backgroundAssetName: backgroundAssetName,
-        backgroundCredit: backgroundCredit,
+        backgroundAssetName: "IslandBgMikurajima",
+        backgroundCredit: "Photo: Nakaharu Line / Unsplash",
         placeSearchRadiusMeters: 5_000,
         routeKeywords: ["御蔵", "御蔵島", "玄ヶ浦"],
         ferryGTFSFeeds: [],
@@ -439,8 +436,8 @@ enum IzuIslandProfiles {
             IslandPort(name: "八重根港", latitude: 33.097875, longitude: 139.769695),
             IslandPort(name: "底土港", latitude: 33.121462, longitude: 139.819011),
         ],
-        backgroundAssetName: backgroundAssetName,
-        backgroundCredit: backgroundCredit,
+        backgroundAssetName: "IslandBgHachijojima",
+        backgroundCredit: "Photo: Christopher Politano / Unsplash",
         placeSearchRadiusMeters: 15_000,
         routeKeywords: ["八丈", "八丈島", "八重根", "底土"],
         ferryGTFSFeeds: [],

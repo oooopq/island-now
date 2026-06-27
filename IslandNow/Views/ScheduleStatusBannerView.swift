@@ -22,6 +22,7 @@ struct ScheduleStatusBannerView: View {
                     Text("Delays & Cancellations")
                         .font(.caption)
                         .fontWeight(.medium)
+                        .scheduleStatusSecondaryText()
                 }
             } icon: {
                 Image(systemName: "exclamationmark.triangle.fill")
@@ -30,24 +31,18 @@ struct ScheduleStatusBannerView: View {
 
             Text("出発前に各社公式サイトで運航状況を確認してください。本アプリの時刻は参考ダイヤです。")
                 .font(.caption)
-                .detailCardSecondaryText()
+                .fixedSize(horizontal: false, vertical: true)
 
             Text("Check official websites before you travel. This app shows sample timetables only.")
                 .font(.caption)
-                .detailCardSecondaryText()
+                .scheduleStatusSecondaryText()
+                .fixedSize(horizontal: false, vertical: true)
 
             ForEach(sources) { source in
                 sourceLinks(source)
             }
         }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(palette.bannerBackground)
-        .overlay {
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(palette.warning.opacity(0.35), lineWidth: 1)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .scheduleStatusCallout()
     }
 
     @ViewBuilder
@@ -56,11 +51,11 @@ struct ScheduleStatusBannerView: View {
             Text(source.name)
                 .font(.caption)
                 .fontWeight(.semibold)
-                .detailCardSecondaryText()
 
             OpenURLButton(url: source.statusPageURL) {
                 Label(statusButtonTitle(for: source.category), systemImage: statusIcon(for: source.category))
                     .font(.subheadline)
+                    .fontWeight(.medium)
             }
 
             if let phoneURL = source.phoneURL, let phoneNumber = source.phoneNumber {
@@ -91,7 +86,7 @@ struct ScheduleStatusBannerView: View {
     }
 }
 
-#Preview {
+#Preview("Dark") {
     ScheduleStatusBannerView(sources: [
         ScheduleStatusSource(
             id: "https://www.tokaikisen.co.jp/schedule/",
@@ -103,4 +98,20 @@ struct ScheduleStatusBannerView: View {
     ])
     .padding()
     .detailSectionCard()
+    .environment(\.detailPalette, .dark)
+}
+
+#Preview("Light") {
+    ScheduleStatusBannerView(sources: [
+        ScheduleStatusSource(
+            id: "https://www.tokaikisen.co.jp/schedule/",
+            name: "東海汽船株式会社",
+            statusPageURL: URL(string: "https://www.tokaikisen.co.jp/schedule/")!,
+            phoneNumber: "03-5472-9999",
+            category: .ferry
+        ),
+    ])
+    .padding()
+    .detailSectionCard()
+    .environment(\.detailPalette, .light)
 }

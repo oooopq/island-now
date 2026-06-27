@@ -17,6 +17,10 @@ struct DetailCardPalette: Equatable {
     let cardBorder: Color
     let noticeBackground: Color
     let bannerBackground: Color
+    /// 欠航・遅延確認バナー（ライト/ダークとも背景コントラストを確保）
+    let scheduleStatusBackground: Color
+    let scheduleStatusBorder: Color
+    let scheduleStatusSecondaryText: Color
     let hourlySlotBackground: Color
     let captionOnPhoto: Color
     let cardShadow: Color
@@ -41,6 +45,9 @@ struct DetailCardPalette: Equatable {
         cardBorder: Color,
         noticeBackground: Color,
         bannerBackground: Color,
+        scheduleStatusBackground: Color,
+        scheduleStatusBorder: Color,
+        scheduleStatusSecondaryText: Color,
         hourlySlotBackground: Color,
         captionOnPhoto: Color,
         cardShadow: Color,
@@ -55,6 +62,9 @@ struct DetailCardPalette: Equatable {
         self.cardBorder = cardBorder
         self.noticeBackground = noticeBackground
         self.bannerBackground = bannerBackground
+        self.scheduleStatusBackground = scheduleStatusBackground
+        self.scheduleStatusBorder = scheduleStatusBorder
+        self.scheduleStatusSecondaryText = scheduleStatusSecondaryText
         self.hourlySlotBackground = hourlySlotBackground
         self.captionOnPhoto = captionOnPhoto
         self.cardShadow = cardShadow
@@ -72,6 +82,9 @@ struct DetailCardPalette: Equatable {
         cardBorder: Color.white.opacity(0.12),
         noticeBackground: Color.orange.opacity(0.18),
         bannerBackground: Color(red: 0.25, green: 0.82, blue: 0.95).opacity(0.14),
+        scheduleStatusBackground: Color(red: 0.34, green: 0.22, blue: 0.10),
+        scheduleStatusBorder: Color(red: 1.0, green: 0.62, blue: 0.22).opacity(0.65),
+        scheduleStatusSecondaryText: Color.white.opacity(0.78),
         hourlySlotBackground: Color.white.opacity(0.08),
         captionOnPhoto: Color.white.opacity(0.75),
         cardShadow: Color.black.opacity(0.30),
@@ -89,6 +102,9 @@ struct DetailCardPalette: Equatable {
         cardBorder: Color.black.opacity(0.10),
         noticeBackground: Color.orange.opacity(0.14),
         bannerBackground: Color(red: 0.05, green: 0.55, blue: 0.68).opacity(0.12),
+        scheduleStatusBackground: Color(red: 1.0, green: 0.93, blue: 0.78),
+        scheduleStatusBorder: Color(red: 0.82, green: 0.48, blue: 0.04).opacity(0.45),
+        scheduleStatusSecondaryText: Color(red: 0.28, green: 0.20, blue: 0.10).opacity(0.78),
         hourlySlotBackground: Color.black.opacity(0.05),
         captionOnPhoto: Color.white.opacity(0.88),
         cardShadow: Color.black.opacity(0.12),

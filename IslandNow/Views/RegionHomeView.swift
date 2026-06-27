@@ -17,7 +17,7 @@ struct RegionHomeView: View {
 
                 VStack(spacing: 14) {
                     ForEach(IslandCatalog.regions) { region in
-                        NavigationLink(value: region) {
+                        NavigationLink(value: region.id) {
                             RegionCardView(region: region)
                         }
                         .buttonStyle(.plain)
@@ -35,8 +35,10 @@ struct RegionHomeView: View {
                 AppThemeToggleButton()
             }
         }
-        .navigationDestination(for: IslandRegion.self) { region in
-            RegionIslandsView(region: region)
+        .navigationDestination(for: String.self) { regionID in
+            if let region = IslandRegionCatalog.region(for: regionID) {
+                RegionIslandsView(region: region)
+            }
         }
     }
 
@@ -107,6 +109,7 @@ private struct RegionCardView: View {
         }
         .frame(maxWidth: .infinity)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .strokeBorder(palette.cardBorder, lineWidth: 1)

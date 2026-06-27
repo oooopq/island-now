@@ -215,7 +215,9 @@ struct FerryScheduleSectionView: View {
                 OpenURLButton(url: statusURL) {
                     Label("運航状況 / Service Status", systemImage: "exclamationmark.triangle.fill")
                         .font(.subheadline)
+                        .fontWeight(.medium)
                 }
+                .scheduleStatusCallout()
             }
 
             if let website = schedule.company.websiteLink {

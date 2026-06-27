@@ -22,6 +22,8 @@ enum IslandCatalog {
         YaeyamaIslandProfiles.all,
         SadoIslandProfiles.all,
         IzuIslandProfiles.all,
+        GotoIslandProfiles.all,
+        KutsunaIslandProfiles.all,
     ]
 
     static let all: [IslandProfile] = regionalProfiles.flatMap { $0 }

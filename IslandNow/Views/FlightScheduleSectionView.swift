@@ -143,7 +143,9 @@ struct FlightScheduleSectionView: View {
                 OpenURLButton(url: statusURL) {
                     Label("運航状況 / Flight Status", systemImage: "exclamationmark.triangle.fill")
                         .font(.subheadline)
+                        .fontWeight(.medium)
                 }
+                .scheduleStatusCallout()
             }
 
             if let website = schedule.airline.websiteLink {
