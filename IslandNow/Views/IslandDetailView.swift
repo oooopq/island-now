@@ -11,6 +11,7 @@ struct IslandDetailView: View {
     let island: Island
 
     @Environment(\.detailPalette) private var palette
+    @Environment(LastSelectedIslandStore.self) private var lastSelectedIslandStore
     @State private var selectedSection: IslandDetailSection = .weather
     @State private var weatherState: WeatherLoadState = .loading
     @State private var heatStrokeState: HeatStrokeRiskLoadState = .unavailable
@@ -119,6 +120,7 @@ struct IslandDetailView: View {
             await loadPlaces()
         }
         .onAppear {
+            lastSelectedIslandStore.record(island)
             locationService.start()
         }
         .onDisappear {
@@ -339,4 +341,6 @@ struct IslandDetailView: View {
     NavigationStack {
         IslandDetailView(island: IslandCatalog.islands[0])
     }
+    .environment(LastSelectedIslandStore())
+    .environment(\.detailPalette, DetailCardPalette.dark)
 }

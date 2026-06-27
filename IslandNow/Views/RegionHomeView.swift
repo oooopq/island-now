@@ -10,6 +10,7 @@ import SwiftUI
 
 struct RegionHomeView: View {
     @Environment(\.detailPalette) private var palette
+    @Environment(LastSelectedIslandStore.self) private var lastSelectedIslandStore
     @State private var cameraPosition: MapCameraPosition = RegionMapSupport.japanHomeCameraPosition()
 
     var body: some View {
@@ -26,8 +27,7 @@ struct RegionHomeView: View {
                 .padding(.vertical, 12)
         }
         .background(homeBackground)
-        .navigationTitle("Island Now")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 AppThemeToggleButton()
@@ -38,17 +38,32 @@ struct RegionHomeView: View {
                 RegionIslandsView(region: region)
             }
         }
+        .navigationDestination(for: Island.self) { island in
+            IslandDetailView(island: island)
+        }
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("行きたい諸島を地図から選んでください")
-                .font(.subheadline)
-                .foregroundStyle(palette.secondaryText)
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top, spacing: 12) {
+                AppBrandTitleView(style: .hero)
 
-            Text("ピンまたは下の一覧をタップ")
-                .font(.caption)
-                .foregroundStyle(palette.secondaryText.opacity(0.85))
+                Spacer(minLength: 8)
+
+                if let island = lastSelectedIslandStore.island {
+                    LastSelectedIslandShortcutView(island: island)
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("行きたい諸島を地図から選んでください")
+                    .font(.subheadline)
+                    .foregroundStyle(palette.secondaryText)
+
+                Text("ピンまたは下の一覧をタップ")
+                    .font(.caption)
+                    .foregroundStyle(palette.secondaryText.opacity(0.85))
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -175,5 +190,6 @@ private struct RegionChipView: View {
         RegionHomeView()
     }
     .environment(AppThemeStore())
+    .environment(LastSelectedIslandStore())
     .environment(\.detailPalette, DetailCardPalette.dark)
 }
