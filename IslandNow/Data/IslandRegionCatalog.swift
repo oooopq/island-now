@@ -16,6 +16,8 @@ struct IslandRegion: Identifiable, Hashable {
     let mapAnnotationLongitude: Double
     /// ホーム画面カード用の背景画像（Assets）
     let coverAssetName: String
+    /// 地域カバー画像の出典表記（Unsplash 等）
+    let coverAssetCredit: String?
     /// フェリーダイヤ取得元の説明（GTFS 取得時のフッター用）
     let ferryDataSourceNote: String?
     /// 有効期限表示の接尾辞（例: OTTOP）
@@ -41,6 +43,7 @@ enum IslandRegionCatalog {
         mapAnnotationLatitude: 24.432805,
         mapAnnotationLongitude: 124.205319,
         coverAssetName: "IslandBgIshigaki",
+        coverAssetCredit: nil,
         ferryDataSourceNote: "沖縄公共交通オープンデータ（OTTOP）から取得しています",
         ferryValidUntilSuffix: "（OTTOP公開データ）"
     )
@@ -51,6 +54,7 @@ enum IslandRegionCatalog {
         mapAnnotationLatitude: 38.044270,
         mapAnnotationLongitude: 138.437949,
         coverAssetName: "IslandBgSado",
+        coverAssetCredit: nil,
         ferryDataSourceNote: nil,
         ferryValidUntilSuffix: nil
     )
@@ -61,6 +65,7 @@ enum IslandRegionCatalog {
         mapAnnotationLatitude: 34.737500,
         mapAnnotationLongitude: 139.398817,
         coverAssetName: "IslandBgIzu",
+        coverAssetCredit: "Photo: Anne Laure P / Unsplash（伊豆・静岡）",
         ferryDataSourceNote: "東海汽船の代表ダイヤです。高速船（日中）と大型客船（夜航）を分けて表示しています。",
         ferryValidUntilSuffix: nil
     )
@@ -71,6 +76,7 @@ enum IslandRegionCatalog {
         mapAnnotationLatitude: 32.686123,
         mapAnnotationLongitude: 128.747749,
         coverAssetName: "IslandBgGoto",
+        coverAssetCredit: "Photo: Nichika Sakurai / Unsplash（長崎・対馬）",
         ferryDataSourceNote: "五島旅客船・木口汽船・九州商船等の代表ダイヤです。カーフェリー（OCEAN）と高速船（TAIYO・シーガル）を分けて表示しています。",
         ferryValidUntilSuffix: nil
     )
@@ -81,6 +87,7 @@ enum IslandRegionCatalog {
         mapAnnotationLatitude: 33.980615,
         mapAnnotationLongitude: 132.615204,
         coverAssetName: "IslandBgKutsuna",
+        coverAssetCredit: "Photo: urusy / Unsplash（瀬戸内海）",
         ferryDataSourceNote: "中島汽船・ごごしま等の代表ダイヤです。フェリーと高速船を分けて表示。東線・西線で寄港が異なります。",
         ferryValidUntilSuffix: nil
     )

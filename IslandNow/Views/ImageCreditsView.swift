@@ -19,6 +19,7 @@ struct ImageCreditsView: View {
             VStack(alignment: .leading, spacing: 16) {
                 introSection
                 dataSourcesSection
+                regionCoverCreditsSection
                 islandCreditsSection
                 licenseNotesSection
                 legalLinksSection
@@ -111,6 +112,33 @@ struct ImageCreditsView: View {
             }
         }
         .creditCardStyle(palette: palette)
+    }
+
+    // 地域ホーム画面のカバー画像（Unsplash）の出典一覧
+    private var regionCoverCreditsSection: some View {
+        let regionsWithCredit = IslandRegionCatalog.all.filter { $0.coverAssetCredit != nil }
+        return VStack(alignment: .leading, spacing: 12) {
+            Text("地域カバー画像")
+                .font(.headline)
+                .foregroundStyle(palette.text)
+
+            ForEach(regionsWithCredit) { region in
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(region.displayNameJapanese)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(palette.text)
+
+                    if let credit = region.coverAssetCredit {
+                        Text(credit)
+                            .font(.caption)
+                            .foregroundStyle(palette.text)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .creditCardStyle(palette: palette)
+            }
+        }
     }
 
     private var islandCreditsSection: some View {
