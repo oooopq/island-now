@@ -10,6 +10,8 @@ import SwiftUI
 struct IslandDetailSectionPickerView: View {
     @Binding var selection: IslandDetailSection
 
+    @Environment(\.detailPalette) private var palette
+
     var body: some View {
         HStack(spacing: 8) {
             ForEach(IslandDetailSection.allCases) { section in
@@ -19,10 +21,10 @@ struct IslandDetailSectionPickerView: View {
         .padding(8)
         .background {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(DetailCardTheme.cardBackground)
+                .fill(palette.cardBackground)
                 .overlay {
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .strokeBorder(DetailCardTheme.cardBorder, lineWidth: 1)
+                        .strokeBorder(palette.cardBorder, lineWidth: 1)
                 }
         }
     }
@@ -42,11 +44,11 @@ struct IslandDetailSectionPickerView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 10)
-            .foregroundStyle(isSelected ? DetailCardTheme.accent : DetailCardTheme.secondaryText)
+            .foregroundStyle(isSelected ? palette.accent : palette.secondaryText)
             .background {
                 if isSelected {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(DetailCardTheme.accent.opacity(0.18))
+                        .fill(palette.accent.opacity(0.18))
                 }
             }
         }

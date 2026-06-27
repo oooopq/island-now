@@ -12,18 +12,20 @@ struct NextDepartureBannerView: View {
     let departures: [UpcomingDeparture]
     let showsTomorrowNote: Bool
 
+    @Environment(\.detailPalette) private var palette
+
     var body: some View {
         if departures.isEmpty == false {
             VStack(alignment: .leading, spacing: 10) {
                 Label(title, systemImage: "clock.fill")
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(DetailCardTheme.accent)
+                    .foregroundStyle(palette.accent)
 
                 if showsTomorrowNote {
                     Text("本日の出港便は終了しました。翌日の最初の便です。")
                         .font(.caption)
-                        .foregroundStyle(DetailCardTheme.warning)
+                        .foregroundStyle(palette.warning)
                 }
 
                 ForEach(Array(departures.enumerated()), id: \.element.id) { index, departure in
@@ -35,7 +37,7 @@ struct NextDepartureBannerView: View {
             }
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(DetailCardTheme.bannerBackground)
+            .background(palette.bannerBackground)
             .clipShape(RoundedRectangle(cornerRadius: 10))
         }
     }

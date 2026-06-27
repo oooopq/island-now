@@ -10,12 +10,14 @@ import SwiftUI
 struct WeatherNoticeBannerView: View {
     let notices: [String]
 
+    @Environment(\.detailPalette) private var palette
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Label("今日の注意", systemImage: "exclamationmark.triangle.fill")
                 .font(.subheadline)
                 .fontWeight(.semibold)
-                .foregroundStyle(DetailCardTheme.warning)
+                .foregroundStyle(palette.warning)
 
             ForEach(Array(notices.enumerated()), id: \.offset) { index, notice in
                 if index > 0 {
@@ -27,7 +29,7 @@ struct WeatherNoticeBannerView: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(DetailCardTheme.noticeBackground)
+        .background(palette.noticeBackground)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }

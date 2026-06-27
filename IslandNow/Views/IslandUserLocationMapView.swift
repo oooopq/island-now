@@ -15,6 +15,7 @@ struct IslandUserLocationMapView: View {
     let userCoordinate: CLLocationCoordinate2D?
     let authorizationStatus: CLAuthorizationStatus
 
+    @Environment(\.detailPalette) private var palette
     @State private var cameraPosition: MapCameraPosition = .automatic
 
     var body: some View {
@@ -22,14 +23,14 @@ struct IslandUserLocationMapView: View {
             Label("あなたの現在地", systemImage: "location.fill")
                 .font(.caption)
                 .fontWeight(.semibold)
-                .foregroundStyle(DetailCardTheme.accent)
+                .foregroundStyle(palette.accent)
 
             Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
                 Annotation(island.nameJapanese, coordinate: island.coordinate) {
                     Image(systemName: "mountain.2.fill")
                         .font(.caption)
                         .padding(6)
-                        .background(Circle().fill(DetailCardTheme.iconAccent.opacity(0.9)))
+                        .background(Circle().fill(palette.iconAccent.opacity(0.9)))
                         .foregroundStyle(.white)
                 }
 
@@ -38,7 +39,7 @@ struct IslandUserLocationMapView: View {
                         Image(systemName: "ferry.fill")
                             .font(.caption2)
                             .padding(5)
-                            .background(Circle().fill(DetailCardTheme.accent.opacity(0.85)))
+                            .background(Circle().fill(palette.accent.opacity(0.85)))
                             .foregroundStyle(.white)
                     }
                 }
@@ -65,7 +66,7 @@ struct IslandUserLocationMapView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .strokeBorder(DetailCardTheme.cardBorder, lineWidth: 1)
+                    .strokeBorder(palette.cardBorder, lineWidth: 1)
             }
             .onAppear {
                 updateCamera()
@@ -79,15 +80,15 @@ struct IslandUserLocationMapView: View {
 
             Text(statusText)
                 .font(.caption)
-                .foregroundStyle(DetailCardTheme.secondaryText)
+                .foregroundStyle(palette.secondaryText)
         }
         .padding(14)
         .background {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(DetailCardTheme.cardBackground.opacity(0.95))
+                .fill(palette.cardBackground.opacity(0.95))
                 .overlay {
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .strokeBorder(DetailCardTheme.cardBorder, lineWidth: 1)
+                        .strokeBorder(palette.cardBorder, lineWidth: 1)
                 }
         }
     }

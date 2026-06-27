@@ -12,6 +12,8 @@ struct PlacesSectionView: View {
     @Binding var selectedCategory: PlaceCategory
     let state: PlacesLoadState
 
+    @Environment(\.detailPalette) private var palette
+
     private var showsPortDistance: Bool {
         selectedCategory == .restaurant || selectedCategory == .lodging
     }
@@ -37,7 +39,7 @@ struct PlacesSectionView: View {
             switch state {
             case .loading:
                 ProgressView("スポットを検索中…")
-                    .tint(DetailCardTheme.accent)
+                    .tint(palette.accent)
                     .detailCardSecondaryText()
 
             case .loaded(let places, let isFromCache):
@@ -74,7 +76,7 @@ struct PlacesSectionView: View {
             case .failed(let message, let cachedPlaces):
                 Text(message)
                     .font(.subheadline)
-                    .foregroundStyle(DetailCardTheme.warning)
+                    .foregroundStyle(palette.warning)
 
                 if let cachedPlaces, cachedPlaces.isEmpty == false {
                     ForEach(Array(cachedPlaces.prefix(IslandCatalog.placeDisplayLimit))) { place in
@@ -104,7 +106,7 @@ struct PlacesSectionView: View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: iconName(for: place.categoryLabel))
                 .frame(width: 24)
-                .foregroundStyle(DetailCardTheme.iconAccent)
+                .foregroundStyle(palette.iconAccent)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(place.name)

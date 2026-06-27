@@ -11,6 +11,7 @@ struct FerryScheduleSectionView: View {
     let island: Island
     let state: FerryLoadState
 
+    @Environment(\.detailPalette) private var palette
     @State private var selectedDestinationID = FerryRouteHelper.allDestinationsID
 
     var body: some View {
@@ -21,7 +22,7 @@ struct FerryScheduleSectionView: View {
             switch state {
             case .loading:
                 ProgressView("ダイヤを取得中…")
-                    .tint(DetailCardTheme.accent)
+                    .tint(palette.accent)
                     .detailCardSecondaryText()
 
             case .loaded(let schedules, let isFromCache, let validUntilText):
@@ -34,7 +35,7 @@ struct FerryScheduleSectionView: View {
             case .failed(let message, let cachedSchedules):
                 Text(message)
                     .font(.subheadline)
-                    .foregroundStyle(DetailCardTheme.warning)
+                    .foregroundStyle(palette.warning)
 
                 if let cachedSchedules {
                     scheduleContent(
@@ -150,8 +151,8 @@ struct FerryScheduleSectionView: View {
                 .font(.subheadline)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(DetailCardTheme.chipBackground(isSelected: isSelected))
-                .foregroundStyle(DetailCardTheme.chipForeground(isSelected: isSelected))
+                .background(palette.chipBackground(isSelected: isSelected))
+                .foregroundStyle(palette.chipForeground(isSelected: isSelected))
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)

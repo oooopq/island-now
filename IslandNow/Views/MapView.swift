@@ -36,6 +36,11 @@ struct MapView: View {
             .navigationDestination(item: $viewModel.selectedIsland) { island in
                 IslandDetailView(island: island)
             }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    AppThemeToggleButton()
+                }
+            }
         }
     }
 }

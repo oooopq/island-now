@@ -10,7 +10,7 @@ import Foundation
 struct WeatherService {
     private let cacheKeyPrefix = "weather_cache_"
 
-    // 島の座標から天気（現在＋1週間）を取得し、キャッシュにも保存する
+    // 島の座標から天気（現在＋今日3時間おき＋1週間）を取得し、キャッシュにも保存する
     func fetchWeather(for island: Island) async throws -> WeatherInfo {
         let url = try makeURL(latitude: island.latitude, longitude: island.longitude)
         let (data, response) = try await URLSession.shared.data(from: url)
@@ -53,6 +53,7 @@ struct WeatherService {
             URLQueryItem(name: "latitude", value: String(latitude)),
             URLQueryItem(name: "longitude", value: String(longitude)),
             URLQueryItem(name: "current", value: "temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code"),
+            URLQueryItem(name: "hourly", value: "temperature_2m,weather_code,precipitation_probability,relative_humidity_2m"),
             URLQueryItem(name: "daily", value: "weather_code,temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean"),
             URLQueryItem(name: "forecast_days", value: "7"),
             URLQueryItem(name: "timezone", value: "Asia/Tokyo"),
@@ -73,6 +74,7 @@ enum WeatherServiceError: Error {
 // Open-Meteo のレスポンス（必要な部分だけ）
 private struct OpenMeteoResponse: Decodable {
     let current: OpenMeteoCurrent
+    let hourly: OpenMeteoHourly
     let daily: OpenMeteoDaily
 
     func toWeatherInfo() -> WeatherInfo {
@@ -81,6 +83,7 @@ private struct OpenMeteoResponse: Decodable {
             condition: WeatherConditionMapper.japaneseName(for: current.weatherCode),
             humidityPercent: current.relativeHumidity2m,
             windSpeedKmh: Int(current.windSpeed10m.rounded()),
+            todayThreeHourForecast: hourly.toTodayThreeHourForecast(),
             weeklyForecast: daily.toWeeklyForecast()
         )
     }
@@ -97,6 +100,52 @@ private struct OpenMeteoCurrent: Decodable {
         case relativeHumidity2m = "relative_humidity_2m"
         case windSpeed10m = "wind_speed_10m"
         case weatherCode = "weather_code"
+    }
+}
+
+private struct OpenMeteoHourly: Decodable {
+    let time: [String]
+    let temperature2m: [Double]
+    let weatherCode: [Int]
+    let precipitationProbability: [Int]
+    let relativeHumidity2m: [Int]
+
+    enum CodingKeys: String, CodingKey {
+        case time
+        case temperature2m = "temperature_2m"
+        case weatherCode = "weather_code"
+        case precipitationProbability = "precipitation_probability"
+        case relativeHumidity2m = "relative_humidity_2m"
+    }
+
+    func toTodayThreeHourForecast() -> [HourlyWeatherForecast] {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Tokyo") ?? .current
+        let now = Date()
+        let currentHour = calendar.component(.hour, from: now)
+        let startHour = (currentHour / 3) * 3
+        let todayPrefix = WeatherDateFormatter.todayDatePrefix(for: now, calendar: calendar)
+
+        return time.indices.compactMap { index in
+            let timeString = time[index]
+            guard timeString.hasPrefix(todayPrefix),
+                  let hour = WeatherDateFormatter.hour(from: timeString) else {
+                return nil
+            }
+            guard hour >= startHour, hour <= 21, hour % 3 == 0 else {
+                return nil
+            }
+
+            let precipitation = precipitationProbability[index]
+            return HourlyWeatherForecast(
+                id: timeString,
+                timeLabel: "\(hour)時",
+                temperatureCelsius: Int(temperature2m[index].rounded()),
+                condition: WeatherConditionMapper.japaneseName(for: weatherCode[index]),
+                humidityPercent: relativeHumidity2m[index],
+                precipitationProbabilityPercent: max(0, precipitation)
+            )
+        }
     }
 }
 
@@ -129,7 +178,6 @@ private struct OpenMeteoDaily: Decodable {
     }
 }
 
-// 日付文字列を「6/21（土）」形式に変換
 private enum WeatherDateFormatter {
     static func label(for dateString: String) -> String {
         let input = DateFormatter()
@@ -145,6 +193,22 @@ private enum WeatherDateFormatter {
         output.dateFormat = "M/d（E）"
         output.timeZone = TimeZone(identifier: "Asia/Tokyo")
         return output.string(from: date)
+    }
+
+    static func todayDatePrefix(for date: Date, calendar: Calendar) -> String {
+        let components = calendar.dateComponents([.year, .month, .day], from: date)
+        guard let year = components.year, let month = components.month, let day = components.day else {
+            return ""
+        }
+        return String(format: "%04d-%02d-%02dT", year, month, day)
+    }
+
+    static func hour(from isoTime: String) -> Int? {
+        // Open-Meteo（Asia/Tokyo）: "2026-06-21T09:00"
+        guard isoTime.count >= 13 else { return nil }
+        let hourStart = isoTime.index(isoTime.startIndex, offsetBy: 11)
+        let hourEnd = isoTime.index(hourStart, offsetBy: 2)
+        return Int(isoTime[hourStart..<hourEnd])
     }
 }
 

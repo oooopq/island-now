@@ -10,6 +10,7 @@ import SwiftUI
 struct IslandDetailView: View {
     let island: Island
 
+    @Environment(\.detailPalette) private var palette
     @State private var selectedSection: IslandDetailSection = .weather
     @State private var weatherState: WeatherLoadState = .loading
     @State private var ferryState: FerryLoadState = .loading
@@ -61,7 +62,7 @@ struct IslandDetailView: View {
 
                     Text(islandProfile?.backgroundCredit ?? "")
                         .font(.caption2)
-                        .foregroundStyle(.white.opacity(0.75))
+                        .foregroundStyle(palette.captionOnPhoto)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
                 .padding()
@@ -73,6 +74,11 @@ struct IslandDetailView: View {
         .scrollContentBackground(.hidden)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                AppThemeToggleButton()
+            }
+        }
         .refreshable {
             await refreshAllData()
         }

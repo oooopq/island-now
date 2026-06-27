@@ -12,6 +12,7 @@ struct FlightScheduleSectionView: View {
     let schedules: [FlightAirlineSchedule]
     let scheduleNote: String?
 
+    @Environment(\.detailPalette) private var palette
     @State private var selectedDestinationID = FlightRouteHelper.allDestinationsID
 
     var body: some View {
@@ -101,8 +102,8 @@ struct FlightScheduleSectionView: View {
                 .font(.subheadline)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(DetailCardTheme.chipBackground(isSelected: isSelected))
-                .foregroundStyle(DetailCardTheme.chipForeground(isSelected: isSelected))
+                .background(palette.chipBackground(isSelected: isSelected))
+                .foregroundStyle(palette.chipForeground(isSelected: isSelected))
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)
@@ -161,7 +162,7 @@ struct FlightScheduleSectionView: View {
                 Text(trip.flightNumber)
                     .font(.caption)
                     .fontWeight(.semibold)
-                    .foregroundStyle(DetailCardTheme.accent)
+                    .foregroundStyle(palette.accent)
 
                 HStack(spacing: 6) {
                     Text(route.departure)

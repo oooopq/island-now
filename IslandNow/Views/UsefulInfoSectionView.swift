@@ -10,6 +10,8 @@ import SwiftUI
 struct UsefulInfoSectionView: View {
     let islandID: String
 
+    @Environment(\.detailPalette) private var palette
+
     private var items: [UsefulInfo] {
         IslandCatalog.profile(for: islandID)?.usefulInfo ?? []
     }
@@ -39,7 +41,7 @@ struct UsefulInfoSectionView: View {
             Label(category.rawValue, systemImage: category.systemImage)
                 .font(.subheadline)
                 .fontWeight(.semibold)
-                .foregroundStyle(DetailCardTheme.accent)
+                .foregroundStyle(palette.accent)
 
             ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                 if index > 0 {

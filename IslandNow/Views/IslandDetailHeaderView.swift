@@ -11,12 +11,14 @@ struct IslandDetailHeaderView: View {
     let island: Island
     let regionDisplayName: String?
 
+    @Environment(\.detailPalette) private var palette
+
     var body: some View {
         HStack(alignment: .center, spacing: 10) {
             RoundedRectangle(cornerRadius: 1.5, style: .continuous)
                 .fill(
                     LinearGradient(
-                        colors: [DetailCardTheme.accent, DetailCardTheme.iconAccent],
+                        colors: [palette.accent, palette.iconAccent],
                         startPoint: .top,
                         endPoint: .bottom
                     )
@@ -28,20 +30,20 @@ struct IslandDetailHeaderView: View {
                     Text(regionDisplayName)
                         .font(.caption2)
                         .fontWeight(.semibold)
-                        .foregroundStyle(DetailCardTheme.accent)
+                        .foregroundStyle(palette.accent)
                 }
 
                 Text(island.nameJapanese)
                     .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(palette.text)
                     .lineLimit(1)
                     .minimumScaleFactor(0.85)
 
                 Text(island.nameEnglish.uppercased())
                     .font(.caption2)
                     .tracking(1.5)
-                    .foregroundStyle(DetailCardTheme.secondaryText)
+                    .foregroundStyle(palette.secondaryText)
                     .lineLimit(1)
             }
 
@@ -49,16 +51,16 @@ struct IslandDetailHeaderView: View {
 
             Image(systemName: "mappin.and.ellipse")
                 .font(.title3)
-                .foregroundStyle(DetailCardTheme.accent.opacity(0.9))
+                .foregroundStyle(palette.accent.opacity(0.9))
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(DetailCardTheme.cardBackground.opacity(0.95))
+                .fill(palette.cardBackground.opacity(0.95))
                 .overlay {
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .strokeBorder(DetailCardTheme.cardBorder, lineWidth: 1)
+                        .strokeBorder(palette.cardBorder, lineWidth: 1)
                 }
         }
     }
