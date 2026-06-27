@@ -30,6 +30,22 @@ enum IslandCatalog {
         all.map(\.island)
     }
 
+    static var regions: [IslandRegion] {
+        IslandRegionCatalog.all
+    }
+
+    static func profiles(forRegionID regionID: String) -> [IslandProfile] {
+        all.filter { $0.regionID == regionID }
+    }
+
+    static func islands(forRegionID regionID: String) -> [Island] {
+        profiles(forRegionID: regionID).map(\.island)
+    }
+
+    static func islandCount(forRegionID regionID: String) -> Int {
+        profiles(forRegionID: regionID).count
+    }
+
     static func profile(for islandID: String) -> IslandProfile? {
         all.first { $0.id == islandID }
     }
