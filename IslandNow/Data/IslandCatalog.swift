@@ -56,6 +56,34 @@ enum IslandCatalog {
         profile(for: island.id)
     }
 
+    struct BackgroundCreditEntry: Identifiable {
+        let islandID: String
+        let islandNameJapanese: String
+        let regionNameJapanese: String
+        let credit: String
+
+        var id: String { islandID }
+    }
+
+    /// 公開・法務向け：全島の背景画像クレジット一覧
+    static var backgroundCreditEntries: [BackgroundCreditEntry] {
+        all
+            .map { profile in
+                BackgroundCreditEntry(
+                    islandID: profile.id,
+                    islandNameJapanese: profile.island.nameJapanese,
+                    regionNameJapanese: profile.regionDisplayName,
+                    credit: profile.backgroundCredit
+                )
+            }
+            .sorted { lhs, rhs in
+                if lhs.regionNameJapanese != rhs.regionNameJapanese {
+                    return lhs.regionNameJapanese < rhs.regionNameJapanese
+                }
+                return lhs.islandNameJapanese < rhs.islandNameJapanese
+            }
+    }
+
     static func islandID(matchingPlaceName placeName: String) -> String? {
         all.first { $0.matchesPlaceName(placeName) }?.id
     }

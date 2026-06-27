@@ -29,6 +29,16 @@ struct RegionHomeView: View {
         .background(homeBackground)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                NavigationLink {
+                    ImageCreditsView()
+                } label: {
+                    Image(systemName: "info.circle")
+                        .foregroundStyle(palette.secondaryText)
+                }
+                .accessibilityLabel("画像提供・ライセンス")
+            }
+
             ToolbarItem(placement: .topBarTrailing) {
                 AppThemeToggleButton()
             }
