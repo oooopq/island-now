@@ -36,7 +36,7 @@ enum YaeyamaIslandProfiles {
 
     private static let irimoteJyosen = FerryCompany(
         name: "西表島交通株式会社",
-        websiteURL: "https://iriomote.com/",
+        websiteURL: "https://yubujima.com/",
         phoneNumber: "0980-85-5601",
         statusPageURL: "https://yubujima.com/"
     )

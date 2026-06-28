@@ -45,7 +45,7 @@ enum FerryGTFSFeedCatalog {
             name: "福山海運株式会社",
             websiteURL: "https://www.yonakuni-ferry.com/",
             phoneNumber: "0980-87-2555",
-            statusPageURL: "https://fukuyamakaiun.ti-da.net/"
+            statusPageURL: "https://www.yonakuni-ferry.com/"
         )
     )
 }

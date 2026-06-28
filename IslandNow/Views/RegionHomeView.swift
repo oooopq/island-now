@@ -90,13 +90,14 @@ struct RegionHomeView: View {
     private var japanMap: some View {
         Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
             ForEach(IslandCatalog.regions) { region in
-                Annotation(region.displayNameJapanese, coordinate: region.mapCoordinate) {
+                Annotation("", coordinate: region.mapCoordinate) {
                     Button {
                         mapSelectedRegionID = region.id
                     } label: {
                         JapanRegionMarkerView(region: region)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("\(region.displayNameJapanese) \(IslandCatalog.islandCount(forRegionID: region.id))島")
                 }
             }
         }

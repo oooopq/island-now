@@ -35,9 +35,9 @@ enum GotoIslandProfiles {
 
     private static let kyushuShosen = FerryCompany(
         name: "九州商船株式会社",
-        websiteURL: "https://www.kyushukisen.co.jp/",
+        websiteURL: "https://kyusho.co.jp/schedule",
         phoneNumber: "095-822-0101",
-        statusPageURL: "https://www.kyushukisen.co.jp/information/"
+        statusPageURL: "https://kyusho.co.jp/status"
     )
 
     private static let ana = FlightAirline(

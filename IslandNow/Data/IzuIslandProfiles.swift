@@ -23,7 +23,7 @@ enum IzuIslandProfiles {
 
     private static let tokaiKisen = FerryCompany(
         name: "東海汽船株式会社",
-        websiteURL: "https://www.tokaikisen.co.jp/",
+        websiteURL: "https://www.tokaikisen.co.jp/schedule/",
         phoneNumber: "03-5472-9999",
         statusPageURL: "https://www.tokaikisen.co.jp/schedule/"
     )
@@ -37,9 +37,9 @@ enum IzuIslandProfiles {
 
     private static let shinChuoAir = FlightAirline(
         name: "新中央航空",
-        websiteURL: "https://www.central-air.co.jp/",
+        websiteURL: "https://central-air.co.jp/schedule-fee.html",
         phoneNumber: "042-548-0100",
-        statusPageURL: "https://www.central-air.co.jp/renew/flight_information_contents.html"
+        statusPageURL: "https://central-air.co.jp/status.html"
     )
 
     private static let flightScheduleNote = "代表ダイヤです。季節・天候により変更・欠航があります。"
