@@ -12,6 +12,8 @@ struct RegionHomeView: View {
     @Environment(\.detailPalette) private var palette
     @Environment(LastSelectedIslandStore.self) private var lastSelectedIslandStore
     @State private var cameraPosition: MapCameraPosition = RegionMapSupport.japanHomeCameraPosition()
+    /// 地図ピンタップ用（Map 内の NavigationLink は実機で真っ暗になることがある）
+    @State private var mapSelectedRegionID: String?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -26,8 +28,10 @@ struct RegionHomeView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(homeBackground)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 NavigationLink {
@@ -44,6 +48,11 @@ struct RegionHomeView: View {
             }
         }
         .navigationDestination(for: String.self) { regionID in
+            if let region = IslandRegionCatalog.region(for: regionID) {
+                RegionIslandsView(region: region)
+            }
+        }
+        .navigationDestination(item: $mapSelectedRegionID) { regionID in
             if let region = IslandRegionCatalog.region(for: regionID) {
                 RegionIslandsView(region: region)
             }
@@ -82,7 +91,9 @@ struct RegionHomeView: View {
         Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
             ForEach(IslandCatalog.regions) { region in
                 Annotation(region.displayNameJapanese, coordinate: region.mapCoordinate) {
-                    NavigationLink(value: region.id) {
+                    Button {
+                        mapSelectedRegionID = region.id
+                    } label: {
                         JapanRegionMarkerView(region: region)
                     }
                     .buttonStyle(.plain)
@@ -90,6 +101,7 @@ struct RegionHomeView: View {
             }
         }
         .mapStyle(.standard(elevation: .flat))
+        .frame(minHeight: 280)
         .frame(maxHeight: .infinity)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay {
@@ -113,14 +125,17 @@ struct RegionHomeView: View {
     }
 
     private var homeBackground: some View {
-        LinearGradient(
-            colors: [
-                palette.cardBackground.opacity(0.35),
-                palette.cardBackground.opacity(0.85),
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
+        ZStack {
+            Color(red: 0.06, green: 0.08, blue: 0.12)
+            LinearGradient(
+                colors: [
+                    palette.cardBackground.opacity(0.35),
+                    palette.cardBackground.opacity(0.85),
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        }
         .ignoresSafeArea()
     }
 }

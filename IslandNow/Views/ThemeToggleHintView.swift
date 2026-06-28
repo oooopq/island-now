@@ -39,14 +39,18 @@ struct ThemeToggleHintView: View {
             }
             .multilineTextAlignment(.center)
 
-            Button("OK") {
+            Button {
                 dismiss()
+            } label: {
+                Text("OK")
+                    .font(.headline)
+                    .foregroundStyle(palette.accent)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(palette.accent.opacity(0.18), in: RoundedRectangle(cornerRadius: 12))
+                    .contentShape(RoundedRectangle(cornerRadius: 12))
             }
-            .font(.headline)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
-            .background(palette.accent.opacity(0.18), in: RoundedRectangle(cornerRadius: 12))
-            .foregroundStyle(palette.accent)
+            .buttonStyle(.plain)
             .padding(.top, 4)
         }
         .padding(24)

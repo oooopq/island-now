@@ -17,6 +17,8 @@ struct ContentView: View {
         NavigationStack {
             RegionHomeView()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(red: 0.06, green: 0.08, blue: 0.12).ignoresSafeArea())
         .environment(themeStore)
         .environment(lastSelectedIslandStore)
         .environment(\.detailPalette, themeStore.palette)
