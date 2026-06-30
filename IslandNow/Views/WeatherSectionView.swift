@@ -77,9 +77,11 @@ struct WeatherSectionView: View {
                 WeatherIconView(condition: weather.condition, iconSize: 56)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("\(weather.temperatureCelsius)°C")
+                    Text("\(weather.temperatureCelsius)°\u{2060}C")
                         .font(.system(size: 44, weight: .bold, design: .rounded))
                         .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
 
                     Text(weather.condition)
                         .font(.title3)
@@ -89,6 +91,7 @@ struct WeatherSectionView: View {
                         .detailCardSecondaryText()
                 }
             }
+            .layoutPriority(1)
 
             Spacer(minLength: 8)
 
