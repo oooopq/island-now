@@ -11,7 +11,10 @@ struct IslandDetailSectionPickerView: View {
     @Binding var selection: IslandDetailSection
 
     @Environment(\.detailPalette) private var palette
+    @Environment(\.colorScheme) private var colorScheme
     @Namespace private var selectionNamespace
+
+    private var isLightMode: Bool { colorScheme == .light }
 
     var body: some View {
         HStack(spacing: 4) {
@@ -25,20 +28,35 @@ struct IslandDetailSectionPickerView: View {
 
     private var pickerBackground: some View {
         RoundedRectangle(cornerRadius: 18, style: .continuous)
-            .fill(palette.cardBackground.opacity(0.72))
+            .fill(pickerContainerFill)
             .background {
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                if !isLightMode {
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                }
             }
             .overlay {
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .strokeBorder(rainbowBorderGradient, lineWidth: 1.5)
+                    .strokeBorder(pickerBorderGradient, lineWidth: 1.5)
             }
-            .shadow(color: palette.cardShadow, radius: 12, y: 5)
+            .shadow(color: palette.cardShadow, radius: isLightMode ? 10 : 12, y: isLightMode ? 4 : 5)
     }
 
-    private var rainbowBorderGradient: LinearGradient {
-        LinearGradient(
+    private var pickerContainerFill: Color {
+        isLightMode
+            ? palette.cardBackground
+            : palette.cardBackground.opacity(0.72)
+    }
+
+    private var pickerBorderGradient: LinearGradient {
+        if isLightMode {
+            return LinearGradient(
+                colors: IslandDetailSection.allCases.map { $0.resolvedIconColor(isLightMode: true) },
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+        }
+        return LinearGradient(
             colors: IslandDetailSection.allCases.map(\.iconColor),
             startPoint: .leading,
             endPoint: .trailing
@@ -47,6 +65,7 @@ struct IslandDetailSectionPickerView: View {
 
     private func sectionButton(_ section: IslandDetailSection) -> some View {
         let isSelected = selection == section
+        let iconColor = section.resolvedIconColor(isLightMode: isLightMode)
 
         return Button {
             withAnimation(.spring(response: 0.34, dampingFraction: 0.78)) {
@@ -58,8 +77,8 @@ struct IslandDetailSectionPickerView: View {
                     Circle()
                         .fill(
                             isSelected
-                                ? AnyShapeStyle(Color.white.opacity(0.22))
-                                : AnyShapeStyle(section.iconColor.opacity(0.22))
+                                ? AnyShapeStyle(Color.white.opacity(isLightMode ? 0.28 : 0.22))
+                                : AnyShapeStyle(section.unselectedIconCircleFill(isLightMode: isLightMode))
                         )
                         .frame(width: 34, height: 34)
 
@@ -67,8 +86,10 @@ struct IslandDetailSectionPickerView: View {
                         .font(.system(size: 16, weight: .bold))
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(
-                            isSelected ? Color.white : section.iconColor,
-                            isSelected ? Color.white.opacity(0.75) : section.iconColor.opacity(0.55)
+                            isSelected ? Color.white : iconColor,
+                            isSelected
+                                ? Color.white.opacity(0.75)
+                                : section.unselectedIconSecondaryColor(isLightMode: isLightMode)
                         )
                         .scaleEffect(isSelected ? 1.08 : 1.0)
                 }
@@ -76,7 +97,9 @@ struct IslandDetailSectionPickerView: View {
 
                 Text(section.title)
                     .font(.system(size: 10, weight: isSelected ? .bold : .semibold))
-                    .foregroundStyle(isSelected ? Color.white : section.iconColor.opacity(0.92))
+                    .foregroundStyle(
+                        isSelected ? Color.white : iconColor
+                    )
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
             }
@@ -85,19 +108,26 @@ struct IslandDetailSectionPickerView: View {
             .background {
                 if isSelected {
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(section.tabGradient)
+                        .fill(section.resolvedTabGradient(isLightMode: isLightMode))
                         .overlay {
                             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                .strokeBorder(Color.white.opacity(0.28), lineWidth: 1)
+                                .strokeBorder(Color.white.opacity(isLightMode ? 0.35 : 0.28), lineWidth: 1)
                         }
-                        .shadow(color: section.iconColor.opacity(0.55), radius: 8, y: 3)
+                        .shadow(
+                            color: iconColor.opacity(isLightMode ? 0.38 : 0.55),
+                            radius: 8,
+                            y: 3
+                        )
                         .matchedGeometryEffect(id: "sectionTabPill", in: selectionNamespace)
                 } else {
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(section.iconColor.opacity(0.12))
+                        .fill(section.unselectedTabBackground(isLightMode: isLightMode))
                         .overlay {
                             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                .strokeBorder(section.iconColor.opacity(0.28), lineWidth: 1)
+                                .strokeBorder(
+                                    section.unselectedTabBorder(isLightMode: isLightMode),
+                                    lineWidth: isLightMode ? 1.25 : 1
+                                )
                         }
                 }
             }
@@ -119,6 +149,7 @@ struct IslandDetailSectionPickerView: View {
             )
         }
         .environment(\.detailPalette, DetailCardPalette.dark)
+        .preferredColorScheme(.dark)
 }
 
 #Preview("ライト") {
@@ -126,4 +157,5 @@ struct IslandDetailSectionPickerView: View {
         .padding()
         .background(Color(red: 0.92, green: 0.95, blue: 0.98))
         .environment(\.detailPalette, DetailCardPalette.light)
+        .preferredColorScheme(.light)
 }
