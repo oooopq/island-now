@@ -27,21 +27,24 @@ enum KutsunaIslandProfiles {
         name: "中島汽船株式会社",
         websiteURL: "http://www.nakajimakisen.co.jp/",
         phoneNumber: "089-997-1221",
-        statusPageURL: "http://www.nakajimakisen.co.jp/"
+        statusPageURL: "http://www.nakajimakisen.co.jp/",
+        homePageURL: "http://www.nakajimakisen.co.jp/"
     )
 
     private static let gogoshimaFerry = FerryCompany(
         name: "株式会社ごごしま",
         websiteURL: "https://gogoshima-ferry.com/",
         phoneNumber: "089-961-2034",
-        statusPageURL: "https://gogoshima-ferry.com/information"
+        statusPageURL: "https://gogoshima-ferry.com/information",
+        homePageURL: "https://gogoshima-ferry.com/"
     )
 
     private static let aijimaShip = FerryCompany(
         name: "新喜峰（あいほく2）",
         websiteURL: "https://www.pref.ehime.jp/site/chuyo/4770.html",
         phoneNumber: "090-1174-2995",
-        statusPageURL: "https://www.pref.ehime.jp/site/chuyo/4770.html"
+        statusPageURL: "https://www.pref.ehime.jp/site/chuyo/4770.html",
+        homePageURL: "https://www.pref.ehime.jp/site/chuyo/4770.html"
     )
 
     private static let ferryScheduleNote = "代表ダイヤです。東線・西線・便により寄港が異なります。最新は各社公式でご確認ください。"

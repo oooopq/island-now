@@ -24,9 +24,10 @@ enum IzuIslandProfiles {
 
     private static let tokaiKisen = FerryCompany(
         name: "東海汽船株式会社",
-        websiteURL: "https://www.tokaikisen.co.jp/schedule/",
+        websiteURL: "https://www.tokaikisen.co.jp/boarding/timetable/",
         phoneNumber: "03-5472-9999",
-        statusPageURL: "https://www.tokaikisen.co.jp/schedule/"
+        statusPageURL: "https://www.tokaikisen.co.jp/schedule/",
+        homePageURL: "https://www.tokaikisen.co.jp/"
     )
 
     private static let ana = FlightAirline(

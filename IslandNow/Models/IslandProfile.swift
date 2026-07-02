@@ -44,6 +44,25 @@ struct IslandProfile: Identifiable {
         IslandRegionCatalog.displayName(for: regionID)
     }
 
+    /// 八重山のみ OTTOP GTFS でアプリ内ダイヤを表示
+    var usesFerryGTFS: Bool {
+        ferryGTFSFeeds.isEmpty == false
+    }
+
+    /// リンクのみ表示する地域向け：sampleFerrySchedules から会社を重複除去
+    var ferryLinkCompanies: [FerryCompany] {
+        var seen = Set<String>()
+        var companies: [FerryCompany] = []
+
+        for schedule in sampleFerrySchedules {
+            let key = schedule.company.name
+            guard seen.insert(key).inserted else { continue }
+            companies.append(schedule.company)
+        }
+
+        return companies
+    }
+
     /// 後方互換・単一港向け
     var port: IslandPort? {
         ports.first

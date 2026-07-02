@@ -17,9 +17,10 @@ enum SadoIslandProfiles {
 
     private static let sadoKisen = FerryCompany(
         name: "佐渡汽船株式会社",
-        websiteURL: "https://www.sadokisen.co.jp/",
+        websiteURL: "https://www.sadokisen.co.jp/timetable/",
         phoneNumber: "025-245-6400",
-        statusPageURL: "https://www.sadokisen.co.jp/reservation/service-status/"
+        statusPageURL: "https://www.sadokisen.co.jp/reservation/service-status/",
+        homePageURL: "https://www.sadokisen.co.jp/"
     )
 
     private static let ana = FlightAirline(

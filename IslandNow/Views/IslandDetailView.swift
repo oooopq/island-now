@@ -28,11 +28,16 @@ struct IslandDetailView: View {
         IslandCatalog.profile(for: island)
     }
 
+    private var usesFerryGTFS: Bool {
+        islandProfile?.usesFerryGTFS == true
+    }
+
     private var scheduleStatusSources: [ScheduleStatusSource]? {
         var sources: [ScheduleStatusSource] = []
 
-        let ferrySchedules = currentFerrySchedules
-        sources += ScheduleStatusSourceCollector.fromFerrySchedules(ferrySchedules)
+        if usesFerryGTFS {
+            sources += ScheduleStatusSourceCollector.fromFerrySchedules(currentFerrySchedules)
+        }
 
         if let flightSchedules = islandProfile?.flightSchedules {
             sources += ScheduleStatusSourceCollector.fromFlightSchedules(flightSchedules)
@@ -113,8 +118,12 @@ struct IslandDetailView: View {
             restoreCachedStates(for: island)
 
             async let weatherLoad: Void = loadWeather()
-            async let ferryLoad: Void = loadFerrySchedules()
-            _ = await (weatherLoad, ferryLoad)
+            if usesFerryGTFS {
+                async let ferryLoad: Void = loadFerrySchedules()
+                _ = await (weatherLoad, ferryLoad)
+            } else {
+                await weatherLoad
+            }
         }
         .task(id: placeSearchTaskID) {
             guard selectedSection == .places else { return }
@@ -140,7 +149,11 @@ struct IslandDetailView: View {
                 ScheduleStatusBannerView(sources: scheduleStatusSources)
             }
 
-            FerryScheduleSectionView(island: island, state: ferryState)
+            if usesFerryGTFS {
+                FerryScheduleSectionView(island: island, state: ferryState)
+            } else if let companies = islandProfile?.ferryLinkCompanies, companies.isEmpty == false {
+                FerryLinkSectionView(companies: companies)
+            }
 
             if let islandProfile, islandProfile.flightSchedules.isEmpty == false {
                 FlightScheduleSectionView(
@@ -173,7 +186,7 @@ struct IslandDetailView: View {
         if weatherService.cachedWeather(for: island.id) == nil {
             weatherState = .loading
         }
-        if ferryService.cachedSchedules(for: island.id) == nil {
+        if usesFerryGTFS, ferryService.cachedSchedules(for: island.id) == nil {
             ferryState = .loading
         }
         if selectedSection == .places,
@@ -182,8 +195,12 @@ struct IslandDetailView: View {
         }
 
         async let weatherLoad: Void = loadWeather()
-        async let ferryLoad: Void = loadFerrySchedules()
-        _ = await (weatherLoad, ferryLoad)
+        if usesFerryGTFS {
+            async let ferryLoad: Void = loadFerrySchedules()
+            _ = await (weatherLoad, ferryLoad)
+        } else {
+            await weatherLoad
+        }
 
         if selectedSection == .places {
             await loadPlaces()
@@ -199,14 +216,16 @@ struct IslandDetailView: View {
             weatherState = .loading
         }
 
-        if let cached = ferryService.cachedSchedules(for: island.id) {
-            ferryState = .loaded(
-                cached.schedules,
-                isFromCache: true,
-                validUntilText: cached.validUntilText
-            )
-        } else {
-            ferryState = .loading
+        if usesFerryGTFS {
+            if let cached = ferryService.cachedSchedules(for: island.id) {
+                ferryState = .loaded(
+                    cached.schedules,
+                    isFromCache: true,
+                    validUntilText: cached.validUntilText
+                )
+            } else {
+                ferryState = .loading
+            }
         }
     }
 
@@ -231,6 +250,8 @@ struct IslandDetailView: View {
 
     @MainActor
     private func loadFerrySchedules() async {
+        guard usesFerryGTFS else { return }
+
         if case .loading = ferryState,
            let cached = ferryService.cachedSchedules(for: island.id) {
             ferryState = .loaded(
