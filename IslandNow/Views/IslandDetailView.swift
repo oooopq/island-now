@@ -17,6 +17,7 @@ struct IslandDetailView: View {
     @State private var ferryState: FerryLoadState = .loading
     @State private var placesState: PlacesLoadState = .loading
     @State private var selectedPlaceCategory: PlaceCategory = .restaurant
+    @State private var savedPhotoStore = IslandSavedPhotoStore()
     @State private var locationService = UserLocationService()
 
     private let weatherService = WeatherService()
@@ -158,11 +159,10 @@ struct IslandDetailView: View {
                 state: placesState
             )
 
-        case .liveCamera:
-            LiveCameraSectionView(
-                liveCameras: islandProfile?.liveCameras ?? [],
-                youtubeRelatedLinks: islandProfile?.youtubeRelatedLinks ?? [],
-                footnote: islandProfile?.liveCameraFootnote
+        case .savedPhotos:
+            IslandSavedPhotosSectionView(
+                islandID: island.id,
+                store: savedPhotoStore
             )
         }
     }
