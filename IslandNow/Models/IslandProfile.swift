@@ -42,7 +42,7 @@ struct IslandProfile: Identifiable {
     let liveCameraFootnote: String?
     let flightSchedules: [FlightAirlineSchedule]
     let flightScheduleNote: String?
-    /// 詳細画面を開いた直後のアート演出（任意）
+    /// 詳細画面を開いた直後のアート演出（nil で無効）
     let artIntro: IslandArtIntro?
 
     var id: String { island.id }
@@ -92,7 +92,7 @@ struct IslandProfile: Identifiable {
         liveCameraFootnote: String? = nil,
         flightSchedules: [FlightAirlineSchedule],
         flightScheduleNote: String?,
-        artIntro: IslandArtIntro? = nil
+        artIntro: IslandArtIntro? = .fullscreenZoomOut
     ) {
         self.island = island
         self.regionID = regionID
