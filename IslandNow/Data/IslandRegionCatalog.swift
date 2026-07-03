@@ -54,7 +54,7 @@ enum IslandRegionCatalog {
         mapAnnotationLatitude: 38.044270,
         mapAnnotationLongitude: 138.437949,
         coverAssetName: "IslandBgSado",
-        coverAssetCredit: nil,
+        coverAssetCredit: "Photo: Wikimedia Commons（佐渡島）／表示時に暗色グラデーションを追加",
         ferryDataSourceNote: nil,
         ferryValidUntilSuffix: nil
     )
@@ -65,7 +65,7 @@ enum IslandRegionCatalog {
         mapAnnotationLatitude: 34.737500,
         mapAnnotationLongitude: 139.398817,
         coverAssetName: "IslandBgIzu",
-        coverAssetCredit: "Photo: Anne Laure P / Unsplash（伊豆・静岡）",
+        coverAssetCredit: "Photo: Ice Tea / Unsplash（神津島・伊豆諸島）",
         ferryDataSourceNote: "東海汽船の代表ダイヤです。高速船（日中）と大型客船（夜航）を分けて表示しています。",
         ferryValidUntilSuffix: nil
     )
@@ -76,7 +76,7 @@ enum IslandRegionCatalog {
         mapAnnotationLatitude: 32.686123,
         mapAnnotationLongitude: 128.747749,
         coverAssetName: "IslandBgGoto",
-        coverAssetCredit: "Photo: Nichika Sakurai / Unsplash（長崎・対馬）",
+        coverAssetCredit: "Photo: Wikimedia Commons（五島列島）／表示時に暗色グラデーションを追加",
         ferryDataSourceNote: "五島旅客船・木口汽船・九州商船等の代表ダイヤです。カーフェリー（OCEAN）と高速船（TAIYO・シーガル）を分けて表示しています。",
         ferryValidUntilSuffix: nil
     )
@@ -87,12 +87,23 @@ enum IslandRegionCatalog {
         mapAnnotationLatitude: 33.980615,
         mapAnnotationLongitude: 132.615204,
         coverAssetName: "IslandBgKutsuna",
-        coverAssetCredit: "Photo: urusy / Unsplash（瀬戸内海）",
+        coverAssetCredit: "Photo: Wikimedia Commons（忽那諸島・中島港）／表示時に暗色グラデーションを追加",
         ferryDataSourceNote: "中島汽船・ごごしま等の代表ダイヤです。フェリーと高速船を分けて表示。東線・西線で寄港が異なります。",
         ferryValidUntilSuffix: nil
     )
 
-    static let all: [IslandRegion] = [yaeyama, sado, izu, goto, kutsuna]
+    static let shodoshimaNaoshima = IslandRegion(
+        id: "shodoshima_naoshima",
+        displayNameJapanese: "小豆島・直島諸島",
+        mapAnnotationLatitude: 34.498376,
+        mapAnnotationLongitude: 134.103496,
+        coverAssetName: "IslandBgShodoshimaNaoshima",
+        coverAssetCredit: "Photo: Yu / Unsplash（小豆島・香川）",
+        ferryDataSourceNote: "四国フェリー・小豆島フェリー・四国汽船等の公式サイトからご確認ください。",
+        ferryValidUntilSuffix: nil
+    )
+
+    static let all: [IslandRegion] = [yaeyama, sado, izu, goto, kutsuna, shodoshimaNaoshima]
 
     static func region(for regionID: String) -> IslandRegion? {
         all.first { $0.id == regionID }
