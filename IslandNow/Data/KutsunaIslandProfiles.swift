@@ -27,21 +27,24 @@ enum KutsunaIslandProfiles {
         name: "中島汽船株式会社",
         websiteURL: "http://www.nakajimakisen.co.jp/",
         phoneNumber: "089-997-1221",
-        statusPageURL: "http://www.nakajimakisen.co.jp/"
+        statusPageURL: "http://www.nakajimakisen.co.jp/",
+        homePageURL: "http://www.nakajimakisen.co.jp/"
     )
 
     private static let gogoshimaFerry = FerryCompany(
         name: "株式会社ごごしま",
         websiteURL: "https://gogoshima-ferry.com/",
         phoneNumber: "089-961-2034",
-        statusPageURL: "https://gogoshima-ferry.com/information"
+        statusPageURL: "https://gogoshima-ferry.com/information",
+        homePageURL: "https://gogoshima-ferry.com/"
     )
 
     private static let aijimaShip = FerryCompany(
         name: "新喜峰（あいほく2）",
         websiteURL: "https://www.pref.ehime.jp/site/chuyo/4770.html",
         phoneNumber: "090-1174-2995",
-        statusPageURL: "https://www.pref.ehime.jp/site/chuyo/4770.html"
+        statusPageURL: "https://www.pref.ehime.jp/site/chuyo/4770.html",
+        homePageURL: "https://www.pref.ehime.jp/site/chuyo/4770.html"
     )
 
     private static let ferryScheduleNote = "代表ダイヤです。東線・西線・便により寄港が異なります。最新は各社公式でご確認ください。"
@@ -70,7 +73,7 @@ enum KutsunaIslandProfiles {
             IslandPort(name: "西中港", latitude: 33.984307, longitude: 132.604786),
         ],
         backgroundAssetName: "IslandBgNakajima",
-        backgroundCredit: "Photo: Se. Tsuchiya / Unsplash",
+        backgroundCredit: "Photo: ブルーノ・プラス / Wikimedia Commons（中島・愛媛）／CC BY-SA 4.0／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 10_000,
         routeKeywords: ["中島", "大浦", "神浦", "忽那"],
         ferryGTFSFeeds: [],
@@ -126,7 +129,7 @@ enum KutsunaIslandProfiles {
             IslandPort(name: "泊港", latitude: 33.882132, longitude: 132.680514),
         ],
         backgroundAssetName: "IslandBgGogoshima",
-        backgroundCredit: "Photo: Sihan Zhu / Unsplash",
+        backgroundCredit: "Photo: ブルーノ・プラス / Wikimedia Commons（興居島・愛媛）／CC BY-SA 4.0／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 6_000,
         routeKeywords: ["興居", "興居島", "由良", "泊", "ごごしま"],
         ferryGTFSFeeds: [],
@@ -179,7 +182,7 @@ enum KutsunaIslandProfiles {
             IslandPort(name: "睦月港", latitude: 33.956442, longitude: 132.665515),
         ],
         backgroundAssetName: "IslandBgMuzukijima",
-        backgroundCredit: "Photo: Joshua Earle / Unsplash",
+        backgroundCredit: "Photo: 全樺連 / Wikimedia Commons（睦月島・愛媛）／CC BY-SA 4.0／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 5_000,
         routeKeywords: ["睦月", "睦月島"],
         ferryGTFSFeeds: [],
@@ -230,7 +233,7 @@ enum KutsunaIslandProfiles {
             IslandPort(name: "野忽那港", latitude: 33.975424, longitude: 132.688247),
         ],
         backgroundAssetName: "IslandBgNogutsunajima",
-        backgroundCredit: "Photo: Shino Nakamura / Unsplash",
+        backgroundCredit: "Photo: 皓月旗 / Wikimedia Commons（野忽那島・愛媛）／CC BY-SA 4.0／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 4_000,
         routeKeywords: ["野忽那", "野忽那島"],
         ferryGTFSFeeds: [],
@@ -282,7 +285,7 @@ enum KutsunaIslandProfiles {
             IslandPort(name: "元怒和港", latitude: 33.974775, longitude: 132.540551),
         ],
         backgroundAssetName: "IslandBgNuwajima",
-        backgroundCredit: "Photo: RIKESH SHRESTHA / Unsplash",
+        backgroundCredit: "Photo: 国土地理院 / Wikimedia Commons（怒和島・愛媛）／出典：国土地理院／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 5_000,
         routeKeywords: ["怒和", "怒和島", "上怒和", "元怒和"],
         ferryGTFSFeeds: [],
@@ -333,7 +336,7 @@ enum KutsunaIslandProfiles {
             IslandPort(name: "津和地港", latitude: 33.983116, longitude: 132.516270),
         ],
         backgroundAssetName: "IslandBgTsuwajishima",
-        backgroundCredit: "Photo: Ahmed / Unsplash",
+        backgroundCredit: "Photo: 国土地理院 / Wikimedia Commons（津和地島・愛媛）／出典：国土地理院／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 4_000,
         routeKeywords: ["津和地", "津和地島"],
         ferryGTFSFeeds: [],
@@ -381,10 +384,10 @@ enum KutsunaIslandProfiles {
         ),
         regionID: "kutsuna",
         ports: [
-            IslandPort(name: "二神港", latitude: 33.933419, longitude: 132.537155),
+            IslandPort(name: "二神港", latitude: 33.933428, longitude: 132.537155),
         ],
         backgroundAssetName: "IslandBgFutagamijima",
-        backgroundCredit: "Photo: Dao En Wong / Unsplash",
+        backgroundCredit: "Photo: 国土地理院 / Wikimedia Commons（二神島・愛媛）／出典：国土地理院／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 3_000,
         routeKeywords: ["二神", "二神島"],
         ferryGTFSFeeds: [],
@@ -434,7 +437,7 @@ enum KutsunaIslandProfiles {
             IslandPort(name: "釣島港", latitude: 33.894317, longitude: 132.639913),
         ],
         backgroundAssetName: "IslandBgTsurushima",
-        backgroundCredit: "Photo: Jia Sheng / Unsplash",
+        backgroundCredit: "Photo: Navian / Wikimedia Commons（釣島・愛媛）／Public domain／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 2_000,
         routeKeywords: ["釣島", "釣"],
         ferryGTFSFeeds: [],
@@ -475,7 +478,7 @@ enum KutsunaIslandProfiles {
             IslandPort(name: "安居島港", latitude: 34.068059, longitude: 132.705669),
         ],
         backgroundAssetName: "IslandBgAijima",
-        backgroundCredit: "Photo: Hotaria N / Unsplash",
+        backgroundCredit: "Photo: 皓月旗 / Wikimedia Commons（安居島・愛媛）／CC BY-SA 4.0／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 2_000,
         routeKeywords: ["安居", "安居島"],
         ferryGTFSFeeds: [],

@@ -2,7 +2,7 @@
 //  WeatherSectionView.swift
 //  Island Now
 //
-//  詳細画面の天気セクション（現在＋1週間予報）
+//  詳細画面の天気セクション（現在＋週間天気）
 //
 
 import SwiftUI
@@ -11,6 +11,7 @@ struct WeatherSectionView: View {
     let state: WeatherLoadState
 
     @Environment(\.detailPalette) private var palette
+    @State private var isWeeklyForecastExpanded = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -72,114 +73,118 @@ struct WeatherSectionView: View {
             .font(.subheadline)
             .detailCardSecondaryText()
 
-        HStack(alignment: .top, spacing: 12) {
-            HStack(alignment: .center, spacing: 16) {
-                WeatherIconView(condition: weather.condition, iconSize: 56)
+        VStack(spacing: 10) {
+            HStack(alignment: .top, spacing: 10) {
+                currentWeatherPrimaryBlock(weather)
+                    .layoutPriority(1)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("\(weather.temperatureCelsius)°\u{2060}C")
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
-                        .monospacedDigit()
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
+                Spacer(minLength: 4)
 
-                    Text(weather.condition)
-                        .font(.title3)
-                }
+                currentWaveHeightPanel(weather)
             }
-            .layoutPriority(1)
 
-            Spacer(minLength: 8)
+            HStack(spacing: 10) {
+                currentWeatherSecondaryMetric(
+                    icon: "humidity",
+                    label: "湿度",
+                    value: "\(weather.humidityPercent)%"
+                )
 
-            currentWaveHeightPanel(weather)
-        }
-
-        HStack(alignment: .top, spacing: 12) {
-            currentMetricPanel(
-                icon: "humidity",
-                title: "湿度",
-                value: "\(weather.humidityPercent)%"
-            )
-            currentMetricPanel(
-                icon: "wind",
-                title: "風速",
-                value: "\(formattedWindSpeedMs(kmh: weather.windSpeedKmh)) m/s"
-            )
+                currentWeatherSecondaryMetric(
+                    icon: "wind",
+                    label: "風速",
+                    value: "\(formattedWindSpeedMs(kmh: weather.windSpeedKmh)) m/s"
+                )
+            }
         }
     }
 
+    // 気温を主役にした左ブロック（圧縮されないよう固定幅）
     @ViewBuilder
-    private func currentMetricPanel(icon: String, title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                    .font(.title3)
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
+    private func currentWeatherPrimaryBlock(_ weather: WeatherInfo) -> some View {
+        HStack(alignment: .center, spacing: 12) {
+            WeatherIconView(condition: weather.condition, iconSize: 52)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text("\(weather.temperatureCelsius)°\u{2060}C")
+                    .font(.system(size: 48, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .foregroundStyle(palette.text)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+
+                Text(weather.condition)
+                    .font(.subheadline.weight(.medium))
+                    .detailCardSecondaryText()
+                    .lineLimit(1)
             }
-            .foregroundStyle(palette.secondaryText)
+        }
+        .fixedSize(horizontal: true, vertical: false)
+    }
+
+    // 湿度・風速を同じサイズの下段タイルとして表示する
+    @ViewBuilder
+    private func currentWeatherSecondaryMetric(icon: String, label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Label(label, systemImage: icon)
+                .font(.caption.weight(.semibold))
+                .detailCardSecondaryText()
+                .labelStyle(.titleAndIcon)
 
             Text(value)
-                .font(.system(size: 24, weight: .bold, design: .rounded))
+                .font(.system(size: 20, weight: .bold, design: .rounded))
                 .monospacedDigit()
                 .foregroundStyle(palette.text)
                 .lineLimit(1)
-                .minimumScaleFactor(0.75)
+                .minimumScaleFactor(0.85)
         }
-        .frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(palette.hourlySlotBackground)
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(palette.cardBorder, lineWidth: 1)
+                .fill(palette.chipBackground(isSelected: false))
         }
     }
 
     // 現在の天気の右側に波の高さを表示する
     @ViewBuilder
     private func currentWaveHeightPanel(_ weather: WeatherInfo) -> some View {
-        VStack(alignment: .trailing, spacing: 6) {
-            HStack(spacing: 6) {
-                Image(systemName: "water.waves")
-                    .font(.title3)
-                Text("波の高さ")
-                    .font(.subheadline.weight(.semibold))
-            }
-            .foregroundStyle(Color.cyan.opacity(0.9))
+        VStack(alignment: .trailing, spacing: 4) {
+            Label("波の高さ", systemImage: "water.waves")
+                .font(.caption.weight(.semibold))
+                .labelStyle(.titleAndIcon)
+                .foregroundStyle(Color.cyan.opacity(0.9))
 
             if let current = weather.currentWaveHeightMeters {
                 Text("\(formattedWaveHeight(current)) m")
-                    .font(.system(size: 36, weight: .bold, design: .rounded))
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
                     .monospacedDigit()
                     .foregroundStyle(palette.text)
 
                 if let maxHeight = weather.todayMaxWaveHeightMeters {
                     Text("最大 \(formattedWaveHeight(maxHeight)) m")
-                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
                         .monospacedDigit()
                         .foregroundStyle(palette.secondaryText)
                 }
 
                 Text("有義波高")
-                    .font(.system(size: 11))
+                    .font(.system(size: 10))
                     .foregroundStyle(palette.secondaryText)
             } else {
                 Text("—")
-                    .font(.system(size: 32, weight: .semibold, design: .rounded))
+                    .font(.system(size: 24, weight: .semibold, design: .rounded))
                     .foregroundStyle(palette.secondaryText)
 
                 Text("取得できません")
-                    .font(.system(size: 11))
+                    .font(.system(size: 10))
                     .foregroundStyle(palette.warning)
             }
         }
-        .fixedSize()
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
+        .fixedSize(horizontal: true, vertical: false)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(Color.cyan.opacity(0.1))
@@ -216,30 +221,35 @@ struct WeatherSectionView: View {
 
     @ViewBuilder
     private func weeklyForecastContent(_ forecast: [DailyWeatherForecast]) -> some View {
-        Divider()
-            .padding(.vertical, 4)
+        if forecast.isEmpty == false {
+            Divider()
+                .padding(.vertical, 4)
 
-        Text("1週間の予報")
-            .font(.subheadline)
-            .detailCardSecondaryText()
-
-        ForEach(forecast) { day in
-            HStack(spacing: 8) {
-                Text(day.dateLabel)
-                    .frame(width: 88, alignment: .leading)
-                WeatherIconView(condition: day.condition, iconSize: 20)
-                Text(day.condition)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text("\(day.minTemperatureCelsius)° / \(day.maxTemperatureCelsius)°")
-                    Text("湿度 \(day.humidityPercent)%")
-                        .font(.caption)
-                    Label("降水 \(day.precipitationProbabilityPercent)%", systemImage: "drop.fill")
-                        .font(.caption)
+            Button {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    isWeeklyForecastExpanded.toggle()
                 }
-                .detailCardSecondaryText()
+            } label: {
+                HStack(spacing: 8) {
+                    Text("週間天気")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+
+                    Spacer(minLength: 0)
+
+                    Image(systemName: isWeeklyForecastExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption.weight(.semibold))
+                }
+                .foregroundStyle(palette.text)
             }
-            .font(.subheadline)
+            .buttonStyle(.plain)
+            .accessibilityLabel("週間天気")
+            .accessibilityHint(isWeeklyForecastExpanded ? "タップで閉じる" : "タップで週間天気を表示")
+
+            if isWeeklyForecastExpanded {
+                WeeklyForecastPanelView(forecast: forecast)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
         }
     }
 }
@@ -266,17 +276,17 @@ struct WeatherSectionView: View {
                         windSpeedKmh: 14
                     ),
                 ],
-                weeklyForecast: [
+                weeklyForecast: (21...27).map { day in
                     DailyWeatherForecast(
-                        id: "2026-06-21",
-                        dateLabel: "6/21（土）",
+                        id: "2026-06-\(day)",
+                        dateLabel: "6/\(day)（\(["土", "日", "月", "火", "水", "木", "金"][day - 21])）",
                         minTemperatureCelsius: 24,
                         maxTemperatureCelsius: 29,
                         condition: "晴れ",
                         humidityPercent: 72,
                         precipitationProbabilityPercent: 20
-                    ),
-                ]
+                    )
+                }
             ),
             isFromCache: false
         )

@@ -21,23 +21,26 @@ enum GotoIslandProfiles {
 
     private static let gotoRyokyakusen = FerryCompany(
         name: "五島旅客船株式会社",
-        websiteURL: "https://goto-ryokyakusen.com/",
+        websiteURL: "https://goto-ryokyakusen.com/guide/",
         phoneNumber: "0959-72-8151",
-        statusPageURL: "https://goto-ryokyakusen.com/"
+        statusPageURL: "https://goto-ryokyakusen.com/",
+        homePageURL: "https://goto-ryokyakusen.com/"
     )
 
     private static let kiguchiKisen = FerryCompany(
         name: "木口汽船",
         websiteURL: "http://www.kiguchi-kisen.jp/",
         phoneNumber: "0959-73-0003",
-        statusPageURL: "http://www.kiguchi-kisen.jp/"
+        statusPageURL: "http://www.kiguchi-kisen.jp/",
+        homePageURL: "http://www.kiguchi-kisen.jp/"
     )
 
     private static let kyushuShosen = FerryCompany(
         name: "九州商船株式会社",
         websiteURL: "https://kyusho.co.jp/schedule",
         phoneNumber: "095-822-0101",
-        statusPageURL: "https://kyusho.co.jp/status"
+        statusPageURL: "https://kyusho.co.jp/status",
+        homePageURL: "https://kyusho.co.jp/"
     )
 
     private static let ana = FlightAirline(
@@ -80,7 +83,7 @@ enum GotoIslandProfiles {
         ),
         regionID: "goto",
         ports: [
-            IslandPort(name: "福江港", latitude: 32.694761, longitude: 128.851350),
+            IslandPort(name: "福江港", latitude: 32.696764, longitude: 128.852276),
             IslandPort(name: "奥浦港", latitude: 32.744615, longitude: 128.825669),
         ],
         backgroundAssetName: "IslandBgFukue",
@@ -200,7 +203,7 @@ enum GotoIslandProfiles {
         ),
         regionID: "goto",
         ports: [
-            IslandPort(name: "奈留港", latitude: 32.821664, longitude: 128.939307),
+            IslandPort(name: "奈留港", latitude: 32.822013, longitude: 128.938960),
         ],
         backgroundAssetName: "IslandBgNaru",
         backgroundCredit: "Photo: Indiana jo / Wikimedia Commons（江上天主堂）／CC BY-SA 4.0／表示時に暗色グラデーションを追加",
@@ -305,8 +308,8 @@ enum GotoIslandProfiles {
         ),
         regionID: "goto",
         ports: [
-            IslandPort(name: "郷ノ首港", latitude: 32.923347, longitude: 129.037292),
-            IslandPort(name: "奈良尾港", latitude: 32.845720, longitude: 129.061272),
+            IslandPort(name: "郷ノ首港", latitude: 32.925658, longitude: 129.037458),
+            IslandPort(name: "奈良尾港", latitude: 32.846167, longitude: 129.061428),
         ],
         backgroundAssetName: "IslandBgNakadori",
         backgroundCredit: "Photo: Sapphire123 / Wikimedia Commons（青嵐教会）／CC BY-SA 3.0／表示時に暗色グラデーションを追加",

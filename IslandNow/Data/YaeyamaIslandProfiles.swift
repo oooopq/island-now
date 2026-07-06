@@ -4,6 +4,7 @@
 //
 //  八重山諸島の島データ（1島 = IslandProfile 1つ）
 //  新しい八重山の島を足すときは、このファイルの all 配列に追加する
+//  港座標: 海上保安庁「八重山列島の港」、石垣・大原・上原は OSM ferry_terminal
 //
 
 import Foundation
@@ -78,9 +79,9 @@ enum YaeyamaIslandProfiles {
     private static let ishigaki = IslandProfile(
         island: Island(id: "ishigaki", nameJapanese: "石垣島", nameEnglish: "Ishigaki", latitude: 24.432805, longitude: 124.205319),
         regionID: "yaeyama",
-        ports: [IslandPort(name: "石垣港", latitude: 24.337139, longitude: 124.155611)],
+        ports: [IslandPort(name: "石垣港", latitude: 24.337193, longitude: 124.155485)],
         backgroundAssetName: "IslandBgIshigaki",
-        backgroundCredit: "Photo: Vladimir Haltakov / Unsplash",
+        backgroundCredit: "Photo: Roméo A. / Unsplash（石垣島・川平湾）",
         placeSearchRadiusMeters: 18_000,
         routeKeywords: ["石垣"],
         ferryGTFSFeeds: [FerryGTFSFeedCatalog.anei, FerryGTFSFeedCatalog.yaeyamaFerry, FerryGTFSFeedCatalog.fukuyama],
@@ -125,7 +126,7 @@ enum YaeyamaIslandProfiles {
         regionID: "yaeyama",
         ports: [IslandPort(name: "竹富港", latitude: 24.335000, longitude: 124.095556)],
         backgroundAssetName: "IslandBgTaketomi",
-        backgroundCredit: "Photo: Hiroko Yoshii / Unsplash",
+        backgroundCredit: "Photo: Hiroko Yoshii / Unsplash（竹富島）",
         placeSearchRadiusMeters: 6_000,
         routeKeywords: ["竹富"],
         ferryGTFSFeeds: [FerryGTFSFeedCatalog.anei, FerryGTFSFeedCatalog.yaeyamaFerry],
@@ -159,7 +160,7 @@ enum YaeyamaIslandProfiles {
         regionID: "yaeyama",
         ports: [IslandPort(name: "黒島港", latitude: 24.254167, longitude: 124.000889)],
         backgroundAssetName: "IslandBgKuroshima",
-        backgroundCredit: "Photo: Unsplash（沖縄の海と緑）",
+        backgroundCredit: "Photo: mariemon / Wikimedia Commons（黒島・八重山）／CC BY-SA 3.0／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 6_000,
         routeKeywords: ["黒島"],
         ferryGTFSFeeds: [FerryGTFSFeedCatalog.anei, FerryGTFSFeedCatalog.yaeyamaFerry],
@@ -193,7 +194,7 @@ enum YaeyamaIslandProfiles {
         regionID: "yaeyama",
         ports: [IslandPort(name: "波照間港", latitude: 24.067778, longitude: 123.766111)],
         backgroundAssetName: "IslandBgHateruma",
-        backgroundCredit: "Photo: Yasuaki Uechi / Unsplash（沖縄・波照間ブルー）",
+        backgroundCredit: "Photo: NASA Johnson Space Center / Wikimedia Commons（波照間島）／Public domain／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 10_000,
         routeKeywords: ["波照間"],
         ferryGTFSFeeds: [FerryGTFSFeedCatalog.anei, FerryGTFSFeedCatalog.yaeyamaFerry],
@@ -226,11 +227,11 @@ enum YaeyamaIslandProfiles {
         island: Island(id: "iriomote", nameJapanese: "西表島", nameEnglish: "Iriomote", latitude: 24.335989, longitude: 123.814737),
         regionID: "yaeyama",
         ports: [
-            IslandPort(name: "大原港", latitude: 24.272222, longitude: 123.884222),
-            IslandPort(name: "上原港", latitude: 24.419167, longitude: 123.798611),
+            IslandPort(name: "大原港", latitude: 24.271895, longitude: 123.884104),
+            IslandPort(name: "上原港", latitude: 24.417955, longitude: 123.799790),
         ],
         backgroundAssetName: "IslandBgIriomote",
-        backgroundCredit: "Photo: Unsplash（森と自然）",
+        backgroundCredit: "Photo: Wataru Sato / Unsplash（西表島）",
         placeSearchRadiusMeters: 18_000,
         routeKeywords: ["大原", "上原", "西表", "由布"],
         ferryGTFSFeeds: [FerryGTFSFeedCatalog.anei, FerryGTFSFeedCatalog.yaeyamaFerry],
@@ -275,7 +276,7 @@ enum YaeyamaIslandProfiles {
         regionID: "yaeyama",
         ports: [IslandPort(name: "与那国港", latitude: 24.451944, longitude: 122.940000)],
         backgroundAssetName: "IslandBgYonaguni",
-        backgroundCredit: "Photo: Unsplash（荒波の海）",
+        backgroundCredit: "Photo: Metatron / Wikimedia Commons（与那国島・東崎）／CC BY-SA 3.0／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 10_000,
         routeKeywords: ["与那国"],
         ferryGTFSFeeds: [FerryGTFSFeedCatalog.fukuyama, FerryGTFSFeedCatalog.anei, FerryGTFSFeedCatalog.yaeyamaFerry],

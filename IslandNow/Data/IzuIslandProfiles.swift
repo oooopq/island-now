@@ -3,6 +3,7 @@
 //  Island Now
 //
 //  伊豆諸島の島データ
+//  港座標: OpenStreetMap ferry_terminal / pier / dock
 //
 
 import Foundation
@@ -23,9 +24,10 @@ enum IzuIslandProfiles {
 
     private static let tokaiKisen = FerryCompany(
         name: "東海汽船株式会社",
-        websiteURL: "https://www.tokaikisen.co.jp/schedule/",
+        websiteURL: "https://www.tokaikisen.co.jp/boarding/timetable/",
         phoneNumber: "03-5472-9999",
-        statusPageURL: "https://www.tokaikisen.co.jp/schedule/"
+        statusPageURL: "https://www.tokaikisen.co.jp/schedule/",
+        homePageURL: "https://www.tokaikisen.co.jp/"
     )
 
     private static let ana = FlightAirline(
@@ -102,11 +104,11 @@ enum IzuIslandProfiles {
         ),
         regionID: "izu",
         ports: [
-            IslandPort(name: "岡田港", latitude: 34.789980, longitude: 139.389670),
-            IslandPort(name: "元町港", latitude: 34.751139, longitude: 139.351472),
+            IslandPort(name: "岡田港", latitude: 34.790559, longitude: 139.390640),
+            IslandPort(name: "元町港", latitude: 34.751962, longitude: 139.352509),
         ],
         backgroundAssetName: "IslandBgOshima",
-        backgroundCredit: "Photo: Huang Lin / Unsplash",
+        backgroundCredit: "Photo: Donners / Wikimedia Commons（伊豆大島）／CC BY-SA 1.0／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 18_000,
         routeKeywords: ["伊豆大島", "大島", "岡田", "元町", "三原山"],
         ferryGTFSFeeds: [],
@@ -158,7 +160,7 @@ enum IzuIslandProfiles {
             IslandPort(name: "利島港", latitude: 34.532398, longitude: 139.281009),
         ],
         backgroundAssetName: "IslandBgToshima",
-        backgroundCredit: "Photo: Matthieu Bühler / Unsplash",
+        backgroundCredit: "Photo: User: (WT-shared) Shoestring / Wikimedia Commons（利島・東京）／CC BY-SA 4.0／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 4_000,
         routeKeywords: ["利島"],
         ferryGTFSFeeds: [],
@@ -196,10 +198,10 @@ enum IzuIslandProfiles {
         ),
         regionID: "izu",
         ports: [
-            IslandPort(name: "前浜港", latitude: 34.371954, longitude: 139.240214),
+            IslandPort(name: "前浜港", latitude: 34.366944, longitude: 139.244167),
         ],
         backgroundAssetName: "IslandBgNiijima",
-        backgroundCredit: "Photo: Fumiaki Hayashi / Unsplash",
+        backgroundCredit: "Photo: ブルーノ・プラス / Wikimedia Commons（新島）／CC BY-SA 4.0／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 10_000,
         routeKeywords: ["新島", "前浜", "若郷"],
         ferryGTFSFeeds: [],
@@ -248,10 +250,10 @@ enum IzuIslandProfiles {
         ),
         regionID: "izu",
         ports: [
-            IslandPort(name: "野伏港", latitude: 34.334440, longitude: 139.215280),
+            IslandPort(name: "野伏港", latitude: 34.333636, longitude: 139.215258),
         ],
         backgroundAssetName: "IslandBgShikinejima",
-        backgroundCredit: "Photo: あま あわれ / Unsplash",
+        backgroundCredit: "Photo: っ / Wikimedia Commons（新島・式根島 Landsat）／CC BY-SA 3.0／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 6_000,
         routeKeywords: ["式根", "式根島", "野伏"],
         ferryGTFSFeeds: [],
@@ -289,10 +291,10 @@ enum IzuIslandProfiles {
         ),
         regionID: "izu",
         ports: [
-            IslandPort(name: "神津港", latitude: 34.207978, longitude: 139.131511),
+            IslandPort(name: "神津港", latitude: 34.210796, longitude: 139.129848),
         ],
         backgroundAssetName: "IslandBgKozushima",
-        backgroundCredit: "Photo: Ashar Mirza / Unsplash",
+        backgroundCredit: "Photo: Ice Tea / Unsplash（神津島）",
         placeSearchRadiusMeters: 8_000,
         routeKeywords: ["神津", "神津島"],
         ferryGTFSFeeds: [],
@@ -345,7 +347,7 @@ enum IzuIslandProfiles {
             IslandPort(name: "阿古港", latitude: 34.068218, longitude: 139.478162),
         ],
         backgroundAssetName: "IslandBgMiyakejima",
-        backgroundCredit: "Photo: Marek Okon / Unsplash",
+        backgroundCredit: "Photo: Marek Okon / Unsplash（三宅島）",
         placeSearchRadiusMeters: 12_000,
         routeKeywords: ["三宅", "三宅島", "三池", "阿古", "錆ヶ浜"],
         ferryGTFSFeeds: [],
@@ -385,10 +387,10 @@ enum IzuIslandProfiles {
         ),
         regionID: "izu",
         ports: [
-            IslandPort(name: "御蔵島港", latitude: 33.897179, longitude: 139.589865),
+            IslandPort(name: "御蔵島港", latitude: 33.897239, longitude: 139.589880),
         ],
         backgroundAssetName: "IslandBgMikurajima",
-        backgroundCredit: "Photo: Nakaharu Line / Unsplash",
+        backgroundCredit: "Photo: 名古屋太郎 / Wikimedia Commons（御蔵島）／Public domain／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 5_000,
         routeKeywords: ["御蔵", "御蔵島", "玄ヶ浦"],
         ferryGTFSFeeds: [],
@@ -427,10 +429,10 @@ enum IzuIslandProfiles {
         regionID: "izu",
         ports: [
             IslandPort(name: "八重根港", latitude: 33.097875, longitude: 139.769695),
-            IslandPort(name: "底土港", latitude: 33.121462, longitude: 139.819011),
+            IslandPort(name: "底土港", latitude: 33.123615, longitude: 139.821233),
         ],
         backgroundAssetName: "IslandBgHachijojima",
-        backgroundCredit: "Photo: Christopher Politano / Unsplash",
+        backgroundCredit: "Photo: ブルーノ・プラス / Wikimedia Commons（八丈島）／CC BY-SA 4.0／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 15_000,
         routeKeywords: ["八丈", "八丈島", "八重根", "底土"],
         ferryGTFSFeeds: [],

@@ -17,7 +17,10 @@ struct IslandDetailView: View {
     @State private var ferryState: FerryLoadState = .loading
     @State private var placesState: PlacesLoadState = .loading
     @State private var selectedPlaceCategory: PlaceCategory = .restaurant
+    @State private var savedPhotoStore = IslandSavedPhotoStore()
     @State private var locationService = UserLocationService()
+    @State private var isArtIntroActive = false
+    @State private var detailContentVisible = true
 
     private let weatherService = WeatherService()
     private let ferryService = FerryService()
@@ -27,11 +30,16 @@ struct IslandDetailView: View {
         IslandCatalog.profile(for: island)
     }
 
+    private var usesFerryGTFS: Bool {
+        islandProfile?.usesFerryGTFS == true
+    }
+
     private var scheduleStatusSources: [ScheduleStatusSource]? {
         var sources: [ScheduleStatusSource] = []
 
-        let ferrySchedules = currentFerrySchedules
-        sources += ScheduleStatusSourceCollector.fromFerrySchedules(ferrySchedules)
+        if usesFerryGTFS {
+            sources += ScheduleStatusSourceCollector.fromFerrySchedules(currentFerrySchedules)
+        }
 
         if let flightSchedules = islandProfile?.flightSchedules {
             sources += ScheduleStatusSourceCollector.fromFlightSchedules(flightSchedules)
@@ -58,6 +66,65 @@ struct IslandDetailView: View {
     }
 
     var body: some View {
+        ZStack {
+            detailContent
+                .opacity(detailContentVisible ? 1 : 0)
+
+            if isArtIntroActive, let artIntro = islandProfile?.artIntro {
+                IslandArtIntroOverlayView(
+                    assetName: islandProfile?.backgroundAssetName ?? IslandCatalog.defaultBackgroundAssetName,
+                    artIntro: artIntro,
+                    onZoomOutStart: {
+                        withAnimation(.easeInOut(duration: artIntro.zoomOutSeconds)) {
+                            detailContentVisible = true
+                        }
+                    },
+                    onFinished: {
+                        isArtIntroActive = false
+                    }
+                )
+            }
+        }
+        .scrollContentBackground(.hidden)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                AppThemeToggleButton()
+            }
+        }
+        .refreshable {
+            await refreshAllData()
+        }
+        .task(id: island.id) {
+            prepareArtIntro(for: island)
+            selectedSection = .weather
+            selectedPlaceCategory = .restaurant
+            placesState = .loading
+            restoreCachedStates(for: island)
+
+            async let weatherLoad: Void = loadWeather()
+            if usesFerryGTFS {
+                async let ferryLoad: Void = loadFerrySchedules()
+                _ = await (weatherLoad, ferryLoad)
+            } else {
+                await weatherLoad
+            }
+        }
+        .task(id: placeSearchTaskID) {
+            guard selectedSection == .places else { return }
+            await loadPlaces()
+        }
+        .onAppear {
+            lastSelectedIslandStore.record(island)
+            locationService.start()
+        }
+        .onDisappear {
+            locationService.stop()
+        }
+    }
+
+    private var detailContent: some View {
         VStack(spacing: 0) {
             IslandDetailHeaderView(
                 island: island,
@@ -94,38 +161,12 @@ struct IslandDetailView: View {
         .background {
             IslandBackgroundView(islandID: island.id)
         }
-        .scrollContentBackground(.hidden)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                AppThemeToggleButton()
-            }
-        }
-        .refreshable {
-            await refreshAllData()
-        }
-        .task(id: island.id) {
-            selectedSection = .weather
-            selectedPlaceCategory = .restaurant
-            placesState = .loading
-            restoreCachedStates(for: island)
+    }
 
-            async let weatherLoad: Void = loadWeather()
-            async let ferryLoad: Void = loadFerrySchedules()
-            _ = await (weatherLoad, ferryLoad)
-        }
-        .task(id: placeSearchTaskID) {
-            guard selectedSection == .places else { return }
-            await loadPlaces()
-        }
-        .onAppear {
-            lastSelectedIslandStore.record(island)
-            locationService.start()
-        }
-        .onDisappear {
-            locationService.stop()
-        }
+    private func prepareArtIntro(for island: Island) {
+        let shouldShowIntro = IslandCatalog.profile(for: island)?.artIntro != nil
+        isArtIntroActive = shouldShowIntro
+        detailContentVisible = shouldShowIntro == false
     }
 
     @ViewBuilder
@@ -139,13 +180,25 @@ struct IslandDetailView: View {
                 ScheduleStatusBannerView(sources: scheduleStatusSources)
             }
 
-            FerryScheduleSectionView(island: island, state: ferryState)
+            if usesFerryGTFS {
+                FerryScheduleSectionView(island: island, state: ferryState)
+            } else if let companies = islandProfile?.ferryLinkCompanies, companies.isEmpty == false {
+                FerryLinkSectionView(companies: companies)
+            }
 
             if let islandProfile, islandProfile.flightSchedules.isEmpty == false {
                 FlightScheduleSectionView(
                     island: island,
                     schedules: islandProfile.flightSchedules,
                     scheduleNote: islandProfile.flightScheduleNote
+                )
+            }
+
+            if let islandProfile {
+                LiveCameraSectionView(
+                    liveCameras: islandProfile.liveCameras,
+                    relatedLinks: islandProfile.youtubeRelatedLinks,
+                    footnote: islandProfile.liveCameraFootnote
                 )
             }
 
@@ -158,11 +211,10 @@ struct IslandDetailView: View {
                 state: placesState
             )
 
-        case .liveCamera:
-            LiveCameraSectionView(
-                liveCameras: islandProfile?.liveCameras ?? [],
-                youtubeRelatedLinks: islandProfile?.youtubeRelatedLinks ?? [],
-                footnote: islandProfile?.liveCameraFootnote
+        case .savedPhotos:
+            IslandSavedPhotosSectionView(
+                islandID: island.id,
+                store: savedPhotoStore
             )
         }
     }
@@ -173,7 +225,7 @@ struct IslandDetailView: View {
         if weatherService.cachedWeather(for: island.id) == nil {
             weatherState = .loading
         }
-        if ferryService.cachedSchedules(for: island.id) == nil {
+        if usesFerryGTFS, ferryService.cachedSchedules(for: island.id) == nil {
             ferryState = .loading
         }
         if selectedSection == .places,
@@ -182,8 +234,12 @@ struct IslandDetailView: View {
         }
 
         async let weatherLoad: Void = loadWeather()
-        async let ferryLoad: Void = loadFerrySchedules()
-        _ = await (weatherLoad, ferryLoad)
+        if usesFerryGTFS {
+            async let ferryLoad: Void = loadFerrySchedules()
+            _ = await (weatherLoad, ferryLoad)
+        } else {
+            await weatherLoad
+        }
 
         if selectedSection == .places {
             await loadPlaces()
@@ -199,14 +255,16 @@ struct IslandDetailView: View {
             weatherState = .loading
         }
 
-        if let cached = ferryService.cachedSchedules(for: island.id) {
-            ferryState = .loaded(
-                cached.schedules,
-                isFromCache: true,
-                validUntilText: cached.validUntilText
-            )
-        } else {
-            ferryState = .loading
+        if usesFerryGTFS {
+            if let cached = ferryService.cachedSchedules(for: island.id) {
+                ferryState = .loaded(
+                    cached.schedules,
+                    isFromCache: true,
+                    validUntilText: cached.validUntilText
+                )
+            } else {
+                ferryState = .loading
+            }
         }
     }
 
@@ -231,6 +289,8 @@ struct IslandDetailView: View {
 
     @MainActor
     private func loadFerrySchedules() async {
+        guard usesFerryGTFS else { return }
+
         if case .loading = ferryState,
            let cached = ferryService.cachedSchedules(for: island.id) {
             ferryState = .loaded(

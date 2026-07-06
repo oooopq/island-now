@@ -2,103 +2,103 @@
 //  LiveCameraSectionView.swift
 //  Island Now
 //
-//  詳細画面のカメラセクション（ライブカメラ優先、なければ YouTube 関連）
+//  各島のライブカメラ・関連動画リンク
 //
 
 import SwiftUI
 
 struct LiveCameraSectionView: View {
     let liveCameras: [LiveCamera]
-    let youtubeRelatedLinks: [LiveCamera]
+    let relatedLinks: [LiveCamera]
     let footnote: String?
 
-    private var showsLiveCameras: Bool {
-        liveCameras.isEmpty == false
-    }
+    @Environment(\.detailPalette) private var palette
 
-    private var displayedLinks: [LiveCamera] {
-        showsLiveCameras ? liveCameras : youtubeRelatedLinks
-    }
-
-    private var sectionTitle: String {
-        showsLiveCameras ? "ライブカメラ" : "YouTube"
-    }
-
-    private var rowIcon: String {
-        showsLiveCameras ? "video.fill" : "play.rectangle.fill"
+    private var hasLinks: Bool {
+        liveCameras.isEmpty == false || relatedLinks.isEmpty == false
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(sectionTitle)
-                .font(.headline)
+        if hasLinks {
+            VStack(alignment: .leading, spacing: 14) {
+                header
 
-            if displayedLinks.isEmpty {
-                Text(emptyMessage)
-                    .font(.subheadline)
-                    .detailCardSecondaryText()
-            } else {
-                ForEach(Array(displayedLinks.enumerated()), id: \.element.id) { index, camera in
-                    if index > 0 {
-                        Divider()
-                    }
-                    cameraRow(camera)
+                cameraBlock(title: "ライブカメラ", items: liveCameras)
+                cameraBlock(title: "関連リンク", items: relatedLinks)
+
+                if let footnote, footnote.isEmpty == false {
+                    Text(footnote)
+                        .font(.caption)
+                        .detailCardSecondaryText()
                 }
             }
-
-            if showsLiveCameras, let footnoteText = footnote ?? defaultLiveFootnote {
-                Text(footnoteText)
-                    .font(.caption)
-                    .detailCardSecondaryText()
-            }
+            .detailSectionCard()
         }
-        .detailSectionCard()
     }
 
-    private var emptyMessage: String {
-        showsLiveCameras
-            ? "この島のライブカメラ情報は準備中です"
-            : "この島の YouTube 関連リンクは準備中です"
-    }
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Label("ライブカメラ・関連リンク", systemImage: "video.fill")
+                .font(.headline)
+                .foregroundStyle(palette.text)
 
-    private var defaultLiveFootnote: String? {
-        "※ 配信停止・メンテナンス中の場合があります。"
-    }
-
-    @ViewBuilder
-    private func cameraRow(_ camera: LiveCamera) -> some View {
-        if let url = camera.linkURL {
-            OpenURLButton(url: url) {
-                HStack {
-                    Image(systemName: rowIcon)
-                    Text(camera.title)
-                    Spacer()
-                    Image(systemName: "arrow.up.right")
-                }
-                .font(.subheadline)
-            }
-        } else {
-            Text(camera.title)
-                .font(.subheadline)
+            Text("公開配信や公式ページを外部ブラウザで開きます。")
+                .font(.caption)
                 .detailCardSecondaryText()
         }
     }
+
+    @ViewBuilder
+    private func cameraBlock(title: String, items: [LiveCamera]) -> some View {
+        if items.isEmpty == false {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(title)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(palette.accent)
+
+                ForEach(items) { camera in
+                    cameraRow(camera)
+                }
+            }
+        }
+    }
+
+    private func cameraRow(_ camera: LiveCamera) -> some View {
+        HStack(alignment: .center, spacing: 10) {
+            Image(systemName: "play.rectangle.fill")
+                .frame(width: 24)
+                .foregroundStyle(palette.iconAccent)
+
+            Text(camera.title)
+                .font(.subheadline)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            if let url = camera.linkURL {
+                OpenURLButton(url: url) {
+                    Image(systemName: "arrow.up.right.square")
+                        .font(.subheadline)
+                        .frame(width: 34, height: 34)
+                        .foregroundStyle(palette.accent)
+                        .background(palette.accent.opacity(0.16), in: Circle())
+                }
+                .accessibilityLabel("\(camera.title)を開く")
+            }
+        }
+    }
 }
 
-#Preview("ライブカメラあり") {
+#Preview {
     LiveCameraSectionView(
-        liveCameras: IslandCatalog.profile(for: "ishigaki")?.liveCameras ?? [],
-        youtubeRelatedLinks: IslandCatalog.profile(for: "ishigaki")?.youtubeRelatedLinks ?? [],
-        footnote: nil
+        liveCameras: [
+            LiveCamera(title: "石垣港ライブカメラ", urlString: "https://www.youtube.com/")
+        ],
+        relatedLinks: [
+            LiveCamera(title: "観光協会の関連リンク", urlString: "https://example.com/")
+        ],
+        footnote: "※ 外部サイトの配信状況により表示されない場合があります。"
     )
     .padding()
-}
-
-#Preview("YouTube フォールバック") {
-    LiveCameraSectionView(
-        liveCameras: [],
-        youtubeRelatedLinks: IslandCatalog.profile(for: "taketomi")?.youtubeRelatedLinks ?? [],
-        footnote: nil
-    )
-    .padding()
+    .environment(AppThemeStore())
+    .environment(\.detailPalette, DetailCardPalette.dark)
 }

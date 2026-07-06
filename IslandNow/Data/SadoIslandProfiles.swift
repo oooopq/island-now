@@ -3,6 +3,7 @@
 //  Island Now
 //
 //  佐渡島の島データ
+//  港座標: OpenStreetMap ferry_terminal（佐渡汽船ターミナル）
 //
 
 import Foundation
@@ -16,9 +17,10 @@ enum SadoIslandProfiles {
 
     private static let sadoKisen = FerryCompany(
         name: "佐渡汽船株式会社",
-        websiteURL: "https://www.sadokisen.co.jp/",
+        websiteURL: "https://www.sadokisen.co.jp/timetable/",
         phoneNumber: "025-245-6400",
-        statusPageURL: "https://www.sadokisen.co.jp/reservation/service-status/"
+        statusPageURL: "https://www.sadokisen.co.jp/reservation/service-status/",
+        homePageURL: "https://www.sadokisen.co.jp/"
     )
 
     private static let ana = FlightAirline(
@@ -49,11 +51,11 @@ enum SadoIslandProfiles {
         ),
         regionID: "sado",
         ports: [
-            IslandPort(name: "両津港", latitude: 38.081714, longitude: 138.437949),
-            IslandPort(name: "小木港", latitude: 37.816273, longitude: 138.282227),
+            IslandPort(name: "両津港", latitude: 38.081653, longitude: 138.438069),
+            IslandPort(name: "小木港", latitude: 37.816271, longitude: 138.282232),
         ],
         backgroundAssetName: "IslandBgSado",
-        backgroundCredit: "Photo: Unsplash（佐渡島・海と山）",
+        backgroundCredit: "Photo: NASA Johnson Space Center / Wikimedia Commons（佐渡島）／Public domain／表示時に暗色グラデーションを追加",
         placeSearchRadiusMeters: 18_000,
         routeKeywords: ["佐渡", "両津", "小木", "新潟", "直江津"],
         ferryGTFSFeeds: [],
