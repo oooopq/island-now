@@ -73,6 +73,9 @@ enum AppText {
     case photoNotesLimitReached(Int)
     case photoNotesCount(Int, Int)
     case noPhotoNotesYet
+    case photoMemoLabel
+    case photoMemoPlaceholder
+    case photoMemoDone
     case offlineWeather
     case offlineFerry
     case offlineFerryFallback
@@ -211,13 +214,19 @@ enum AppText {
         case .usefulInfoDisclaimer:
             return "※ 電話番号・診療時間は変更されている場合があります。緊急時は119（救急）・118（海上保安庁）"
         case .photoNotesDescription(let max):
-            return "港や案内所で撮影した時刻表・案内を、この端末内だけに保存できます。各島あたり最大\(max)枚まで。サムネイルをタップするとすぐ表示されます。"
+            return "港や案内所で撮影した時刻表・案内を、この端末内だけに保存できます。各島あたり最大\(max)枚まで。写真を開くとメモも残せます。"
         case .photoNotesLimitReached(let max):
             return "この島の写真メモは\(max)枚までです。不要な写真を削除すると追加できます。"
         case .photoNotesCount(let count, let max):
             return "\(count)/\(max)枚"
         case .noPhotoNotesYet:
             return "まだ写真メモがありません"
+        case .photoMemoLabel:
+            return "メモ"
+        case .photoMemoPlaceholder:
+            return "運賃・便名・注意点などを入力"
+        case .photoMemoDone:
+            return "完了"
         case .offlineWeather:
             return "電波がないため天気を取得できませんでした"
         case .offlineFerry:
@@ -364,13 +373,19 @@ enum AppText {
         case .usefulInfoDisclaimer:
             return "※ Phone numbers and hours may change. In emergencies call 119 (ambulance/fire) or 118 (Japan Coast Guard)."
         case .photoNotesDescription(let max):
-            return "Save timetable photos and notices on this device only. Up to \(max) per island. Tap a thumbnail to view."
+            return "Save timetable photos and notices on this device only. Up to \(max) per island. Open a photo to add a text note."
         case .photoNotesLimitReached(let max):
             return "This island allows up to \(max) photo notes. Delete one to add another."
         case .photoNotesCount(let count, let max):
             return "\(count)/\(max)"
         case .noPhotoNotesYet:
             return "No photo notes yet"
+        case .photoMemoLabel:
+            return "Note"
+        case .photoMemoPlaceholder:
+            return "Fares, sailings, tips…"
+        case .photoMemoDone:
+            return "Done"
         case .offlineWeather:
             return "Couldn’t load weather — little or no signal"
         case .offlineFerry:

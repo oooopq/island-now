@@ -69,6 +69,8 @@ struct IslandSavedPhotosSectionView: View {
         }
         .fullScreenCover(item: $viewingPhoto) { photo in
             IslandSavedPhotoViewerView(photo: photo, store: store)
+                .environment(languageStore)
+                .environment(\.detailPalette, palette)
         }
         .alert(languageStore.t(.cameraUnavailableTitle), isPresented: showCameraAlertBinding) {
             Button("OK", role: .cancel) {}

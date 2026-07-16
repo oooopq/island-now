@@ -60,7 +60,8 @@ final class IslandSavedPhotoStore {
                 id: photoID,
                 islandID: islandID,
                 fileName: fileName,
-                createdAt: Date()
+                createdAt: Date(),
+                note: ""
             )
             manifest.append(photo)
             try saveManifest(manifest, for: islandID)
@@ -70,6 +71,19 @@ final class IslandSavedPhotoStore {
             try? fileManager.removeItem(at: fileURL)
             return false
         }
+    }
+
+    /// 写真に付けたメモを端末内マニフェストへ保存する
+    func updateNote(_ note: String, for photo: IslandSavedPhoto) {
+        var manifest = loadManifest(for: photo.islandID)
+        guard let index = manifest.firstIndex(where: { $0.id == photo.id }) else { return }
+
+        let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard manifest[index].note != trimmed else { return }
+
+        manifest[index].note = trimmed
+        try? saveManifest(manifest, for: photo.islandID)
+        photos = manifest.sorted { $0.createdAt > $1.createdAt }
     }
 
     func deletePhoto(_ photo: IslandSavedPhoto) {
