@@ -56,6 +56,7 @@ struct IslandDetailHeaderView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(palette.cardBackground.opacity(0.95))

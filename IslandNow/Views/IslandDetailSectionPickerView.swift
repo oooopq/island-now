@@ -26,6 +26,7 @@ struct IslandDetailSectionPickerView: View {
             }
         }
         .padding(5)
+        .frame(maxWidth: .infinity)
         .background { pickerBackground }
     }
 

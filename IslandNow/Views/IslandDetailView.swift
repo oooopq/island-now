@@ -165,8 +165,10 @@ struct IslandDetailView: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
                 .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background {
             IslandBackgroundView(
                 islandID: island.id,

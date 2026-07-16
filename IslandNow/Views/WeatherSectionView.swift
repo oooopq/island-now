@@ -85,11 +85,10 @@ struct WeatherSectionView: View {
             .detailCardSecondaryText()
 
         VStack(spacing: 10) {
-            HStack(alignment: .top, spacing: 10) {
+            HStack(alignment: .top, spacing: 8) {
+                // 気温は残り幅、波パネルは固定幅で潰さない
                 currentWeatherPrimaryBlock(weather)
-                    .layoutPriority(1)
-
-                Spacer(minLength: 4)
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
 
                 currentWaveHeightPanel(weather)
             }
@@ -110,10 +109,10 @@ struct WeatherSectionView: View {
         }
     }
 
-    // 気温を主役にした左ブロック（圧縮されないよう固定幅）
+    // 気温ブロック（狭い幅では文字を少し小さくして収める）
     @ViewBuilder
     private func currentWeatherPrimaryBlock(_ weather: WeatherInfo) -> some View {
-        HStack(alignment: .center, spacing: 12) {
+        HStack(alignment: .center, spacing: 10) {
             WeatherIconView(condition: weather.condition, iconSize: 52)
 
             VStack(alignment: .leading, spacing: 2) {
@@ -122,15 +121,16 @@ struct WeatherSectionView: View {
                     .monospacedDigit()
                     .foregroundStyle(palette.text)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.75)
+                    .minimumScaleFactor(0.55)
 
                 Text(weather.condition)
                     .font(.subheadline.weight(.medium))
                     .detailCardSecondaryText()
                     .lineLimit(1)
+                    .minimumScaleFactor(0.75)
             }
+            .frame(minWidth: 0, alignment: .leading)
         }
-        .fixedSize(horizontal: true, vertical: false)
     }
 
     // 湿度・風速を同じサイズの下段タイルとして表示する
@@ -141,6 +141,8 @@ struct WeatherSectionView: View {
                 .font(.caption.weight(.semibold))
                 .detailCardSecondaryText()
                 .labelStyle(.titleAndIcon)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
 
             Text(value)
                 .font(.system(size: 20, weight: .bold, design: .rounded))
@@ -158,7 +160,7 @@ struct WeatherSectionView: View {
         }
     }
 
-    // 現在の天気の右側に波の高さを表示する
+    // 波の高さ（幅を固定して英語でも気温側を押しつぶさない／消えない）
     @ViewBuilder
     private func currentWaveHeightPanel(_ weather: WeatherInfo) -> some View {
         VStack(alignment: .trailing, spacing: 4) {
@@ -166,23 +168,32 @@ struct WeatherSectionView: View {
                 .font(.caption.weight(.semibold))
                 .labelStyle(.titleAndIcon)
                 .foregroundStyle(Color.cyan.opacity(0.9))
+                .lineLimit(1)
+                .minimumScaleFactor(0.65)
 
             if let current = weather.currentWaveHeightMeters {
                 Text("\(formattedWaveHeight(current)) m")
                     .font(.system(size: 28, weight: .bold, design: .rounded))
                     .monospacedDigit()
                     .foregroundStyle(palette.text)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
 
                 if let maxHeight = weather.todayMaxWaveHeightMeters {
                     Text(languageStore.t(.waveMax(formattedWaveHeight(maxHeight))))
                         .font(.system(size: 12, weight: .medium, design: .rounded))
                         .monospacedDigit()
                         .foregroundStyle(palette.secondaryText)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                 }
 
                 Text(languageStore.t(.significantWaveHeight))
                     .font(.system(size: 10))
                     .foregroundStyle(palette.secondaryText)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.65)
+                    .multilineTextAlignment(.trailing)
             } else {
                 Text("—")
                     .font(.system(size: 24, weight: .semibold, design: .rounded))
@@ -191,10 +202,13 @@ struct WeatherSectionView: View {
                 Text(languageStore.t(.waveUnavailable))
                     .font(.system(size: 10))
                     .foregroundStyle(palette.warning)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
+                    .multilineTextAlignment(.trailing)
             }
         }
-        .fixedSize(horizontal: true, vertical: false)
-        .padding(.horizontal, 12)
+        .frame(width: 112, alignment: .trailing)
+        .padding(.horizontal, 10)
         .padding(.vertical, 10)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)

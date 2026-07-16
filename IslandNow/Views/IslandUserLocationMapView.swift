@@ -43,6 +43,7 @@ struct IslandUserLocationMapView: View {
             portAccessStatusView
         }
         .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(palette.cardBackground.opacity(0.95))
