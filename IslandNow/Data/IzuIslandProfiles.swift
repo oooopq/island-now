@@ -133,7 +133,7 @@ enum IzuIslandProfiles {
             ),
         ],
         usefulInfo: [
-            UsefulInfo(id: "oshima-hospital", category: .medical, name: "大島病院", phoneNumber: "04992-2-2111", address: "東京都大島町元町字浜之町", websiteURL: "https://www.oshimahp.or.jp/", note: "伊豆大島の中核病院（救急対応）"),
+            UsefulInfo(id: "oshima-hospital", category: .medical, name: "大島医療センター", phoneNumber: "04992-2-2345", address: "東京都大島町元町三丁目２番地９", websiteURL: "https://www.town.oshima.tokyo.jp/soshiki/soumu/map-hospital.html", note: "伊豆大島の中核医療機関（救急対応）"),
             UsefulInfo(id: "oshima-convenience", category: .convenience, name: "元町・岡田港周辺", phoneNumber: nil, address: "元町港・岡田港ターミナル付近", websiteURL: nil, note: "セブン-イレブン、ローソン、ゆうちょATMなど"),
             UsefulInfo(id: "oshima-tourism", category: .tourism, name: "大島町観光協会", phoneNumber: "04992-2-1370", address: "東京都大島町元町", websiteURL: "https://www.izu-oshima.or.jp/", note: "三原山・椿の観光案内"),
         ],

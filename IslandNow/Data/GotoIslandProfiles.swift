@@ -123,7 +123,7 @@ enum GotoIslandProfiles {
             ),
         ],
         usefulInfo: [
-            UsefulInfo(id: "fukue-hospital", category: .medical, name: "五島市立総合医療センター", phoneNumber: "0959-72-3121", address: "長崎県五島市東浜町1-16-1", websiteURL: "https://www.goto-hospital.jp/", note: "五島列島の中核病院"),
+            UsefulInfo(id: "fukue-hospital", category: .medical, name: "長崎県五島中央病院", phoneNumber: "0959-72-3181", address: "長崎県五島市吉久木町205番地", websiteURL: "https://www.gotocyuoh-hospital.jp/", note: "五島列島の中核病院"),
             UsefulInfo(id: "fukue-tourism", category: .tourism, name: "五島の島たび（公式）", phoneNumber: "0959-72-3177", address: "長崎県五島市東浜町2-3-1", websiteURL: gotoTourismURL, note: "観光・交通案内"),
             UsefulInfo(id: "fukue-convenience", category: .convenience, name: "福江港・市街地周辺", phoneNumber: nil, address: "福江港ターミナル・中央町付近", websiteURL: nil, note: "コンビニ・ATMあり"),
         ],

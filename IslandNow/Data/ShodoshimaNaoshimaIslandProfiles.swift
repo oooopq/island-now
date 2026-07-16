@@ -50,7 +50,7 @@ enum ShodoshimaNaoshimaIslandProfiles {
         homePageURL: "https://www.akebonomaritime.com/"
     )
 
-    private static let setouchiTourismURL = "https://www.mysetouchitravel.jp/"
+    private static let setouchiTourismURL = "https://www.setouchi.travel/jp/"
 
     private static func setouchiLink(title: String) -> LiveCamera {
         LiveCamera(title: title, urlString: setouchiTourismURL)
@@ -90,15 +90,15 @@ enum ShodoshimaNaoshimaIslandProfiles {
                 id: "shodoshima-hospital",
                 category: .medical,
                 name: "小豆島中央病院",
-                phoneNumber: "0879-82-0111",
-                address: "香川県小豆郡小豆島町甲生浦甲923-8",
-                websiteURL: "https://www.shodoshima-hp.jp/",
+                phoneNumber: "0879-75-1121",
+                address: "香川県小豆郡小豆島町池田2060番地1",
+                websiteURL: "https://scha.jp/",
                 note: "小豆島の中核病院"
             ),
             UsefulInfo(
                 id: "shodoshima-tourism",
                 category: .tourism,
-                name: "瀬戸しらず（せとうち旅）",
+                name: "せとうち旅（公式）",
                 phoneNumber: nil,
                 address: nil,
                 websiteURL: setouchiTourismURL,
@@ -200,7 +200,7 @@ enum ShodoshimaNaoshimaIslandProfiles {
                 name: "豊島（Benesse Art Site）",
                 phoneNumber: "087-892-3222",
                 address: nil,
-                websiteURL: "https://benesse-artsite.jp/art/teshima.html",
+                websiteURL: "https://benesse-artsite.jp/art/teshima-artmuseum.html",
                 note: "豊島美術館・心臓音のアーカイブ"
             ),
         ],
@@ -243,7 +243,7 @@ enum ShodoshimaNaoshimaIslandProfiles {
                 name: "犬島精錬所美術館",
                 phoneNumber: "087-892-3222",
                 address: "香川県瀬戸内市犬島",
-                websiteURL: "https://inujima.jp/",
+                websiteURL: "https://benesse-artsite.jp/island/inujima/",
                 note: "直島・豊島経由または宝伝港から"
             ),
         ],
