@@ -12,6 +12,7 @@ struct IslandDetailHeaderView: View {
     let regionDisplayName: String?
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     var body: some View {
         HStack(alignment: .center, spacing: 10) {
@@ -33,14 +34,14 @@ struct IslandDetailHeaderView: View {
                         .foregroundStyle(palette.accent)
                 }
 
-                Text(island.nameJapanese)
+                Text(island.primaryName(for: languageStore.mode))
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundStyle(palette.text)
                     .lineLimit(1)
                     .minimumScaleFactor(0.85)
 
-                Text(island.nameEnglish.uppercased())
+                Text(island.secondaryName(for: languageStore.mode).uppercased())
                     .font(.caption2)
                     .tracking(1.5)
                     .foregroundStyle(palette.secondaryText)
@@ -69,8 +70,9 @@ struct IslandDetailHeaderView: View {
 #Preview {
     IslandDetailHeaderView(
         island: IslandCatalog.islands[0],
-        regionDisplayName: "八重山諸島"
+        regionDisplayName: "Yaeyama Islands"
     )
     .padding()
     .background(Color.black)
+    .environment(AppLanguageStore())
 }

@@ -11,11 +11,12 @@ struct ScheduleStatusBannerView: View {
     let sources: [ScheduleStatusSource]
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Label {
-                Text("欠航・遅延")
+                Text(languageStore.t(.cancellationsDelays))
                     .font(.subheadline)
                     .fontWeight(.semibold)
             } icon: {
@@ -23,7 +24,7 @@ struct ScheduleStatusBannerView: View {
                     .foregroundStyle(palette.warning)
             }
 
-            Text("出発前に各社公式サイトで運航状況を確認してください。本アプリの時刻は参考ダイヤです。")
+            Text(languageStore.t(.checkStatusBeforeDeparture))
                 .font(.caption)
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -54,7 +55,7 @@ struct ScheduleStatusBannerView: View {
         var actions: [ScheduleOperatorAction] = [
             ScheduleOperatorAction(
                 id: "status-\(source.id)",
-                title: "運航状況",
+                title: FerryLinkKind.status.title(for: languageStore.mode),
                 systemImage: statusIcon(for: source.category),
                 url: source.statusPageURL,
                 isEmphasized: true
@@ -65,7 +66,7 @@ struct ScheduleStatusBannerView: View {
             actions.append(
                 ScheduleOperatorAction(
                     id: "phone-\(source.id)",
-                    title: "電話",
+                    title: languageStore.t(.phone),
                     systemImage: "phone.fill",
                     url: phoneURL
                 )

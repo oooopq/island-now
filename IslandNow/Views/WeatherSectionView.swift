@@ -11,16 +11,17 @@ struct WeatherSectionView: View {
     let state: WeatherLoadState
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
     @State private var isWeeklyForecastExpanded = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("天気")
+            Text(languageStore.t(.weather))
                 .font(.headline)
 
             switch state {
             case .loading:
-                ProgressView("天気を取得中…")
+                ProgressView(languageStore.t(.loadingWeather))
                     .tint(palette.accent)
                     .detailCardSecondaryText()
 
@@ -30,7 +31,8 @@ struct WeatherSectionView: View {
                 weeklyForecastContent(weather.weeklyForecast)
                 if let cacheText = CacheAgeText.displayText(
                     fetchedAt: weather.fetchedAt,
-                    isFromCache: isFromCache
+                    isFromCache: isFromCache,
+                    language: languageStore.mode
                 ) {
                     Text(cacheText)
                         .font(.caption)
@@ -47,7 +49,8 @@ struct WeatherSectionView: View {
                     weeklyForecastContent(cachedWeather.weeklyForecast)
                     if let cacheText = CacheAgeText.displayText(
                         fetchedAt: cachedWeather.fetchedAt,
-                        isFromCache: true
+                        isFromCache: true,
+                        language: languageStore.mode
                     ) {
                         Text(cacheText)
                             .font(.caption)
@@ -77,7 +80,7 @@ struct WeatherSectionView: View {
 
     @ViewBuilder
     private func currentWeatherContent(_ weather: WeatherInfo) -> some View {
-        Text("現在")
+        Text(languageStore.t(.current))
             .font(.subheadline)
             .detailCardSecondaryText()
 
@@ -94,13 +97,13 @@ struct WeatherSectionView: View {
             HStack(spacing: 10) {
                 currentWeatherSecondaryMetric(
                     icon: "humidity",
-                    label: "湿度",
+                    label: languageStore.t(.humidity),
                     value: "\(weather.humidityPercent)%"
                 )
 
                 currentWeatherSecondaryMetric(
                     icon: "wind",
-                    label: "風速",
+                    label: languageStore.t(.windSpeed),
                     value: "\(formattedWindSpeedMs(kmh: weather.windSpeedKmh)) m/s"
                 )
             }
@@ -159,7 +162,7 @@ struct WeatherSectionView: View {
     @ViewBuilder
     private func currentWaveHeightPanel(_ weather: WeatherInfo) -> some View {
         VStack(alignment: .trailing, spacing: 4) {
-            Label("波の高さ", systemImage: "water.waves")
+            Label(languageStore.t(.waveHeight), systemImage: "water.waves")
                 .font(.caption.weight(.semibold))
                 .labelStyle(.titleAndIcon)
                 .foregroundStyle(Color.cyan.opacity(0.9))
@@ -171,13 +174,13 @@ struct WeatherSectionView: View {
                     .foregroundStyle(palette.text)
 
                 if let maxHeight = weather.todayMaxWaveHeightMeters {
-                    Text("最大 \(formattedWaveHeight(maxHeight)) m")
+                    Text(languageStore.t(.waveMax(formattedWaveHeight(maxHeight))))
                         .font(.system(size: 12, weight: .medium, design: .rounded))
                         .monospacedDigit()
                         .foregroundStyle(palette.secondaryText)
                 }
 
-                Text("有義波高")
+                Text(languageStore.t(.significantWaveHeight))
                     .font(.system(size: 10))
                     .foregroundStyle(palette.secondaryText)
             } else {
@@ -185,7 +188,7 @@ struct WeatherSectionView: View {
                     .font(.system(size: 24, weight: .semibold, design: .rounded))
                     .foregroundStyle(palette.secondaryText)
 
-                Text("取得できません")
+                Text(languageStore.t(.waveUnavailable))
                     .font(.system(size: 10))
                     .foregroundStyle(palette.warning)
             }
@@ -219,7 +222,7 @@ struct WeatherSectionView: View {
             Divider()
                 .padding(.vertical, 4)
 
-            Text("1時間ごとの予報")
+            Text(languageStore.t(.hourlyForecast))
                 .font(.subheadline)
                 .detailCardSecondaryText()
 
@@ -239,7 +242,7 @@ struct WeatherSectionView: View {
                 }
             } label: {
                 HStack(spacing: 8) {
-                    Text("週間天気")
+                    Text(languageStore.t(.weeklyWeather))
                         .font(.subheadline)
                         .fontWeight(.medium)
 

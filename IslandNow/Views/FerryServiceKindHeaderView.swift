@@ -11,6 +11,7 @@ struct FerryServiceKindHeaderView: View {
     let serviceKind: FerryServiceKind
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
@@ -20,11 +21,11 @@ struct FerryServiceKindHeaderView: View {
                 .frame(width: 28)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(serviceKind.titleJapanese)
+                Text(serviceKind.title(for: languageStore.mode))
                     .font(.subheadline)
                     .fontWeight(.semibold)
 
-                Text(serviceKind.descriptionJapanese)
+                Text(serviceKind.description(for: languageStore.mode))
                     .font(.caption)
                     .detailCardSecondaryText()
             }
@@ -43,4 +44,5 @@ struct FerryServiceKindHeaderView: View {
     }
     .padding()
     .detailSectionCard()
+    .environment(AppLanguageStore())
 }

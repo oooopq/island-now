@@ -14,6 +14,17 @@ enum UsefulInfoCategory: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    func title(for language: AppLanguageMode) -> String {
+        switch (self, language) {
+        case (.medical, .japanese): return "病院・診療"
+        case (.medical, .english): return "Medical"
+        case (.convenience, .japanese): return "コンビニ・ATM"
+        case (.convenience, .english): return "Convenience / ATM"
+        case (.tourism, .japanese): return "観光・案内"
+        case (.tourism, .english): return "Tourism"
+        }
+    }
+
     var systemImage: String {
         switch self {
         case .medical:

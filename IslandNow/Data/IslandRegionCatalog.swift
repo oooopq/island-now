@@ -11,8 +11,10 @@ import Foundation
 struct IslandRegion: Identifiable, Hashable {
     let id: String
     let displayNameJapanese: String
+    let displayNameEnglish: String
     /// 日本地図ホームのピン用の短い名前（長い正式名は下の一覧に残す）
     let mapLabelJapanese: String
+    let mapLabelEnglish: String
     /// 日本地図ホームのピン位置（見やすさのため実座標から少しずらす場合あり）
     let mapAnnotationLatitude: Double
     let mapAnnotationLongitude: Double
@@ -36,13 +38,23 @@ struct IslandRegion: Identifiable, Hashable {
     var mapCoordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: mapAnnotationLatitude, longitude: mapAnnotationLongitude)
     }
+
+    func displayName(for language: AppLanguageMode) -> String {
+        language.isJapanese ? displayNameJapanese : displayNameEnglish
+    }
+
+    func mapLabel(for language: AppLanguageMode) -> String {
+        language.isJapanese ? mapLabelJapanese : mapLabelEnglish
+    }
 }
 
 enum IslandRegionCatalog {
     static let yaeyama = IslandRegion(
         id: "yaeyama",
         displayNameJapanese: "八重山諸島",
+        displayNameEnglish: "Yaeyama Islands",
         mapLabelJapanese: "八重山",
+        mapLabelEnglish: "Yaeyama",
         mapAnnotationLatitude: 24.432805,
         mapAnnotationLongitude: 124.205319,
         coverAssetName: "IslandBgIshigaki",
@@ -54,7 +66,9 @@ enum IslandRegionCatalog {
     static let sado = IslandRegion(
         id: "sado",
         displayNameJapanese: "佐渡",
+        displayNameEnglish: "Sado",
         mapLabelJapanese: "佐渡",
+        mapLabelEnglish: "Sado",
         mapAnnotationLatitude: 38.044270,
         mapAnnotationLongitude: 138.437949,
         coverAssetName: "IslandBgSado",
@@ -66,7 +80,9 @@ enum IslandRegionCatalog {
     static let izu = IslandRegion(
         id: "izu",
         displayNameJapanese: "伊豆諸島",
+        displayNameEnglish: "Izu Islands",
         mapLabelJapanese: "伊豆",
+        mapLabelEnglish: "Izu",
         mapAnnotationLatitude: 34.737500,
         mapAnnotationLongitude: 139.398817,
         coverAssetName: "IslandBgIzu",
@@ -78,7 +94,9 @@ enum IslandRegionCatalog {
     static let goto = IslandRegion(
         id: "goto",
         displayNameJapanese: "五島列島",
+        displayNameEnglish: "Goto Islands",
         mapLabelJapanese: "五島",
+        mapLabelEnglish: "Goto",
         mapAnnotationLatitude: 32.686123,
         mapAnnotationLongitude: 128.747749,
         coverAssetName: "IslandBgGoto",
@@ -91,7 +109,9 @@ enum IslandRegionCatalog {
     static let kutsuna = IslandRegion(
         id: "kutsuna",
         displayNameJapanese: "忽那諸島",
+        displayNameEnglish: "Kutsuna Islands",
         mapLabelJapanese: "忽那",
+        mapLabelEnglish: "Kutsuna",
         mapAnnotationLatitude: 33.45,
         mapAnnotationLongitude: 131.95,
         coverAssetName: "IslandBgKutsuna",
@@ -104,7 +124,9 @@ enum IslandRegionCatalog {
     static let shodoshimaNaoshima = IslandRegion(
         id: "shodoshima_naoshima",
         displayNameJapanese: "小豆島・直島諸島",
+        displayNameEnglish: "Shodoshima & Naoshima",
         mapLabelJapanese: "小豆・直島",
+        mapLabelEnglish: "Shodo·Nao",
         mapAnnotationLatitude: 34.95,
         mapAnnotationLongitude: 134.75,
         coverAssetName: "IslandBgShodoshimaNaoshima",
@@ -119,7 +141,8 @@ enum IslandRegionCatalog {
         all.first { $0.id == regionID }
     }
 
-    static func displayName(for regionID: String) -> String {
-        region(for: regionID)?.displayNameJapanese ?? regionID
+    static func displayName(for regionID: String, language: AppLanguageMode = .japanese) -> String {
+        guard let region = region(for: regionID) else { return regionID }
+        return region.displayName(for: language)
     }
 }

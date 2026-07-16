@@ -16,15 +16,19 @@ enum IslandDetailSection: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 
     var title: String {
+        title(for: .japanese)
+    }
+
+    func title(for language: AppLanguageMode) -> String {
         switch self {
         case .weather:
-            return "天気"
+            return AppText.weather.string(for: language)
         case .schedule:
-            return "ダイヤ"
+            return AppText.schedule.string(for: language)
         case .places:
-            return "店舗"
+            return AppText.places.string(for: language)
         case .savedPhotos:
-            return "写真メモ"
+            return AppText.savedPhotos.string(for: language)
         }
     }
 

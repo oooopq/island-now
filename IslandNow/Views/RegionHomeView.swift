@@ -11,6 +11,7 @@ import SwiftUI
 struct RegionHomeView: View {
     @Environment(\.detailPalette) private var palette
     @Environment(LastSelectedIslandStore.self) private var lastSelectedIslandStore
+    @Environment(AppLanguageStore.self) private var languageStore
     @State private var cameraPosition: MapCameraPosition = RegionMapSupport.japanHomeCameraPosition()
     /// 地図ピンタップ用（Map 内の NavigationLink は実機で真っ暗になることがある）
     @State private var mapSelectedRegionID: String?
@@ -40,11 +41,14 @@ struct RegionHomeView: View {
                     Image(systemName: "info.circle")
                         .foregroundStyle(palette.secondaryText)
                 }
-                .accessibilityLabel("クレジット・出典")
+                .accessibilityLabel(languageStore.t(.creditsAndSources))
             }
 
             ToolbarItem(placement: .topBarTrailing) {
-                AppThemeToggleButton()
+                HStack(spacing: 8) {
+                    AppLanguageToggleButton()
+                    AppThemeToggleButton()
+                }
             }
         }
         .navigationDestination(for: String.self) { regionID in
@@ -69,11 +73,11 @@ struct RegionHomeView: View {
             }
 
             VStack(alignment: .leading, spacing: 6) {
-                Text("行きたい諸島を地図から選んでください")
+                Text(languageStore.t(.pickRegionOnMap))
                     .font(.subheadline)
                     .foregroundStyle(palette.secondaryText)
 
-                Text("ピンまたは下の一覧をタップ")
+                Text(languageStore.t(.tapPinOrList))
                     .font(.caption)
                     .foregroundStyle(palette.secondaryText.opacity(0.85))
             }
@@ -83,7 +87,7 @@ struct RegionHomeView: View {
 
     private var recentIslandsSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("最近見た島")
+            Text(languageStore.t(.recentIslands))
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundStyle(palette.secondaryText)
@@ -110,7 +114,9 @@ struct RegionHomeView: View {
                         JapanRegionMarkerView(region: region)
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel("\(region.displayNameJapanese) \(IslandCatalog.islandCount(forRegionID: region.id))島")
+                    .accessibilityLabel(
+                        "\(region.displayName(for: languageStore.mode)) \(languageStore.t(.islandCount(IslandCatalog.islandCount(forRegionID: region.id))))"
+                    )
                 }
             }
         }
@@ -162,6 +168,7 @@ private struct JapanRegionMarkerView: View {
     let region: IslandRegion
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     private var islandCount: Int {
         IslandCatalog.islandCount(forRegionID: region.id)
@@ -176,7 +183,7 @@ private struct JapanRegionMarkerView: View {
                 .foregroundStyle(.white)
                 .shadow(color: .black.opacity(0.25), radius: 4, y: 2)
 
-            Text(region.mapLabelJapanese)
+            Text(region.mapLabel(for: languageStore.mode))
                 .font(.caption2)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.center)
@@ -186,7 +193,7 @@ private struct JapanRegionMarkerView: View {
                 .padding(.vertical, 4)
                 .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
 
-            Text("\(islandCount)島")
+            Text(languageStore.t(.islandCount(islandCount)))
                 .font(.caption2)
                 .foregroundStyle(palette.secondaryText)
                 .padding(.horizontal, 6)
@@ -200,6 +207,7 @@ private struct RegionChipView: View {
     let region: IslandRegion
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     private var islandCount: Int {
         IslandCatalog.islandCount(forRegionID: region.id)
@@ -207,11 +215,11 @@ private struct RegionChipView: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            Text(region.displayNameJapanese)
+            Text(region.displayName(for: languageStore.mode))
                 .font(.subheadline)
                 .fontWeight(.semibold)
 
-            Text("\(islandCount)島")
+            Text(languageStore.t(.islandCount(islandCount)))
                 .font(.caption)
                 .foregroundStyle(palette.secondaryText)
         }
@@ -233,6 +241,7 @@ private struct RegionChipView: View {
         RegionHomeView()
     }
     .environment(AppThemeStore())
+    .environment(AppLanguageStore())
     .environment(LastSelectedIslandStore())
     .environment(\.detailPalette, DetailCardPalette.dark)
 }

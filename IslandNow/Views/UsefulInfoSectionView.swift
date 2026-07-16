@@ -11,6 +11,7 @@ struct UsefulInfoSectionView: View {
     let islandID: String
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     private var items: [UsefulInfo] {
         IslandCatalog.profile(for: islandID)?.usefulInfo ?? []
@@ -18,7 +19,7 @@ struct UsefulInfoSectionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("お役立ち情報")
+            Text(languageStore.t(.usefulInfo))
                 .font(.headline)
 
             ForEach(UsefulInfoCategory.allCases) { category in
@@ -28,7 +29,7 @@ struct UsefulInfoSectionView: View {
                 }
             }
 
-            Text("※ 電話番号・診療時間は変更されている場合があります。緊急時は119（救急）・118（海上保安庁）")
+            Text(languageStore.t(.usefulInfoDisclaimer))
                 .font(.caption)
                 .detailCardSecondaryText()
         }
@@ -38,7 +39,7 @@ struct UsefulInfoSectionView: View {
     @ViewBuilder
     private func categoryBlock(category: UsefulInfoCategory, items: [UsefulInfo]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Label(category.rawValue, systemImage: category.systemImage)
+            Label(category.title(for: languageStore.mode), systemImage: category.systemImage)
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundStyle(palette.accent)

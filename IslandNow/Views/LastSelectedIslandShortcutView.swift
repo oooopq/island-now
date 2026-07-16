@@ -11,6 +11,7 @@ struct LastSelectedIslandShortcutView: View {
     let island: Island
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     private var backgroundAssetName: String {
         IslandCatalog.profile(for: island)?.backgroundAssetName ?? IslandCatalog.defaultBackgroundAssetName
@@ -25,7 +26,7 @@ struct LastSelectedIslandShortcutView: View {
                     .frame(height: 52)
                     .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
-                Text(island.nameJapanese)
+                Text(island.primaryName(for: languageStore.mode))
                     .font(.caption)
                     .fontWeight(.semibold)
                     .foregroundStyle(palette.text)
@@ -45,7 +46,9 @@ struct LastSelectedIslandShortcutView: View {
             }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("\(island.nameJapanese)の詳細を開く")
+        .accessibilityLabel(
+            languageStore.t(.openIslandDetail(island.primaryName(for: languageStore.mode)))
+        )
     }
 }
 
@@ -57,5 +60,6 @@ struct LastSelectedIslandShortcutView: View {
         }
         .padding()
     }
+    .environment(AppLanguageStore())
     .environment(\.detailPalette, DetailCardPalette.dark)
 }

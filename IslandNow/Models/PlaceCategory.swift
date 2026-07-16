@@ -14,6 +14,17 @@ enum PlaceCategory: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    func title(for language: AppLanguageMode) -> String {
+        switch (self, language) {
+        case (.restaurant, .japanese): return "飲食店"
+        case (.restaurant, .english): return "Food"
+        case (.lodging, .japanese): return "宿"
+        case (.lodging, .english): return "Stay"
+        case (.shop, .japanese): return "商店"
+        case (.shop, .english): return "Shop"
+        }
+    }
+
     var systemImage: String {
         switch self {
         case .restaurant:

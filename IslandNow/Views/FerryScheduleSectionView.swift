@@ -12,22 +12,23 @@ struct FerryScheduleSectionView: View {
     let state: FerryLoadState
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
     @State private var selectedDestinationID = FerryRouteHelper.allDestinationsID
     @State private var isFullScheduleExpanded = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("船便")
+                Text(languageStore.t(.ferry))
                     .font(.headline)
-                Text("フェリー・高速船")
+                Text(languageStore.t(.ferryAndHighSpeed))
                     .font(.caption)
                     .detailCardSecondaryText()
             }
 
             switch state {
             case .loading:
-                ProgressView("ダイヤを取得中…")
+                ProgressView(languageStore.t(.loadingSchedule))
                     .tint(palette.accent)
                     .detailCardSecondaryText()
 
@@ -86,14 +87,14 @@ struct FerryScheduleSectionView: View {
 
         if isFullScheduleExpanded == false, nextDepartures.isEmpty == false {
             NextDepartureBannerView(
-                title: "次の船便",
+                title: languageStore.t(.nextFerry),
                 departures: nextDepartures,
                 showsTomorrowNote: NextDepartureHelper.isTodayFinished(nextDepartures)
             )
         }
 
         if visibleSchedules.isEmpty {
-            Text("この行き先のダイヤはありません")
+            Text(languageStore.t(.noTripsForDestination))
                 .font(.subheadline)
                 .detailCardSecondaryText()
         } else if isFullScheduleExpanded {
@@ -116,16 +117,16 @@ struct FerryScheduleSectionView: View {
 
         if let validUntilText {
             let suffix = IslandCatalog.ferryValidUntilSuffix(for: island.id) ?? ""
-            Text("データ有効期限: \(validUntilText)\(suffix)")
+            Text(languageStore.t(.dataValidUntil("\(validUntilText)\(suffix)")))
                 .font(.caption)
                 .detailCardSecondaryText()
         }
 
         if isOfflineFallback {
-            Text("代表ダイヤ（参考情報）です。出発前に必ず各社公式サイトでご確認ください。")
+            Text(languageStore.t(.representativeTimetableNote))
                 .font(.caption)
                 .detailCardSecondaryText()
-        } else if let cacheText = CacheAgeText.displayText(fetchedAt: fetchedAt, isFromCache: isFromCache) {
+        } else if let cacheText = CacheAgeText.displayText(fetchedAt: fetchedAt, isFromCache: isFromCache, language: languageStore.mode) {
             Text(cacheText)
                 .font(.caption)
                 .detailCardSecondaryText()
@@ -143,7 +144,7 @@ struct FerryScheduleSectionView: View {
             }
         } label: {
             HStack(spacing: 8) {
-                Text("全ダイヤを見る（\(tripCount)便）")
+                Text(languageStore.t(.showAllTrips(tripCount)))
                     .font(.subheadline)
                     .fontWeight(.medium)
 
@@ -171,7 +172,7 @@ struct FerryScheduleSectionView: View {
             }
         } label: {
             HStack(spacing: 8) {
-                Text("全ダイヤを閉じる")
+                Text(languageStore.t(.hideAllTrips))
                     .font(.subheadline)
                     .fontWeight(.medium)
 
@@ -194,7 +195,7 @@ struct FerryScheduleSectionView: View {
     @ViewBuilder
     private func destinationPicker(destinations: [FerryDestination]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("行き先")
+            Text(languageStore.t(.destinations))
                 .font(.subheadline)
                 .detailCardSecondaryText()
 
@@ -251,7 +252,7 @@ struct FerryScheduleSectionView: View {
     }
 
     private var shipTypeLegend: some View {
-        Text("この路線には高速船（日中）と大型客船（夜航）があります。")
+        Text(languageStore.t(.highSpeedAndOvernightNote))
             .font(.caption)
             .detailCardSecondaryText()
     }
@@ -269,7 +270,7 @@ struct FerryScheduleSectionView: View {
                 .fontWeight(.semibold)
 
             ScheduleOperatorActionButtonsView(
-                actions: ScheduleOperatorActionFactory.actions(for: schedule.company)
+                actions: ScheduleOperatorActionFactory.actions(for: schedule.company, language: languageStore.mode)
             )
         }
 
@@ -290,7 +291,7 @@ struct FerryScheduleSectionView: View {
                 .fontWeight(.semibold)
 
             ScheduleOperatorActionButtonsView(
-                actions: ScheduleOperatorActionFactory.actions(for: schedule.company)
+                actions: ScheduleOperatorActionFactory.actions(for: schedule.company, language: languageStore.mode)
             )
 
             ForEach(Array(schedule.trips.enumerated()), id: \.element.id) { index, trip in

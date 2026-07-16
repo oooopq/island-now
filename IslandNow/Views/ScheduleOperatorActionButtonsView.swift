@@ -67,14 +67,17 @@ struct ScheduleOperatorActionButtonsView: View {
 }
 
 enum ScheduleOperatorActionFactory {
-    static func actions(for company: FerryCompany) -> [ScheduleOperatorAction] {
+    static func actions(
+        for company: FerryCompany,
+        language: AppLanguageMode = .japanese
+    ) -> [ScheduleOperatorAction] {
         var actions: [ScheduleOperatorAction] = []
 
         if let statusURL = company.statusPageLink {
             actions.append(
                 ScheduleOperatorAction(
                     id: "status-\(company.name)",
-                    title: "運航状況",
+                    title: FerryLinkKind.status.title(for: language),
                     systemImage: "exclamationmark.triangle.fill",
                     url: statusURL,
                     isEmphasized: true
@@ -86,7 +89,7 @@ enum ScheduleOperatorActionFactory {
             actions.append(
                 ScheduleOperatorAction(
                     id: "schedule-\(company.name)",
-                    title: "時刻表",
+                    title: AppText.timetable.string(for: language),
                     systemImage: "calendar",
                     url: websiteURL
                 )
@@ -97,7 +100,7 @@ enum ScheduleOperatorActionFactory {
             actions.append(
                 ScheduleOperatorAction(
                     id: "phone-\(company.name)",
-                    title: "電話",
+                    title: AppText.phone.string(for: language),
                     systemImage: "phone.fill",
                     url: phoneURL
                 )
@@ -107,14 +110,17 @@ enum ScheduleOperatorActionFactory {
         return actions
     }
 
-    static func actions(for airline: FlightAirline) -> [ScheduleOperatorAction] {
+    static func actions(
+        for airline: FlightAirline,
+        language: AppLanguageMode = .japanese
+    ) -> [ScheduleOperatorAction] {
         var actions: [ScheduleOperatorAction] = []
 
         if let statusURL = airline.statusPageLink {
             actions.append(
                 ScheduleOperatorAction(
                     id: "status-\(airline.name)",
-                    title: "運航状況",
+                    title: FerryLinkKind.status.title(for: language),
                     systemImage: "exclamationmark.triangle.fill",
                     url: statusURL,
                     isEmphasized: true
@@ -126,7 +132,7 @@ enum ScheduleOperatorActionFactory {
             actions.append(
                 ScheduleOperatorAction(
                     id: "schedule-\(airline.name)",
-                    title: "時刻表",
+                    title: AppText.timetable.string(for: language),
                     systemImage: "calendar",
                     url: websiteURL
                 )
@@ -137,7 +143,7 @@ enum ScheduleOperatorActionFactory {
             actions.append(
                 ScheduleOperatorAction(
                     id: "phone-\(airline.name)",
-                    title: "電話",
+                    title: AppText.phone.string(for: language),
                     systemImage: "phone.fill",
                     url: phoneURL
                 )
@@ -147,10 +153,13 @@ enum ScheduleOperatorActionFactory {
         return actions
     }
 
-    static func actions(for button: FerryLinkButton) -> ScheduleOperatorAction {
+    static func actions(
+        for button: FerryLinkButton,
+        language: AppLanguageMode = .japanese
+    ) -> ScheduleOperatorAction {
         ScheduleOperatorAction(
             id: button.id,
-            title: button.kind.titleJapanese,
+            title: button.kind.title(for: language),
             systemImage: button.kind.systemImage,
             url: button.url,
             isEmphasized: button.kind == .status

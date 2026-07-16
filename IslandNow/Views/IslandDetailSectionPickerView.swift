@@ -11,6 +11,7 @@ struct IslandDetailSectionPickerView: View {
     @Binding var selection: IslandDetailSection
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
     @Namespace private var selectionNamespace
 
     /// ライトモードは背景写真の上でも読みやすい配色に切り替える
@@ -101,7 +102,7 @@ struct IslandDetailSectionPickerView: View {
                 }
                 .frame(height: 34)
 
-                Text(section.title)
+                Text(section.title(for: languageStore.mode))
                     .font(.system(size: 10, weight: isSelected ? .bold : .semibold))
                     .foregroundStyle(labelColor(section: section, isSelected: isSelected))
                     .lineLimit(1)
@@ -114,7 +115,7 @@ struct IslandDetailSectionPickerView: View {
             }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(section.title)
+        .accessibilityLabel(section.title(for: languageStore.mode))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
@@ -181,7 +182,8 @@ struct IslandDetailSectionPickerView: View {
                 endPoint: .bottom
             )
         }
-        .environment(\.detailPalette, DetailCardPalette.dark)
+        .environment(AppLanguageStore())
+    .environment(\.detailPalette, DetailCardPalette.dark)
         .preferredColorScheme(.dark)
 }
 

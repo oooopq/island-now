@@ -12,6 +12,7 @@ struct IslandDetailView: View {
 
     @Environment(\.detailPalette) private var palette
     @Environment(LastSelectedIslandStore.self) private var lastSelectedIslandStore
+    @Environment(AppLanguageStore.self) private var languageStore
     @State private var selectedSection: IslandDetailSection = .weather
     @State private var weatherState: WeatherLoadState = .loading
     @State private var ferryState: FerryLoadState = .loading
@@ -94,7 +95,10 @@ struct IslandDetailView: View {
         .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                AppThemeToggleButton()
+                HStack(spacing: 8) {
+                    AppLanguageToggleButton()
+                    AppThemeToggleButton()
+                }
             }
         }
         .refreshable {
@@ -133,7 +137,7 @@ struct IslandDetailView: View {
         VStack(spacing: 0) {
             IslandDetailHeaderView(
                 island: island,
-                regionDisplayName: islandProfile?.regionDisplayName
+                regionDisplayName: regionDisplayName
             )
             .padding(.horizontal)
             .padding(.top, 6)
@@ -169,6 +173,11 @@ struct IslandDetailView: View {
                 blurForReadability: blurBackgroundForReadability
             )
         }
+    }
+
+    private var regionDisplayName: String? {
+        guard let regionID = islandProfile?.regionID else { return nil }
+        return IslandRegionCatalog.displayName(for: regionID, language: languageStore.mode)
     }
 
     private func prepareArtIntro(for island: Island) {
@@ -304,7 +313,7 @@ struct IslandDetailView: View {
                 return
             }
             weatherState = .failed(
-                message: offlineFailureMessage(for: "天気"),
+                message: languageStore.t(.offlineWeather),
                 cachedWeather: nil
             )
         }
@@ -350,7 +359,7 @@ struct IslandDetailView: View {
             // GTFS 取得失敗・キャッシュもない場合はサンプルダイヤを .failed として表示
             let fallback = islandProfile?.sampleFerrySchedules ?? []
             ferryState = .failed(
-                message: "ダイヤを取得できませんでした。代表ダイヤ（参考）を表示しています。",
+                message: languageStore.t(.offlineFerryFallback),
                 cachedSchedules: fallback.isEmpty ? nil : fallback,
                 fetchedAt: nil
             )
@@ -385,7 +394,7 @@ struct IslandDetailView: View {
                 return
             }
             placesState = .failed(
-                message: offlineFailureMessage(for: "スポット"),
+                message: languageStore.t(.offlinePlaces),
                 cachedPlaces: nil,
                 fetchedAt: nil
             )
@@ -444,10 +453,6 @@ struct IslandDetailView: View {
             try await placesSearchService.searchPlaces(for: island, category: category)
         }
     }
-
-    private func offlineFailureMessage(for subject: String) -> String {
-        "電波がないため\(subject)を取得できませんでした"
-    }
 }
 
 #Preview {
@@ -455,5 +460,6 @@ struct IslandDetailView: View {
         IslandDetailView(island: IslandCatalog.islands[0])
     }
     .environment(LastSelectedIslandStore())
+    .environment(AppLanguageStore())
     .environment(\.detailPalette, DetailCardPalette.dark)
 }

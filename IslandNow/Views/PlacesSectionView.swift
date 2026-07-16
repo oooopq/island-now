@@ -13,14 +13,15 @@ struct PlacesSectionView: View {
     let state: PlacesLoadState
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     private var portDistanceCaption: String {
         let ports = IslandCatalog.ports(for: island.id)
         if ports.count <= 1, let port = ports.first {
-            return "港（\(port.name)）からの距離・徒歩時間を表示しています"
+            return languageStore.t(.portDistanceSingle(port.name))
         }
         let names = ports.map(\.name).joined(separator: "・")
-        return "各港（\(names)）からの距離・徒歩時間を表示しています"
+        return languageStore.t(.portDistanceMultiple(names))
     }
 
     private var showsPortDistance: Bool {
@@ -29,12 +30,12 @@ struct PlacesSectionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("スポット")
+            Text(languageStore.t(.spots))
                 .font(.headline)
 
-            Picker("カテゴリ", selection: $selectedCategory) {
+            Picker(languageStore.t(.category), selection: $selectedCategory) {
                 ForEach(PlaceCategory.allCases) { category in
-                    Text(category.rawValue).tag(category)
+                    Text(category.title(for: languageStore.mode)).tag(category)
                 }
             }
             .pickerStyle(.segmented)
@@ -47,13 +48,13 @@ struct PlacesSectionView: View {
 
             switch state {
             case .loading:
-                ProgressView("スポットを検索中…")
+                ProgressView(languageStore.t(.searchingPlaces))
                     .tint(palette.accent)
                     .detailCardSecondaryText()
 
             case .loaded(let places, let isFromCache, let fetchedAt):
                 if places.isEmpty {
-                    Text("このカテゴリのスポットが見つかりませんでした")
+                    Text(languageStore.t(.noPlacesInCategory))
                         .font(.subheadline)
                         .detailCardSecondaryText()
                 } else {
@@ -66,18 +67,18 @@ struct PlacesSectionView: View {
                     }
 
                     if places.count > IslandCatalog.placeDisplayLimit {
-                        Text("ほか \(places.count - IslandCatalog.placeDisplayLimit) 件")
+                        Text(languageStore.t(.morePlaces(places.count - IslandCatalog.placeDisplayLimit)))
                             .font(.caption)
                             .detailCardSecondaryText()
                     }
                 }
 
-                if let cacheText = CacheAgeText.displayText(fetchedAt: fetchedAt, isFromCache: isFromCache) {
+                if let cacheText = CacheAgeText.displayText(fetchedAt: fetchedAt, isFromCache: isFromCache, language: languageStore.mode) {
                     Text(cacheText)
                         .font(.caption)
                         .detailCardSecondaryText()
                 } else {
-                    Text("Apple マップのデータを表示しています")
+                    Text(languageStore.t(.appleMapsData))
                         .font(.caption)
                         .detailCardSecondaryText()
                 }
@@ -91,7 +92,7 @@ struct PlacesSectionView: View {
                     ForEach(Array(cachedPlaces.prefix(IslandCatalog.placeDisplayLimit))) { place in
                         placeRow(place)
                     }
-                    if let cacheText = CacheAgeText.displayText(fetchedAt: fetchedAt, isFromCache: true) {
+                    if let cacheText = CacheAgeText.displayText(fetchedAt: fetchedAt, isFromCache: true, language: languageStore.mode) {
                         Text(cacheText)
                             .font(.caption)
                             .detailCardSecondaryText()

@@ -29,6 +29,10 @@ enum FerryLinkKind: String, CaseIterable {
         }
     }
 
+    func title(for language: AppLanguageMode) -> String {
+        language.isJapanese ? titleJapanese : titleEnglish
+    }
+
     var systemImage: String {
         switch self {
         case .home: return "house.fill"

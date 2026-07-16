@@ -19,4 +19,14 @@ struct Island: Identifiable, Hashable {
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
+
+    /// いまの言語で主に出す島名
+    func primaryName(for language: AppLanguageMode) -> String {
+        language.isJapanese ? nameJapanese : nameEnglish
+    }
+
+    /// 副表示の島名（主と反対側）
+    func secondaryName(for language: AppLanguageMode) -> String {
+        language.isJapanese ? nameEnglish : nameJapanese
+    }
 }

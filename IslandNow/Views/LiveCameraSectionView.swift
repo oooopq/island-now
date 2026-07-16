@@ -13,6 +13,7 @@ struct LiveCameraSectionView: View {
     let footnote: String?
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     private var hasLinks: Bool {
         liveCameras.isEmpty == false || relatedLinks.isEmpty == false
@@ -23,8 +24,8 @@ struct LiveCameraSectionView: View {
             VStack(alignment: .leading, spacing: 14) {
                 header
 
-                cameraBlock(title: "ライブカメラ", items: liveCameras)
-                cameraBlock(title: "関連リンク", items: relatedLinks)
+                cameraBlock(title: languageStore.t(.liveCamera), items: liveCameras)
+                cameraBlock(title: languageStore.t(.relatedLinks), items: relatedLinks)
 
                 if let footnote, footnote.isEmpty == false {
                     Text(footnote)
@@ -38,11 +39,11 @@ struct LiveCameraSectionView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Label("ライブカメラ・関連リンク", systemImage: "video.fill")
+            Label(languageStore.t(.liveCameraRelatedHeader), systemImage: "video.fill")
                 .font(.headline)
                 .foregroundStyle(palette.text)
 
-            Text("公開配信や公式ページを外部ブラウザで開きます。")
+            Text(languageStore.t(.liveCameraFootnote))
                 .font(.caption)
                 .detailCardSecondaryText()
         }
@@ -100,5 +101,6 @@ struct LiveCameraSectionView: View {
     )
     .padding()
     .environment(AppThemeStore())
+    .environment(AppLanguageStore())
     .environment(\.detailPalette, DetailCardPalette.dark)
 }

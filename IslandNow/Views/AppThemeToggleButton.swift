@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AppThemeToggleButton: View {
     @Environment(AppThemeStore.self) private var themeStore
+    @Environment(AppLanguageStore.self) private var languageStore
 
     var body: some View {
         Button {
@@ -21,6 +22,6 @@ struct AppThemeToggleButton: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(themeStore.mode.accessibilityLabel)
-        .accessibilityHint("画面の明るさを切り替えます")
+        .accessibilityHint(languageStore.t(.themeToggleHint))
     }
 }

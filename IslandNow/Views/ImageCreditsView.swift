@@ -2,13 +2,14 @@
 //  ImageCreditsView.swift
 //  Island Now
 //
-//  背景画像の提供元・ライセンス一覧（公開・法務向け）
+//  背景画像・データ出典・規約リンク（公開・法務向け）
 //
 
 import SwiftUI
 
 struct ImageCreditsView: View {
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     private var entries: [IslandCatalog.BackgroundCreditEntry] {
         IslandCatalog.backgroundCreditEntries
@@ -27,44 +28,52 @@ struct ImageCreditsView: View {
             .padding(16)
         }
         .background(listBackground)
-        .navigationTitle("クレジット・出典")
+        .navigationTitle(languageStore.t(.creditsAndSources))
         .navigationBarTitleDisplayMode(.inline)
     }
 
     private var introSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("このアプリでは、天気・波の高さ・船便ダイヤなどのデータと、各島の背景画像を、以下の提供元から利用しています。")
+            Text(introBody)
                 .font(.subheadline)
                 .foregroundStyle(palette.text)
 
-            Text("出典表記は各提供元のライセンス・利用条件に従います。")
+            Text(introNote)
                 .font(.caption)
                 .foregroundStyle(palette.secondaryText)
         }
         .creditCardStyle(palette: palette)
     }
 
-    // 天気・波の高さ・フェリーダイヤのデータ提供元（各ライセンス・利用規約に基づく出典表記）
+    // 天気・波・船便・店舗などのデータ提供元
     private var dataSourcesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("データの出典")
+            Text(sectionTitleData)
                 .font(.headline)
                 .foregroundStyle(palette.text)
 
             dataSourceCard(
-                title: "天気・波の高さ",
+                title: weatherTitle,
                 credit: "Weather data by Open-Meteo.com",
-                note: "Open-Meteo の天気・海洋データ（CC BY 4.0 ライセンス）を利用しています。",
+                note: weatherNote,
                 linkTitle: "open-meteo.com",
                 urlString: "https://open-meteo.com/"
             )
 
             dataSourceCard(
-                title: "船便ダイヤ",
-                credit: "八重山のGTFSダイヤ提供：特定非営利活動法人OTTOP（沖縄県の公共交通オープンデータ）",
-                note: "八重山以外の地域は、各運航会社の公式サイト・公開情報をもとにした代表ダイヤまたは公式リンクです。最新の運航状況は各運航会社の公式サイトでご確認ください。",
+                title: ferryTitle,
+                credit: ferryCredit,
+                note: ferryNote,
                 linkTitle: "ottop.org",
                 urlString: "https://www.ottop.org/"
+            )
+
+            dataSourceCard(
+                title: placesTitle,
+                credit: placesCredit,
+                note: placesNote,
+                linkTitle: "Apple Maps / MapKit",
+                urlString: "https://www.apple.com/maps/"
             )
         }
     }
@@ -106,17 +115,17 @@ struct ImageCreditsView: View {
         .creditCardStyle(palette: palette)
     }
 
-    // 地域ホーム画面のカバー画像（Unsplash）の出典一覧
+    // 地域ホームのカバー画像（Unsplash / Wikimedia / NASA 等）
     private var regionCoverCreditsSection: some View {
         let regionsWithCredit = IslandRegionCatalog.all.filter { $0.coverAssetCredit != nil }
         return VStack(alignment: .leading, spacing: 12) {
-            Text("地域カバー画像")
+            Text(sectionTitleRegionCovers)
                 .font(.headline)
                 .foregroundStyle(palette.text)
 
             ForEach(regionsWithCredit) { region in
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(region.displayNameJapanese)
+                    Text(region.displayName(for: languageStore.mode))
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundStyle(palette.text)
@@ -135,7 +144,7 @@ struct ImageCreditsView: View {
 
     private var islandCreditsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("島別の背景画像")
+            Text(sectionTitleIslandBackgrounds)
                 .font(.headline)
                 .foregroundStyle(palette.text)
 
@@ -162,19 +171,22 @@ struct ImageCreditsView: View {
 
     private var legalLinksSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("アプリの規約・お問い合わせ")
+            Text(sectionTitleLegal)
                 .font(.headline)
                 .foregroundStyle(palette.text)
 
             VStack(alignment: .leading, spacing: 8) {
                 if let url = AppLegalInfo.privacyPolicyURL {
-                    legalLinkRow(title: "プライバシーポリシー", url: url)
+                    legalLinkRow(title: privacyTitle, url: url)
                 }
                 if let url = AppLegalInfo.termsOfServiceURL {
-                    legalLinkRow(title: "利用規約", url: url)
+                    legalLinkRow(title: termsTitle, url: url)
                 }
                 if let url = AppLegalInfo.supportEmailURL {
-                    legalLinkRow(title: "お問い合わせ（\(AppLegalInfo.supportEmail)）", url: url)
+                    legalLinkRow(
+                        title: "\(contactTitle)（\(AppLegalInfo.supportEmail)）",
+                        url: url
+                    )
                 }
             }
             .creditCardStyle(palette: palette)
@@ -194,55 +206,34 @@ struct ImageCreditsView: View {
 
     private var licenseNotesSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("ライセンスについて")
+            Text(sectionTitleLicense)
                 .font(.headline)
                 .foregroundStyle(palette.text)
 
-            licenseNote(
-                title: "Unsplash License",
-                body: "商用・非商用を問わず利用できます。クレジット表示は任意ですが、本アプリでは提供元を明示しています。"
-            )
-
-            licenseNote(
-                title: "Wikimedia Commons",
-                body: "各画像に記載の Creative Commons ライセンス、Public domain、または出典表示条件に従い、作者名・対象・ライセンスまたは出典を表示しています。背景表示の際、視認性のため画像の上に暗色グラデーションを重ねています（この加工は各島のクレジットに明記しています）。"
-            )
+            licenseNote(title: "Unsplash License", body: unsplashBody)
+            licenseNote(title: "Wikimedia Commons", body: wikimediaBody)
 
             VStack(alignment: .leading, spacing: 8) {
                 licenseLinkRow(
-                    title: "CC BY-SA 1.0（ライセンス全文）",
+                    title: "CC BY-SA 1.0",
                     urlString: "https://creativecommons.org/licenses/by-sa/1.0/"
                 )
                 licenseLinkRow(
-                    title: "CC BY-SA 3.0（ライセンス全文）",
+                    title: "CC BY-SA 3.0",
                     urlString: "https://creativecommons.org/licenses/by-sa/3.0/"
                 )
                 licenseLinkRow(
-                    title: "CC BY-SA 4.0（ライセンス全文）",
+                    title: "CC BY-SA 4.0",
                     urlString: "https://creativecommons.org/licenses/by-sa/4.0/"
                 )
             }
             .creditCardStyle(palette: palette)
 
-            licenseNote(
-                title: "国土地理院",
-                body: "二神島・怒和島・津和地島の空中写真は、Wikimedia Commons 経由で国土地理院の出典表示条件に従って利用しています。該当する画像クレジットには「出典：国土地理院」と明記しています。"
-            )
-
-            licenseNote(
-                title: "NASA / Public domain",
-                body: "佐渡島・波照間島・五島列島などの一部背景画像は NASA Johnson Space Center の Public domain 画像を利用しています。出典確認のため、クレジットには提供元を明記しています。"
-            )
-
-            licenseNote(
-                title: "提供写真",
-                body: "犬島の背景画像は、提供写真としてクレジットを表示しています。第三者の素材として再配布するものではありません。"
-            )
-
-            licenseNote(
-                title: "アプリアイコン",
-                body: "Island Now 用のオリジナルデザインです（第三者の画像素材は使用していません）。"
-            )
+            licenseNote(title: gsiTitle, body: gsiBody)
+            licenseNote(title: "NASA / Public domain", body: nasaBody)
+            licenseNote(title: providedPhotoTitle, body: providedPhotoBody)
+            licenseNote(title: photoNotesTitle, body: photoNotesBody)
+            licenseNote(title: appIconTitle, body: appIconBody)
         }
     }
 
@@ -280,6 +271,154 @@ struct ImageCreditsView: View {
         palette.cardBackground.opacity(0.15)
             .ignoresSafeArea()
     }
+
+    // MARK: - 表示文言（日英）
+
+    private var isJapanese: Bool { languageStore.mode.isJapanese }
+
+    private var introBody: String {
+        isJapanese
+            ? "このアプリでは、天気・波の高さ・船便ダイヤ・店舗情報などのデータと、各島の背景画像を、以下の提供元から利用しています。"
+            : "This app uses weather, wave height, ferry timetables, place data, and island background images from the sources below."
+    }
+
+    private var introNote: String {
+        isJapanese
+            ? "出典表記は各提供元のライセンス・利用条件に従います。"
+            : "Attribution follows each provider’s license and terms."
+    }
+
+    private var sectionTitleData: String {
+        isJapanese ? "データの出典" : "Data sources"
+    }
+
+    private var weatherTitle: String {
+        isJapanese ? "天気・波の高さ" : "Weather & wave height"
+    }
+
+    private var weatherNote: String {
+        isJapanese
+            ? "Open-Meteo の天気・海洋データ（CC BY 4.0 ライセンス）を利用しています。"
+            : "Uses Open-Meteo weather and marine data (CC BY 4.0)."
+    }
+
+    private var ferryTitle: String {
+        isJapanese ? "船便ダイヤ" : "Ferry timetables"
+    }
+
+    private var ferryCredit: String {
+        isJapanese
+            ? "八重山のGTFSダイヤ提供：特定非営利活動法人OTTOP（沖縄県の公共交通オープンデータ）"
+            : "Yaeyama GTFS timetables: NPO OTTOP (Okinawa public transit open data)"
+    }
+
+    private var ferryNote: String {
+        isJapanese
+            ? "八重山以外の地域は、各運航会社の公式サイト・公開情報をもとにした代表ダイヤまたは公式リンクです。最新の運航状況は各運航会社の公式サイトでご確認ください。"
+            : "Outside Yaeyama, schedules are representative timetables or official links based on public operator information. Always check the operator’s site for the latest status."
+    }
+
+    private var placesTitle: String {
+        isJapanese ? "店舗・スポット" : "Places"
+    }
+
+    private var placesCredit: String {
+        isJapanese
+            ? "島付近の飲食店・宿・商店などの検索結果は Apple マップ（MapKit）のデータを表示しています。"
+            : "Nearby restaurants, lodging, and shops come from Apple Maps (MapKit)."
+    }
+
+    private var placesNote: String {
+        isJapanese
+            ? "営業時間・休業・存在の正確性は保証しません。詳細は Apple マップまたは各店舗でご確認ください。"
+            : "Hours, closures, and accuracy are not guaranteed. Confirm in Apple Maps or with the business."
+    }
+
+    private var sectionTitleRegionCovers: String {
+        isJapanese ? "地域カバー画像" : "Region cover images"
+    }
+
+    private var sectionTitleIslandBackgrounds: String {
+        isJapanese ? "島別の背景画像" : "Island background images"
+    }
+
+    private var sectionTitleLicense: String {
+        isJapanese ? "ライセンスについて" : "Licenses"
+    }
+
+    private var sectionTitleLegal: String {
+        isJapanese ? "アプリの規約・お問い合わせ" : "Policies & contact"
+    }
+
+    private var privacyTitle: String {
+        isJapanese ? "プライバシーポリシー" : "Privacy Policy"
+    }
+
+    private var termsTitle: String {
+        isJapanese ? "利用規約" : "Terms of Use"
+    }
+
+    private var contactTitle: String {
+        isJapanese ? "お問い合わせ" : "Contact"
+    }
+
+    private var unsplashBody: String {
+        isJapanese
+            ? "商用・非商用を問わず利用できます。クレジット表示は任意ですが、本アプリでは提供元を明示しています。"
+            : "May be used commercially or non-commercially. Credit is optional; this app still shows attribution."
+    }
+
+    private var wikimediaBody: String {
+        isJapanese
+            ? "各画像に記載の Creative Commons ライセンス、Public domain、または出典表示条件に従い、作者名・対象・ライセンスまたは出典を表示しています。背景表示の際、視認性のため画像の上に暗色グラデーションを重ねています（この加工は各島のクレジットに明記しています）。"
+            : "Images follow the Creative Commons, public domain, or attribution terms shown for each file. A dark gradient may be overlaid for readability (noted in each island credit)."
+    }
+
+    private var gsiTitle: String {
+        isJapanese ? "国土地理院" : "Geospatial Information Authority of Japan"
+    }
+
+    private var gsiBody: String {
+        isJapanese
+            ? "二神島・怒和島・津和地島の空中写真は、Wikimedia Commons 経由で国土地理院の出典表示条件に従って利用しています。該当する画像クレジットには「出典：国土地理院」と明記しています。"
+            : "Aerial photos of Futagami, Nuwa, and Tsuwaji are used via Wikimedia Commons under GSI attribution rules. Credits include “出典：国土地理院”."
+    }
+
+    private var nasaBody: String {
+        isJapanese
+            ? "佐渡島・波照間島・五島列島などの一部背景画像は NASA Johnson Space Center の Public domain 画像を利用しています。出典確認のため、クレジットには提供元を明記しています。"
+            : "Some backgrounds (e.g. Sado, Hateruma, Goto) use NASA Johnson Space Center public-domain imagery, credited in-app."
+    }
+
+    private var providedPhotoTitle: String {
+        isJapanese ? "提供写真" : "Provided photos"
+    }
+
+    private var providedPhotoBody: String {
+        isJapanese
+            ? "黒島および犬島の背景画像は、提供写真としてクレジットを表示しています。第三者の素材として再配布するものではありません。"
+            : "Backgrounds for Kuroshima and Inujima are provided photos with credit shown. They are not redistributed as third-party stock."
+    }
+
+    private var photoNotesTitle: String {
+        isJapanese ? "写真メモ（利用者撮影）" : "Photo notes (user photos)"
+    }
+
+    private var photoNotesBody: String {
+        isJapanese
+            ? "利用者が撮影または選んだ写真は、この端末内だけに保存されます。当方のサーバーへ送信せず、本クレジット一覧の第三者素材には含めません。"
+            : "Photos you take or pick are stored only on this device, are not sent to our servers, and are not third-party assets listed here."
+    }
+
+    private var appIconTitle: String {
+        isJapanese ? "アプリアイコン" : "App icon"
+    }
+
+    private var appIconBody: String {
+        isJapanese
+            ? "Island Now 用のオリジナルデザインです（第三者の画像素材は使用していません）。"
+            : "Original design for Island Now (no third-party image assets)."
+    }
 }
 
 private extension View {
@@ -302,5 +441,6 @@ private extension View {
         ImageCreditsView()
     }
     .environment(AppThemeStore())
+    .environment(AppLanguageStore())
     .environment(\.detailPalette, DetailCardPalette.dark)
 }

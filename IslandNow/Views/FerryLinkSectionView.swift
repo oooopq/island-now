@@ -11,18 +11,19 @@ struct FerryLinkSectionView: View {
     let companies: [FerryCompany]
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("船便")
+                Text(languageStore.t(.ferry))
                     .font(.headline)
-                Text("フェリー・高速船")
+                Text(languageStore.t(.ferryAndHighSpeed))
                     .font(.caption)
                     .detailCardSecondaryText()
             }
 
-            Text("ダイヤ・運航状況は各社公式サイトでご確認ください。")
+            Text(languageStore.t(.ferryCheckOfficialSites))
                 .font(.caption)
                 .detailCardSecondaryText()
                 .fixedSize(horizontal: false, vertical: true)
@@ -46,7 +47,7 @@ struct FerryLinkSectionView: View {
                 .fontWeight(.semibold)
 
             ScheduleOperatorActionButtonsView(
-                actions: company.linkButtons.map(ScheduleOperatorActionFactory.actions(for:))
+                actions: company.linkButtons.map { ScheduleOperatorActionFactory.actions(for: $0, language: languageStore.mode) }
             )
         }
     }
@@ -57,5 +58,6 @@ struct FerryLinkSectionView: View {
         companies: IslandCatalog.profile(for: "oshima")?.ferryLinkCompanies ?? []
     )
     .padding()
+    .environment(AppLanguageStore())
     .environment(\.detailPalette, DetailCardPalette.dark)
 }

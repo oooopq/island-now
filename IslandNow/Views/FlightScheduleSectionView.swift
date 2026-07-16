@@ -13,11 +13,12 @@ struct FlightScheduleSectionView: View {
     let scheduleNote: String?
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
     @State private var selectedDestinationID = FlightRouteHelper.allDestinationsID
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("航空便")
+            Text(languageStore.t(.flights))
                 .font(.headline)
 
             let destinations = FlightRouteHelper.destinations(in: schedules, currentIslandID: island.id)
@@ -35,14 +36,14 @@ struct FlightScheduleSectionView: View {
 
             if nextDepartures.isEmpty == false {
                 NextDepartureBannerView(
-                    title: "次の航空便",
+                    title: languageStore.t(.nextFlight),
                     departures: nextDepartures,
                     showsTomorrowNote: NextDepartureHelper.isTodayFinished(nextDepartures)
                 )
             }
 
             if visibleSchedules.isEmpty {
-                Text("この行き先の便はありません")
+                Text(languageStore.t(.noFlightsForDestination))
                     .font(.subheadline)
                     .detailCardSecondaryText()
             } else {
@@ -72,7 +73,7 @@ struct FlightScheduleSectionView: View {
     @ViewBuilder
     private func destinationPicker(destinations: [FlightDestination]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("行き先")
+            Text(languageStore.t(.destinations))
                 .font(.subheadline)
                 .detailCardSecondaryText()
 
@@ -140,7 +141,7 @@ struct FlightScheduleSectionView: View {
                 .fontWeight(.semibold)
 
             ScheduleOperatorActionButtonsView(
-                actions: ScheduleOperatorActionFactory.actions(for: schedule.airline)
+                actions: ScheduleOperatorActionFactory.actions(for: schedule.airline, language: languageStore.mode)
             )
 
             ForEach(Array(schedule.trips.enumerated()), id: \.element.id) { index, trip in

@@ -14,6 +14,7 @@ struct IslandSavedPhotosSectionView: View {
     @Bindable var store: IslandSavedPhotoStore
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var showingCamera = false
     @State private var viewingPhoto: IslandSavedPhoto?
@@ -32,10 +33,10 @@ struct IslandSavedPhotosSectionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("写真メモ")
+            Text(languageStore.t(.photoNotes))
                 .font(.headline)
 
-            Text("港や案内所で撮影した時刻表・案内を、この端末内だけに保存できます。各島あたり最大\(IslandSavedPhotoStore.maxPhotosPerIsland)枚まで。サムネイルをタップするとすぐ表示されます。")
+            Text(languageStore.t(.photoNotesDescription(IslandSavedPhotoStore.maxPhotosPerIsland)))
                 .font(.caption)
                 .detailCardSecondaryText()
 
@@ -69,20 +70,20 @@ struct IslandSavedPhotosSectionView: View {
         .fullScreenCover(item: $viewingPhoto) { photo in
             IslandSavedPhotoViewerView(photo: photo, store: store)
         }
-        .alert("カメラを使えません", isPresented: showCameraAlertBinding) {
+        .alert(languageStore.t(.cameraUnavailableTitle), isPresented: showCameraAlertBinding) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(cameraUnavailableMessage ?? "この端末ではカメラ撮影が利用できません。")
+            Text(cameraUnavailableMessage ?? languageStore.t(.cameraUnavailableBody))
         }
-        .alert("保存上限に達しました", isPresented: $showingPhotoLimitAlert) {
+        .alert(languageStore.t(.photoLimitTitle), isPresented: $showingPhotoLimitAlert) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text("この島の写真メモは\(IslandSavedPhotoStore.maxPhotosPerIsland)枚までです。不要な写真を削除すると追加できます。")
+            Text(languageStore.t(.photoNotesLimitReached(IslandSavedPhotoStore.maxPhotosPerIsland)))
         }
     }
 
     private var photoCountLabel: some View {
-        Text("\(store.photos.count)/\(IslandSavedPhotoStore.maxPhotosPerIsland)枚")
+        Text(languageStore.t(.photoNotesCount(store.photos.count, IslandSavedPhotoStore.maxPhotosPerIsland)))
             .font(.caption)
             .fontWeight(.medium)
             .detailCardSecondaryText()
@@ -93,7 +94,7 @@ struct IslandSavedPhotosSectionView: View {
             Button {
                 openCamera()
             } label: {
-                Label("撮影", systemImage: "camera.fill")
+                Label(languageStore.t(.takePhoto), systemImage: "camera.fill")
                     .font(.subheadline.weight(.semibold))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
@@ -103,7 +104,7 @@ struct IslandSavedPhotosSectionView: View {
             .disabled(store.canAddPhoto == false)
 
             PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
-                Label("写真を選ぶ", systemImage: "photo.on.rectangle")
+                Label(languageStore.t(.choosePhoto), systemImage: "photo.on.rectangle")
                     .font(.subheadline.weight(.semibold))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
@@ -119,7 +120,7 @@ struct IslandSavedPhotosSectionView: View {
                 .font(.largeTitle)
                 .foregroundStyle(palette.secondaryText)
 
-            Text("まだ写真メモがありません")
+            Text(languageStore.t(.noPhotoNotesYet))
                 .font(.subheadline)
                 .detailCardSecondaryText()
         }
@@ -228,5 +229,6 @@ struct IslandSavedPhotosSectionView: View {
         store: IslandSavedPhotoStore()
     )
     .padding()
+    .environment(AppLanguageStore())
     .environment(\.detailPalette, DetailCardPalette.dark)
 }

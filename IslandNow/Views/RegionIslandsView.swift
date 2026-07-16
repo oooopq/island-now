@@ -12,6 +12,7 @@ struct RegionIslandsView: View {
     let region: IslandRegion
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
     @State private var cameraPosition: MapCameraPosition = .automatic
     @State private var selectedIsland: Island?
 
@@ -39,7 +40,7 @@ struct RegionIslandsView: View {
             .padding(.vertical, 12)
         }
         .background(listBackground)
-        .navigationTitle(region.displayNameJapanese)
+        .navigationTitle(region.displayName(for: languageStore.mode))
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(item: $selectedIsland) { island in
             IslandDetailView(island: island)
@@ -52,7 +53,7 @@ struct RegionIslandsView: View {
     private var regionMap: some View {
         Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
             ForEach(islands) { island in
-                Annotation(island.nameJapanese, coordinate: island.coordinate) {
+                Annotation(island.primaryName(for: languageStore.mode), coordinate: island.coordinate) {
                     Image(systemName: "mountain.2.fill")
                         .font(.caption)
                         .padding(6)
@@ -81,6 +82,7 @@ private struct IslandRowView: View {
     let island: Island
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     private var backgroundAssetName: String {
         IslandCatalog.profile(for: island)?.backgroundAssetName ?? IslandCatalog.defaultBackgroundAssetName
@@ -95,11 +97,11 @@ private struct IslandRowView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(island.nameJapanese)
+                Text(island.primaryName(for: languageStore.mode))
                     .font(.headline)
                     .foregroundStyle(palette.text)
 
-                Text(island.nameEnglish.uppercased())
+                Text(island.secondaryName(for: languageStore.mode).uppercased())
                     .font(.caption)
                     .tracking(1.2)
                     .foregroundStyle(palette.secondaryText)
@@ -129,5 +131,6 @@ private struct IslandRowView: View {
         RegionIslandsView(region: IslandRegionCatalog.yaeyama)
     }
     .environment(AppThemeStore())
+    .environment(AppLanguageStore())
     .environment(\.detailPalette, DetailCardPalette.dark)
 }
