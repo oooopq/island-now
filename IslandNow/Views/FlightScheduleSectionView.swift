@@ -18,8 +18,10 @@ struct FlightScheduleSectionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(languageStore.t(.flights))
-                .font(.headline)
+            ScheduleTransportHeaderView(
+                kind: .flight,
+                title: languageStore.t(.flights)
+            )
 
             let destinations = FlightRouteHelper.destinations(in: schedules, currentIslandID: island.id)
 
@@ -38,7 +40,8 @@ struct FlightScheduleSectionView: View {
                 NextDepartureBannerView(
                     title: languageStore.t(.nextFlight),
                     departures: nextDepartures,
-                    showsTomorrowNote: NextDepartureHelper.isTodayFinished(nextDepartures)
+                    showsTomorrowNote: NextDepartureHelper.isTodayFinished(nextDepartures),
+                    accentColor: ScheduleTransportKind.flight.accentColor
                 )
             }
 
@@ -164,13 +167,13 @@ struct FlightScheduleSectionView: View {
                 Text(trip.flightNumber)
                     .font(.caption)
                     .fontWeight(.semibold)
-                    .foregroundStyle(palette.accent)
+                    .foregroundStyle(ScheduleTransportKind.flight.accentColor)
 
                 HStack(spacing: 6) {
                     Text(route.departure)
                     Image(systemName: "airplane")
                         .font(.caption)
-                        .detailCardSecondaryText()
+                        .foregroundStyle(ScheduleTransportKind.flight.accentColor)
                     Text(route.arrival)
                 }
                 .font(.subheadline)

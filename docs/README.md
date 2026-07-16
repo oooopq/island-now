@@ -4,6 +4,7 @@ App Store 公開と法的表記用の文案です。
 
 | ファイル | 用途 |
 |---|---|
+| [submission-checklist-ja.md](./submission-checklist-ja.md) | **提出前チェックリスト（必読）** |
 | [app-store-ja.md](./app-store-ja.md) | App Store Connect の説明文・キーワード等 |
 | [privacy-policy-ja.md](./privacy-policy-ja.md) | プライバシーポリシー（原稿・Markdown） |
 | [terms-of-service-ja.md](./terms-of-service-ja.md) | 利用規約（原稿・Markdown） |
@@ -13,39 +14,17 @@ App Store 公開と法的表記用の文案です。
 
 ## 公開 URL（GitHub Pages）
 
-リポジトリの **Settings → Pages → Source: Deploy from branch → /docs** で公開すると、以下の URL になります（リポジトリ名が `island-now` の場合）:
+GitHub ユーザー **oooopq** / リポジトリ **island-now** / Source: **Deploy from branch → /docs**
 
-- トップ: https://opaquu.github.io/island-now/
-- プライバシーポリシー: https://opaquu.github.io/island-now/privacy-policy.html
-- 利用規約: https://opaquu.github.io/island-now/terms-of-service.html
+- トップ: https://oooopq.github.io/island-now/
+- プライバシーポリシー: https://oooopq.github.io/island-now/privacy-policy.html
+- 利用規約: https://oooopq.github.io/island-now/terms-of-service.html
 
-お問い合わせ: opaquu@gmail.com
+お問い合わせメール: opaquu@gmail.com（Pages のホスト名とは別）
 
-アプリ内の `AppLegalInfo.swift` も上記 URL を参照しています。リポジトリ名やユーザー名を変えた場合は、HTML 公開後に `AppLegalInfo` と App Store Connect の URL を合わせて更新してください。
+アプリ内の `AppLegalInfo.swift` も上記 URL を参照しています。ユーザー名やリポジトリ名を変えた場合は、HTML 公開後に `AppLegalInfo`・本 README・App Store Connect を合わせて更新してください。
 
-**重要:** `docs/*.html` を更新したら、GitHub にプッシュして Pages が最新になるまで確認してください。App Store のプライバシー URL は公開 HTML を参照します。
-
-## 公開前チェックリスト
-
-1. GitHub Pages を有効化し、上記 URL がブラウザで開けることを確認（最終更新日が最新であること）
-2. App Store Connect に以下を入力
-   - 説明文・キーワード → `app-store-ja.md`（WBGT 等の未実装機能を書かない）
-   - プライバシーポリシー URL
-   - 利用規約 URL（任意だが推奨）
-   - App のプライバシー（データ収集の申告）
-3. 実機で ℹ️ → クレジット・出典、規約リンク、天気セクションの Open-Meteo リンクを確認
-4. 権限ダイアログの文言を確認
-   - 位置情報: 地図上の現在地表示
-   - カメラ / フォトライブラリ: 写真メモ（端末内保存）
-5. 対象地域に小豆島・直島諸島が含まれ、忽那の島名が正しいことを確認
-
-## App Store Connect「App のプライバシー」
-
-2026年7月時点のアプリ実装に基づく目安:
-
-- 開発者サーバーへの個人情報送信なし → 「収集しない」に近い申告が可能
-- 位置情報・写真メモは端末内のみ → 開発者へ送信しない旨を明記したうえで申告
-- 第三者 SDK（Analytics 等）を追加した場合は **必ず再確認**
+**重要:** `docs/*.html` を更新したら GitHub にプッシュし、Pages が最新になるまでブラウザで確認してください。
 
 ## 免責
 

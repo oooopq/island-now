@@ -11,8 +11,8 @@ struct ContentView: View {
     @State private var themeStore = AppThemeStore()
     @State private var languageStore = AppLanguageStore()
     @State private var lastSelectedIslandStore = LastSelectedIslandStore()
-    @State private var showsThemeHint = false
-    @State private var didScheduleThemeHint = false
+    @State private var showsToolbarHint = false
+    @State private var didScheduleToolbarHint = false
 
     var body: some View {
         NavigationStack {
@@ -26,10 +26,10 @@ struct ContentView: View {
         .environment(\.detailPalette, themeStore.palette)
         .preferredColorScheme(themeStore.colorScheme)
         .task {
-            await presentThemeHintIfNeeded()
+            await presentToolbarHintIfNeeded()
         }
-        .sheet(isPresented: $showsThemeHint, onDismiss: {
-            themeStore.markThemeHintShown()
+        .sheet(isPresented: $showsToolbarHint, onDismiss: {
+            themeStore.markToolbarHintShown()
         }) {
             ThemeToggleHintView(
                 mode: themeStore.mode,
@@ -42,16 +42,16 @@ struct ContentView: View {
     }
 
     @MainActor
-    private func presentThemeHintIfNeeded() async {
-        guard didScheduleThemeHint == false else { return }
-        guard themeStore.shouldShowThemeHint else { return }
+    private func presentToolbarHintIfNeeded() async {
+        guard didScheduleToolbarHint == false else { return }
+        guard themeStore.shouldShowToolbarHint else { return }
 
-        didScheduleThemeHint = true
+        didScheduleToolbarHint = true
 
         // NavigationStack の初回レイアウト後に sheet を出す（onAppear だけだと出ないことがある）
         try? await Task.sleep(for: .milliseconds(500))
-        guard themeStore.shouldShowThemeHint else { return }
-        showsThemeHint = true
+        guard themeStore.shouldShowToolbarHint else { return }
+        showsToolbarHint = true
     }
 }
 

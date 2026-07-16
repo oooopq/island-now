@@ -10,8 +10,9 @@ import Foundation
 enum AppLegalInfo {
     static let supportEmail = "opaquu@gmail.com"
 
-    /// GitHub Pages（リポジトリ Settings → Pages → /docs）公開後のベース URL
-    private static let siteBaseURL = "https://opaquu.github.io/island-now"
+    /// GitHub Pages（リポジトリ Settings → Pages → /docs）
+    /// GitHub ユーザー名 oooopq / リポジトリ island-now
+    private static let siteBaseURL = "https://oooopq.github.io/island-now"
 
     static var privacyPolicyURL: URL? {
         AppURL.from(string: "\(siteBaseURL)/privacy-policy.html")

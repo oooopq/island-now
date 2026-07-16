@@ -65,9 +65,9 @@ Island Now は、日本の離島を訪れる方のための現地情報アプリ
 
 お問い合わせ: opaquu@gmail.com
 
-プライバシーポリシー: https://opaquu.github.io/island-now/privacy-policy.html
+プライバシーポリシー: https://oooopq.github.io/island-now/privacy-policy.html
 
-利用規約: https://opaquu.github.io/island-now/terms-of-service.html
+利用規約: https://oooopq.github.io/island-now/terms-of-service.html
 
 ## キーワード（100文字以内・カンマ区切り）
 

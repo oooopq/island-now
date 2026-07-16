@@ -18,13 +18,11 @@ struct FerryScheduleSectionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(languageStore.t(.ferry))
-                    .font(.headline)
-                Text(languageStore.t(.ferryAndHighSpeed))
-                    .font(.caption)
-                    .detailCardSecondaryText()
-            }
+            ScheduleTransportHeaderView(
+                kind: .ferry,
+                title: languageStore.t(.ferry),
+                subtitle: languageStore.t(.ferryAndHighSpeed)
+            )
 
             switch state {
             case .loading:
@@ -89,7 +87,8 @@ struct FerryScheduleSectionView: View {
             NextDepartureBannerView(
                 title: languageStore.t(.nextFerry),
                 departures: nextDepartures,
-                showsTomorrowNote: NextDepartureHelper.isTodayFinished(nextDepartures)
+                showsTomorrowNote: NextDepartureHelper.isTodayFinished(nextDepartures),
+                accentColor: ScheduleTransportKind.ferry.accentColor
             )
         }
 

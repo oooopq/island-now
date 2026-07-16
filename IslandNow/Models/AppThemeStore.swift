@@ -10,8 +10,10 @@ import SwiftUI
 @Observable
 final class AppThemeStore {
     private static let storageKey = "appThemeMode"
-    // v2: 説明UIをシートに変更したためキーを更新（以前の記録と区別）
-    private static let hintShownKey = "appThemeToggleHintShown_v2"
+    /// 旧: テーマのみの初回説明
+    private static let hintShownKeyV2 = "appThemeToggleHintShown_v2"
+    /// 新: テーマ＋言語の初回説明
+    private static let hintShownKeyV3 = "appToolbarToggleHintShown_v3"
 
     var mode: AppThemeMode {
         didSet {
@@ -22,9 +24,12 @@ final class AppThemeStore {
     var palette: DetailCardPalette { mode.palette }
     var colorScheme: ColorScheme { mode.colorScheme }
 
-    /// 初回起動時だけ、切り替えボタンの説明を表示する
-    var shouldShowThemeHint: Bool {
-        UserDefaults.standard.bool(forKey: Self.hintShownKey) == false
+    /// 真の初回だけ表示。v2 を見た既存ユーザーには出さない
+    var shouldShowToolbarHint: Bool {
+        if UserDefaults.standard.bool(forKey: Self.hintShownKeyV2) {
+            return false
+        }
+        return UserDefaults.standard.bool(forKey: Self.hintShownKeyV3) == false
     }
 
     init() {
@@ -34,20 +39,28 @@ final class AppThemeStore {
         } else {
             mode = .dark
         }
+
+        // 既存ユーザーは v3 を済み扱いにして、次回以降の判定を単純にする
+        if UserDefaults.standard.bool(forKey: Self.hintShownKeyV2),
+           UserDefaults.standard.bool(forKey: Self.hintShownKeyV3) == false {
+            UserDefaults.standard.set(true, forKey: Self.hintShownKeyV3)
+        }
     }
 
     func toggle() {
         mode = mode == .dark ? .light : .dark
     }
 
-    func markThemeHintShown() {
-        UserDefaults.standard.set(true, forKey: Self.hintShownKey)
+    func markToolbarHintShown() {
+        UserDefaults.standard.set(true, forKey: Self.hintShownKeyV3)
+        UserDefaults.standard.set(true, forKey: Self.hintShownKeyV2)
     }
 
     #if DEBUG
     /// 開発中に初回シートを再表示したいとき用（App Store ビルドでは使わない）
-    func resetThemeHintForTesting() {
-        UserDefaults.standard.removeObject(forKey: Self.hintShownKey)
+    func resetToolbarHintForTesting() {
+        UserDefaults.standard.removeObject(forKey: Self.hintShownKeyV2)
+        UserDefaults.standard.removeObject(forKey: Self.hintShownKeyV3)
     }
     #endif
 }

@@ -11,8 +11,14 @@ struct NextDepartureBannerView: View {
     let title: String
     let departures: [UpcomingDeparture]
     let showsTomorrowNote: Bool
+    /// 船便／航空便で色を分ける（未指定ならテーマの accent）
+    var accentColor: Color? = nil
 
     @Environment(\.detailPalette) private var palette
+
+    private var resolvedAccent: Color {
+        accentColor ?? palette.accent
+    }
 
     var body: some View {
         if departures.isEmpty == false {
@@ -21,7 +27,7 @@ struct NextDepartureBannerView: View {
                     Label(title, systemImage: "clock.fill")
                         .font(.subheadline)
                         .fontWeight(.semibold)
-                        .foregroundStyle(palette.accent)
+                        .foregroundStyle(resolvedAccent)
 
                     if showsTomorrowNote {
                         Text("本日の出港便は終了しました。翌日の最初の便です。")
@@ -94,7 +100,7 @@ struct NextDepartureBannerView: View {
             departureTime: departure.departureTime,
             arrivalTime: departure.arrivalTime
         )
-        let countdownColor: Color = isUrgent ? .red : palette.accent
+        let countdownColor: Color = isUrgent ? .red : resolvedAccent
 
         VStack(alignment: .trailing, spacing: 8) {
             if let countdownMinutes {

@@ -2,7 +2,7 @@
 //  ThemeToggleHintView.swift
 //  Island Now
 //
-//  初回起動時：外観切り替えボタンの説明
+//  初回起動時：右上の外観・言語切り替えの説明（日本語固定）
 //
 
 import SwiftUI
@@ -15,25 +15,44 @@ struct ThemeToggleHintView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("画面の明るさを切り替え")
+            Text("画面右上のボタン")
                 .font(.headline)
 
-            ThemeToggleIconView(
-                systemImage: mode.toggleSystemImage,
-                palette: palette,
-                size: 56
-            )
+            HStack(spacing: 28) {
+                hintItem(
+                    title: "明るさ",
+                    detail: "ライト / ダーク"
+                ) {
+                    ThemeToggleIconView(
+                        systemImage: mode.toggleSystemImage,
+                        palette: palette,
+                        size: 52
+                    )
+                }
+
+                hintItem(
+                    title: "言語",
+                    detail: "日本語 / English"
+                ) {
+                    Text("EN")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundStyle(palette.accent)
+                        .frame(width: 52, height: 52)
+                        .background(palette.accent.opacity(0.16), in: Circle())
+                        .overlay {
+                            Circle()
+                                .strokeBorder(palette.accent.opacity(0.35), lineWidth: 1)
+                        }
+                }
+            }
 
             VStack(spacing: 8) {
-                Text("画面右上のこのボタン")
+                Text("見た目と言葉を切り替えられます")
                     .font(.subheadline)
                     .fontWeight(.semibold)
 
-                Text(mode.accessibilityLabel)
-                    .font(.subheadline)
-                    .foregroundStyle(palette.secondaryText)
-
-                Text("いつでも切り替えられます。")
+                Text("いつでも右上から切り替えられます。")
                     .font(.caption)
                     .foregroundStyle(palette.secondaryText)
             }
@@ -56,6 +75,24 @@ struct ThemeToggleHintView: View {
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(palette.cardBackground)
+    }
+
+    private func hintItem<Icon: View>(
+        title: String,
+        detail: String,
+        @ViewBuilder icon: () -> Icon
+    ) -> some View {
+        VStack(spacing: 10) {
+            icon()
+
+            Text(title)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+
+            Text(detail)
+                .font(.caption)
+                .foregroundStyle(palette.secondaryText)
+        }
     }
 }
 
