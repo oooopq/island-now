@@ -9,7 +9,7 @@ import Foundation
 
 enum NetworkTimeout {
     /// キャッシュがないときの待ち時間（秒）
-    static let shortSeconds: TimeInterval = 5
+    static let shortSeconds: TimeInterval = 8
 
     enum TimeoutError: Error {
         case timedOut
