@@ -432,7 +432,7 @@ enum IzuIslandProfiles {
             IslandPort(name: "底土港", latitude: 33.123615, longitude: 139.821233),
         ],
         backgroundAssetName: "IslandBgHachijojima",
-        backgroundCredit: "Photo: ブルーノ・プラス / Wikimedia Commons（八丈島）／CC BY-SA 4.0／表示時に暗色グラデーションを追加",
+        backgroundCredit: "Photo: Tomoyuki Shidara（八丈島）",
         placeSearchRadiusMeters: 15_000,
         routeKeywords: ["八丈", "八丈島", "八重根", "底土"],
         ferryGTFSFeeds: [],

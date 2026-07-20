@@ -18,8 +18,8 @@ CURATED = [
     ("IslandBgTaketomi", "taketomi.jpg", "unsplash_slug", "white-and-brown-concrete-building-under-blue-sky-and-white-clouds-during-daytime-kInzQWIYFMA", "Photo: Hiroko Yoshii / Unsplash（竹富島）"),
     ("IslandBgIriomote", "iriomote.jpg", "unsplash_slug", "tFtc8jNnNds", "Photo: Wataru Sato / Unsplash（西表島）"),
     # 八重山 — Wikimedia（Unsplashに場所タグ付き写真なし）
-    ("IslandBgKuroshima", "kuroshima.jpg", "local", "", "Photo: TOMOYUKI SHIDARA（黒島）"),
-    ("IslandBgHateruma", "hateruma.jpg", "local", "", "Photo: TOMOYUKI SHIDARA（波照間島・西浜）"),
+    ("IslandBgKuroshima", "kuroshima.jpg", "local", "", "Photo: Tomoyuki Shidara（黒島）"),
+    ("IslandBgHateruma", "hateruma.jpg", "local", "", "Photo: Tomoyuki Shidara（波照間島・西浜）"),
     ("IslandBgYonaguni", "yonaguni.jpg", "wiki", "Yonaguni_agarizaki.jpg", "Photo: Metatron / Wikimedia Commons（与那国島・東崎）／CC BY-SA 3.0／表示時に暗色グラデーションを追加"),
     # 佐渡
     ("IslandBgSado", "sado.jpg", "wiki", "矢島経島たらい舟_-_panoramio.jpg", "Photo: 伊藤善行 / Wikimedia Commons（佐渡・矢島経島のたらい舟）／CC BY-SA 3.0／表示時に暗色グラデーションを追加"),
@@ -31,7 +31,7 @@ CURATED = [
     ("IslandBgKozushima", "kozushima.jpg", "unsplash_slug", "green-and-brown-plant-on-gray-rock-formation-near-blue-sea-during-daytime-i8bg_aTGloQ", "Photo: Ice Tea / Unsplash（神津島）"),
     ("IslandBgMiyakejima", "miyakejima.jpg", "unsplash_slug", "brown-rock-formation-on-body-of-water-during-daytime-kCsD88x1AM8", "Photo: Marek Okon / Unsplash（三宅島）"),
     ("IslandBgMikurajima", "mikurajima.jpg", "wiki", "Wharf_in_Mikurajima.jpg", "Photo: 名古屋太郎 / Wikimedia Commons（御蔵島）／Public domain／表示時に暗色グラデーションを追加"),
-    ("IslandBgHachijojima", "hachijojima.jpg", "wiki", "Hachijojima_airport2.jpg", "Photo: ブルーノ・プラス / Wikimedia Commons（八丈島）／CC BY-SA 4.0／表示時に暗色グラデーションを追加"),
+    # 八丈島は提供写真（Assets 内を手動管理）
     # 忽那諸島 — Wikimedia
     ("IslandBgNakajima", "nakajima.jpg", "wiki", "Amiage-_Beach.jpg", "Photo: melvil / Wikimedia Commons（中島・網明海岸）／CC BY-SA 4.0／表示時に暗色グラデーションを追加"),
     ("IslandBgGogoshima", "gogoshima.jpg", "wiki", "Gogoshima_01.JPG", "Photo: Reggaeman / Wikimedia Commons（興居島）／CC BY-SA 3.0／表示時に暗色グラデーションを追加"),

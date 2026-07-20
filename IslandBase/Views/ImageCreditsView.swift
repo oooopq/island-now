@@ -404,8 +404,8 @@ struct ImageCreditsView: View {
 
     private var providedPhotoBody: String {
         isJapanese
-            ? "黒島・波照間島および犬島の背景画像は、提供写真としてクレジットを表示しています。第三者の素材として再配布するものではありません。"
-            : "Backgrounds for Kuroshima, Hateruma, and Inujima are provided photos with credit shown. They are not redistributed as third-party stock."
+            ? "黒島・波照間島・八丈島および犬島の背景画像は、提供写真としてクレジットを表示しています。第三者の素材として再配布するものではありません。"
+            : "Backgrounds for Kuroshima, Hateruma, Hachijojima, and Inujima are provided photos with credit shown. They are not redistributed as third-party stock."
     }
 
     private var photoNotesTitle: String {
