@@ -59,6 +59,8 @@ enum AppText {
     case appleMapsData
     case portDistanceSingle(String)
     case portDistanceMultiple(String)
+    case userDistanceCaption
+    case placeUserDistance(String, String)
     case noTripsForDestination
     case noFlightsForDestination
     case dataValidUntil(String)
@@ -193,6 +195,10 @@ enum AppText {
             return "港（\(name)）からの距離・徒歩時間を表示しています"
         case .portDistanceMultiple(let names):
             return "各港（\(names)）からの距離・徒歩時間を表示しています"
+        case .userDistanceCaption:
+            return "現在地からの距離・徒歩時間を表示しています（近い順）"
+        case .placeUserDistance(let distance, let walking):
+            return "現在地から \(distance)（\(walking)）"
         case .noTripsForDestination:
             return "この行き先のダイヤはありません"
         case .noFlightsForDestination:
@@ -352,6 +358,10 @@ enum AppText {
             return "Distance and walking time from \(name)"
         case .portDistanceMultiple(let names):
             return "Distance and walking time from ports (\(names))"
+        case .userDistanceCaption:
+            return "Showing distance and walking time from your location (nearest first)"
+        case .placeUserDistance(let distance, let walking):
+            return "\(distance) from you (\(walking))"
         case .noTripsForDestination:
             return "No sailings for this destination"
         case .noFlightsForDestination:

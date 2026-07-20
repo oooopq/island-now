@@ -228,7 +228,8 @@ struct IslandDetailView: View {
             PlacesSectionView(
                 island: island,
                 selectedCategory: $selectedPlaceCategory,
-                state: placesState
+                state: placesState,
+                userCoordinate: locationService.coordinate
             )
 
         case .savedPhotos:

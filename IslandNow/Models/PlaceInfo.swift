@@ -69,8 +69,13 @@ struct PlaceInfo: Identifiable, Hashable, Codable {
 
     // 島の中心からの距離（メートル）を計算する
     func distanceMeters(from island: Island) -> CLLocationDistance {
+        distanceMeters(from: island.coordinate)
+    }
+
+    // 任意の地点からの距離（メートル）
+    func distanceMeters(from coordinate: CLLocationCoordinate2D) -> CLLocationDistance {
         let placeLocation = CLLocation(latitude: latitude, longitude: longitude)
-        let islandLocation = CLLocation(latitude: island.latitude, longitude: island.longitude)
-        return placeLocation.distance(from: islandLocation)
+        let otherLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        return placeLocation.distance(from: otherLocation)
     }
 }

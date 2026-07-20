@@ -148,8 +148,23 @@ enum IslandCatalog {
 
     private static let walkingSpeedMetersPerMinute: Double = 80
 
-    static func formattedWalkingTime(_ meters: CLLocationDistance) -> String {
+    static func formattedWalkingTime(
+        _ meters: CLLocationDistance,
+        language: AppLanguageMode = .japanese
+    ) -> String {
         let minutes = max(1, Int((meters / walkingSpeedMetersPerMinute).rounded()))
+        if language == .english {
+            if minutes < 60 {
+                return "about \(minutes) min walk"
+            }
+            let hours = minutes / 60
+            let remainingMinutes = minutes % 60
+            if remainingMinutes == 0 {
+                return "about \(hours) hr walk"
+            }
+            return "about \(hours) hr \(remainingMinutes) min walk"
+        }
+
         if minutes < 60 {
             return "徒歩約\(minutes)分"
         }
