@@ -9,7 +9,7 @@ import Foundation
 
 struct WeatherService {
     // クエリ変更時に古い中心座標キャッシュを捨てる
-    private let cacheKeyPrefix = "weather_cache_v2_"
+    private let cacheKeyPrefix = "weather_cache_v3_"
 
     // 島の天気地点から天気（現在＋1時間おき24件＋1週間）と波の高さを取得し、キャッシュにも保存する
     func fetchWeather(for island: Island) async throws -> WeatherInfo {
@@ -46,7 +46,7 @@ struct WeatherService {
     }
 
     private func weatherQuery(for island: Island) -> WeatherQuery {
-        if let location = IslandCatalog.profile(for: island)?.weatherLocation {
+        if let location = IslandCatalog.profile(for: island)?.resolvedWeatherLocation {
             return WeatherQuery(
                 latitude: location.latitude,
                 longitude: location.longitude,
@@ -55,10 +55,11 @@ struct WeatherService {
             )
         }
 
+        // プロファイルがない場合のみ島中心にフォールバック
         return WeatherQuery(
             latitude: island.latitude,
             longitude: island.longitude,
-            elevationMeters: nil,
+            elevationMeters: IslandWeatherLocation.defaultPortElevationMeters,
             models: nil
         )
     }

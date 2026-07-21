@@ -19,14 +19,31 @@ struct IslandPort: Identifiable {
     }
 }
 
-/// 天気API用の地点（地図用の島中心とは分離。未設定時は島中心を使う）
+/// 天気API用の地点（地図用の島中心とは分離）
 struct IslandWeatherLocation {
+    /// 港・集落向けの標高補正（メートル）
+    static let defaultPortElevationMeters: Double = 5
+
     let latitude: Double
     let longitude: Double
     /// Open-Meteo の標高補正（メートル）。港・集落向けに低標高を指定する
     let elevationMeters: Double?
     /// Open-Meteo `models`（例: jma_seamless）。nil なら自動選択
     let models: String?
+
+    /// 港座標を天気地点にする（標高は低めに固定）
+    static func from(
+        port: IslandPort,
+        elevationMeters: Double = defaultPortElevationMeters,
+        models: String? = nil
+    ) -> IslandWeatherLocation {
+        IslandWeatherLocation(
+            latitude: port.latitude,
+            longitude: port.longitude,
+            elevationMeters: elevationMeters,
+            models: models
+        )
+    }
 }
 
 struct IslandProfile: Identifiable {
@@ -36,7 +53,7 @@ struct IslandProfile: Identifiable {
     let island: Island
     let regionID: String
     let ports: [IslandPort]
-    /// 天気取得地点（nil なら島中心座標を使用）
+    /// 天気取得地点の上書き（nil なら先頭の港・低標高を使用）
     let weatherLocation: IslandWeatherLocation?
     let backgroundAssetName: String
     let backgroundCredit: String
@@ -98,6 +115,15 @@ struct IslandProfile: Identifiable {
     /// 後方互換・単一港向け
     var port: IslandPort? {
         ports.first
+    }
+
+    /// 天気APIに送る地点（明示指定がなければ先頭の港）
+    var resolvedWeatherLocation: IslandWeatherLocation? {
+        if let weatherLocation {
+            return weatherLocation
+        }
+        guard let port = ports.first else { return nil }
+        return IslandWeatherLocation.from(port: port)
     }
 
     init(

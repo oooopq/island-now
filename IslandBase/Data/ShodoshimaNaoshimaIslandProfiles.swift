@@ -63,6 +63,12 @@ enum ShodoshimaNaoshimaIslandProfiles {
 
     // MARK: - 小豆島
 
+    private static let shodoshimaPort = IslandPort(
+        name: "土庄港",
+        latitude: 34.489263,
+        longitude: 134.171791
+    )
+
     private static let shodoshima = IslandProfile(
         island: Island(
             id: "shodoshima",
@@ -72,16 +78,9 @@ enum ShodoshimaNaoshimaIslandProfiles {
             longitude: 134.253862
         ),
         regionID: "shodoshima_naoshima",
-        ports: [
-            IslandPort(name: "土庄港", latitude: 34.489263, longitude: 134.171791),
-        ],
-        // 先行検証: 港周辺・低標高・JMA固定（地図用の島中心とは分離）
-        weatherLocation: IslandWeatherLocation(
-            latitude: 34.489263,
-            longitude: 134.171791,
-            elevationMeters: 5,
-            models: "jma_seamless"
-        ),
+        ports: [shodoshimaPort],
+        // JMA モデルだけ上書き（座標・標高は港の既定と同じ）
+        weatherLocation: IslandWeatherLocation.from(port: shodoshimaPort, models: "jma_seamless"),
         backgroundAssetName: "IslandBgShodoshima",
         backgroundCredit: "Photo: Yu / Unsplash（小豆島・香川）",
         placeSearchRadiusMeters: 20_000,
