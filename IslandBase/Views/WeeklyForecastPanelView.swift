@@ -11,6 +11,7 @@ struct WeeklyForecastPanelView: View {
     let forecast: [DailyWeatherForecast]
 
     @Environment(\.detailPalette) private var palette
+    @Environment(AppLanguageStore.self) private var languageStore
 
     private let rowHeight: CGFloat = 52
     private let visibleRowCount: CGFloat = 4
@@ -58,18 +59,25 @@ struct WeeklyForecastPanelView: View {
                 Text("\(day.minTemperatureCelsius)° / \(day.maxTemperatureCelsius)°")
                 Text("湿度 \(day.humidityPercent)%")
                     .font(.caption)
-                if let precipitationPercent = day.precipitationProbabilityPercent {
-                    Label("降水 \(precipitationPercent)%", systemImage: "drop.fill")
-                        .font(.caption)
-                } else {
-                    Label("降水 —", systemImage: "drop.fill")
-                        .font(.caption)
+                if day.shouldShowPrecipitationSum {
+                    Label(
+                        languageStore.t(.expectedDailyPrecipitation(formattedPrecipitationSum(day.precipitationSumMillimeters))),
+                        systemImage: "drop.fill"
+                    )
+                    .font(.caption)
                 }
             }
             .detailCardSecondaryText()
         }
         .font(.subheadline)
         .frame(minHeight: rowHeight, alignment: .center)
+    }
+
+    private func formattedPrecipitationSum(_ millimeters: Double) -> String {
+        if millimeters < 10 {
+            return String(format: "%.1f", millimeters)
+        }
+        return String(format: "%.0f", millimeters)
     }
 }
 
@@ -83,7 +91,7 @@ struct WeeklyForecastPanelView: View {
                 maxTemperatureCelsius: 29,
                 condition: day % 2 == 0 ? "晴れ" : "くもり",
                 humidityPercent: 70,
-                precipitationProbabilityPercent: 20
+                precipitationSumMillimeters: day % 3 == 0 ? 4.5 : 0
             )
         }
     )

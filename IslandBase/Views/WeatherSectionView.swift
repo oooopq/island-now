@@ -319,7 +319,7 @@ struct WeatherSectionView: View {
                         maxTemperatureCelsius: 29,
                         condition: "晴れ",
                         humidityPercent: 72,
-                        precipitationProbabilityPercent: 20
+                        precipitationSumMillimeters: 0
                     )
                 }
             ),

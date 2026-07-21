@@ -9,7 +9,7 @@ import Foundation
 
 struct WeatherService {
     // クエリ変更時に古い中心座標キャッシュを捨てる
-    private let cacheKeyPrefix = "weather_cache_v5_"
+    private let cacheKeyPrefix = "weather_cache_v6_"
 
     private static let forecastModels = "jma_seamless"
     private static let forecastElevationMeters = IslandWeatherLocation.defaultPortElevationMeters
@@ -103,7 +103,10 @@ struct WeatherService {
                 name: "hourly",
                 value: "temperature_2m,apparent_temperature,weather_code,precipitation_probability,relative_humidity_2m,wind_speed_10m,precipitation"
             ),
-            URLQueryItem(name: "daily", value: "weather_code,temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean,precipitation_probability_max"),
+            URLQueryItem(
+                name: "daily",
+                value: "weather_code,temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean,precipitation_sum"
+            ),
             URLQueryItem(name: "forecast_days", value: "7"),
             URLQueryItem(name: "timezone", value: "Asia/Tokyo"),
             URLQueryItem(name: "elevation", value: String(Self.forecastElevationMeters)),
@@ -319,7 +322,7 @@ private struct OpenMeteoDaily: Decodable {
     let temperature2mMax: [Double]
     let temperature2mMin: [Double]
     let relativeHumidity2mMean: [Double]
-    let precipitationProbabilityMax: [Int?]
+    let precipitationSum: [Double]
 
     enum CodingKeys: String, CodingKey {
         case time
@@ -327,7 +330,7 @@ private struct OpenMeteoDaily: Decodable {
         case temperature2mMax = "temperature_2m_max"
         case temperature2mMin = "temperature_2m_min"
         case relativeHumidity2mMean = "relative_humidity_2m_mean"
-        case precipitationProbabilityMax = "precipitation_probability_max"
+        case precipitationSum = "precipitation_sum"
     }
 
     func toWeeklyForecast() -> [DailyWeatherForecast] {
@@ -338,7 +341,7 @@ private struct OpenMeteoDaily: Decodable {
             temperature2mMax.count,
             temperature2mMin.count,
             relativeHumidity2mMean.count,
-            precipitationProbabilityMax.count,
+            precipitationSum.count,
         ].min() ?? 0
 
         return (0..<safeCount).map { index in
@@ -349,7 +352,7 @@ private struct OpenMeteoDaily: Decodable {
                 maxTemperatureCelsius: Int(temperature2mMax[index].rounded()),
                 condition: WeatherConditionMapper.japaneseName(for: weatherCode[index]),
                 humidityPercent: Int(relativeHumidity2mMean[index].rounded()),
-                precipitationProbabilityPercent: precipitationProbabilityMax[index].map { max(0, $0) }
+                precipitationSumMillimeters: max(0, precipitationSum[index])
             )
         }
     }

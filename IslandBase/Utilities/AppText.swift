@@ -32,6 +32,7 @@ enum AppText {
     case hourlyForecast
     case weeklyWeather
     case humidity
+    case expectedDailyPrecipitation(String)
     case windSpeed
     case feelsLikeTemperature(Int)
     case waveHeight
@@ -144,6 +145,8 @@ enum AppText {
             return "週間天気"
         case .humidity:
             return "湿度"
+        case .expectedDailyPrecipitation(let millimeters):
+            return "予想降水量 \(millimeters) mm"
         case .windSpeed:
             return "風速"
         case .feelsLikeTemperature(let celsius):
@@ -313,6 +316,8 @@ enum AppText {
             return "7-day forecast"
         case .humidity:
             return "Humidity"
+        case .expectedDailyPrecipitation(let millimeters):
+            return "Expected precip. \(millimeters) mm"
         case .windSpeed:
             return "Wind"
         case .feelsLikeTemperature(let celsius):
