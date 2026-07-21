@@ -58,8 +58,13 @@ struct WeeklyForecastPanelView: View {
                 Text("\(day.minTemperatureCelsius)° / \(day.maxTemperatureCelsius)°")
                 Text("湿度 \(day.humidityPercent)%")
                     .font(.caption)
-                Label("降水 \(day.precipitationProbabilityPercent)%", systemImage: "drop.fill")
-                    .font(.caption)
+                if let precipitationPercent = day.precipitationProbabilityPercent {
+                    Label("降水 \(precipitationPercent)%", systemImage: "drop.fill")
+                        .font(.caption)
+                } else {
+                    Label("降水 —", systemImage: "drop.fill")
+                        .font(.caption)
+                }
             }
             .detailCardSecondaryText()
         }

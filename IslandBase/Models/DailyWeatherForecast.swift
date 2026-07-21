@@ -14,6 +14,6 @@ struct DailyWeatherForecast: Codable, Identifiable {
     let maxTemperatureCelsius: Int
     let condition: String
     let humidityPercent: Int
-    /// 1日の最大降水確率（%）
-    let precipitationProbabilityPercent: Int
+    /// 1日の最大降水確率（%）。JMA では API が null のことがある
+    let precipitationProbabilityPercent: Int?
 }

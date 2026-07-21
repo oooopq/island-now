@@ -349,7 +349,7 @@ private struct OpenMeteoDaily: Decodable {
                 maxTemperatureCelsius: Int(temperature2mMax[index].rounded()),
                 condition: WeatherConditionMapper.japaneseName(for: weatherCode[index]),
                 humidityPercent: Int(relativeHumidity2mMean[index].rounded()),
-                precipitationProbabilityPercent: max(0, precipitationProbabilityMax[index] ?? 0)
+                precipitationProbabilityPercent: precipitationProbabilityMax[index].map { max(0, $0) }
             )
         }
     }
