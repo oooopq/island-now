@@ -53,8 +53,8 @@ struct RegionCoverCardView: View {
         )
     }
 
-    private var cardWidth: CGFloat { 148 }
-    private var imageHeight: CGFloat { 88 }
+    private var cardWidth: CGFloat { 133 }
+    private var imageHeight: CGFloat { 79 }
 }
 
 #Preview {

@@ -17,24 +17,17 @@ struct RegionHomeView: View {
     @State private var mapSelectedRegionID: String?
 
     var body: some View {
-        GeometryReader { geometry in
-            // 画面の約58%を地図に使い、下のカバーカード用の余地も残す
-            let mapHeight = max(320, min(geometry.size.height * 0.58, 560))
+        VStack(spacing: 0) {
+            header
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
+                .padding(.bottom, 12)
 
-            VStack(spacing: 0) {
-                header
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
-                    .padding(.bottom, 12)
+            japanMap
 
-                japanMap(height: mapHeight)
-
-                ScrollView {
-                    regionCoverCarousel
-                        .padding(.top, 12)
-                        .padding(.bottom, 16)
-                }
-            }
+            regionCoverCarousel
+                .padding(.top, 12)
+                .padding(.bottom, 16)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(homeBackground)
@@ -112,7 +105,7 @@ struct RegionHomeView: View {
         }
     }
 
-    private func japanMap(height: CGFloat) -> some View {
+    private var japanMap: some View {
         Map(
             position: $cameraPosition,
             bounds: RegionMapSupport.japanMapCameraBounds,
@@ -136,15 +129,15 @@ struct RegionHomeView: View {
         .onAppear {
             applyJapanHomeCamera()
         }
-        .task(id: height) {
-            // 起動・レイアウト確定のたびに、全諸島が収まる基準画角へ戻す
+        .task {
+            // レイアウト確定のたびに、全諸島が収まる基準画角へ戻す
             applyJapanHomeCamera()
             try? await Task.sleep(for: .milliseconds(50))
             applyJapanHomeCamera()
             try? await Task.sleep(for: .milliseconds(200))
             applyJapanHomeCamera()
         }
-        .frame(height: height)
+        .frame(minHeight: 240, maxHeight: .infinity)
         .frame(maxWidth: .infinity)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay {
@@ -158,7 +151,7 @@ struct RegionHomeView: View {
         cameraPosition = RegionMapSupport.japanHomeCameraPosition()
     }
 
-    /// 横スクロールのカバーカード。地域が増えても縦を圧迫しない
+    /// 横スクロール専用の固定エリア。縦スクロールと競合しない
     private var regionCoverCarousel: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(languageStore.t(.chooseRegion))

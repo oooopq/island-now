@@ -52,7 +52,7 @@ struct LastSelectedIslandShortcutView: View {
     }
 
     /// 諸島カード（RegionCoverCardView）と同じ幅
-    private var cardWidth: CGFloat { 148 }
+    private var cardWidth: CGFloat { 133 }
     private var imageHeight: CGFloat { 52 }
 }
 
