@@ -116,7 +116,7 @@ struct RegionHomeView: View {
         Map(
             position: $cameraPosition,
             bounds: RegionMapSupport.japanMapCameraBounds,
-            interactionModes: [.pan, .zoom]
+            interactionModes: []
         ) {
             ForEach(IslandCatalog.regions) { region in
                 Annotation("", coordinate: region.mapCoordinate) {

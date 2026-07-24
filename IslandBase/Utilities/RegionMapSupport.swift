@@ -10,36 +10,49 @@ import MapKit
 import SwiftUI
 
 enum RegionMapSupport {
-    /// 未登録だが追加予定の地域（パン余白の北・東用。起動ズームには使わない）
-    private static let plannedRegionAnchorCoordinates: [CLLocationCoordinate2D] = [
-        CLLocationCoordinate2D(latitude: 45.18, longitude: 141.18), // 利尻・礼文付近
-        CLLocationCoordinate2D(latitude: 27.09, longitude: 142.19), // 小笠原（父島付近）
-    ]
-
     static func japanHomeCameraPosition() -> MapCameraPosition {
         .region(japanOverviewRegion())
     }
 
-    /// 起動時の基準画角：登録ピンが全部見える、日本列島寄りの概観
-    /// （縦長画面で緯度方向に広がっても、マニラ付近まで出ない程度に東西を絞る）
+    /// 起動時の基準画角（`japanHomeMapEnvelope` と同じ）
     static func japanOverviewRegion() -> MKCoordinateRegion {
-        let pins = IslandRegionCatalog.all.map(\.mapCoordinate)
-        let fitted = boundingRegion(
-            for: pins,
-            minimumPadding: 1.0,
-            paddingRatio: 0.16
+        japanHomeMapEnvelope()
+    }
+
+    /// トップ地図のカメラ制限（起動画角と同じ範囲に固定）
+    static var japanMapCameraBounds: MapCameraBounds {
+        let envelope = japanHomeMapEnvelope()
+        let distance = cameraDistanceToFit(region: envelope)
+        return MapCameraBounds(
+            centerCoordinateBounds: envelope,
+            minimumDistance: distance,
+            maximumDistance: distance
         )
+    }
 
-        var minLat = pins.map(\.latitude).min() ?? fitted.center.latitude
-        var maxLat = pins.map(\.latitude).max() ?? fitted.center.latitude
-        var minLon = pins.map(\.longitude).min() ?? fitted.center.longitude
-        var maxLon = pins.map(\.longitude).max() ?? fitted.center.longitude
+    /// ホーム地図の画角。登録済み地域ピンだけから計算し、地域追加で自動拡張する
+    private static func japanHomeMapEnvelope() -> MKCoordinateRegion {
+        let pins = IslandRegionCatalog.all.map(\.mapCoordinate)
+        guard pins.isEmpty == false else {
+            return MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: 36.5, longitude: 137.5),
+                span: MKCoordinateSpan(latitudeDelta: 14, longitudeDelta: 14)
+            )
+        }
 
-        // ピン周りの余白（南は八重山ラベル分だけ。大陸・フィリピンは入れない）
-        minLat -= 1.0
-        maxLat += 3.0
-        minLon -= 2.0
-        maxLon += 2.0
+        var minLat = pins.map(\.latitude).min() ?? 36.5
+        var maxLat = pins.map(\.latitude).max() ?? 36.5
+        var minLon = pins.map(\.longitude).min() ?? 137.5
+        var maxLon = pins.map(\.longitude).max() ?? 137.5
+
+        let latSpan = max(maxLat - minLat, 1.0)
+        let lonSpan = max(maxLon - minLon, 1.0)
+
+        // ピン範囲に対する比率で余白（南控えめ・北多めでラベル用。大陸・フィリピンは入れない）
+        minLat -= max(latSpan * 0.08, 1.0)
+        maxLat += max(latSpan * 0.22, 3.0)
+        minLon -= max(lonSpan * 0.12, 2.0)
+        maxLon += max(lonSpan * 0.12, 2.0)
 
         let latitudeDelta = max(maxLat - minLat, 14)
         let longitudeDelta = max(maxLon - minLon, 14)
@@ -52,57 +65,6 @@ enum RegionMapSupport {
             span: MKCoordinateSpan(
                 latitudeDelta: latitudeDelta,
                 longitudeDelta: longitudeDelta
-            )
-        )
-    }
-
-    /// トップ地図のパン／ズーム制限（起動画角は必ず許可する）
-    static var japanMapCameraBounds: MapCameraBounds {
-        let overview = japanOverviewRegion()
-        let panCoordinates = IslandRegionCatalog.all.map(\.mapCoordinate) + plannedRegionAnchorCoordinates
-        var panBounds = boundingRegion(
-            for: panCoordinates,
-            minimumPadding: 2.0,
-            paddingRatio: 0.35
-        )
-        // 起動画角の中心・スパンが bounds に収まるよう、少なくとも overview 以上の範囲にする
-        panBounds = unionRegions(panBounds, overview)
-
-        let overviewDistance = cameraDistanceToFit(region: overview)
-        return MapCameraBounds(
-            centerCoordinateBounds: panBounds,
-            minimumDistance: overviewDistance * 0.15,
-            // 縦長画面で overview 全体を映せるよう十分な上限
-            maximumDistance: overviewDistance * 3.0
-        )
-    }
-
-    private static func unionRegions(
-        _ a: MKCoordinateRegion,
-        _ b: MKCoordinateRegion
-    ) -> MKCoordinateRegion {
-        let aMinLat = a.center.latitude - a.span.latitudeDelta / 2
-        let aMaxLat = a.center.latitude + a.span.latitudeDelta / 2
-        let aMinLon = a.center.longitude - a.span.longitudeDelta / 2
-        let aMaxLon = a.center.longitude + a.span.longitudeDelta / 2
-        let bMinLat = b.center.latitude - b.span.latitudeDelta / 2
-        let bMaxLat = b.center.latitude + b.span.latitudeDelta / 2
-        let bMinLon = b.center.longitude - b.span.longitudeDelta / 2
-        let bMaxLon = b.center.longitude + b.span.longitudeDelta / 2
-
-        let minLat = min(aMinLat, bMinLat)
-        let maxLat = max(aMaxLat, bMaxLat)
-        let minLon = min(aMinLon, bMinLon)
-        let maxLon = max(aMaxLon, bMaxLon)
-
-        return MKCoordinateRegion(
-            center: CLLocationCoordinate2D(
-                latitude: (minLat + maxLat) / 2,
-                longitude: (minLon + maxLon) / 2
-            ),
-            span: MKCoordinateSpan(
-                latitudeDelta: maxLat - minLat,
-                longitudeDelta: maxLon - minLon
             )
         )
     }
